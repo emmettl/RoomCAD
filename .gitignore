@@ -1,12 +1,1 @@
-.build/
-.swiftpm/
-*.xcodeproj
-xcuserdata/
-DerivedData/
-build/
-.DS_Store
-.claude/settings.local.json
-dist/
-__pycache__/
-roomcad-reference/
-nightly-results/
+.cache/
