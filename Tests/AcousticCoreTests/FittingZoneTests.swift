@@ -155,9 +155,16 @@ struct FittingZoneTests {
             room.eyringReverberationTime(atmosphere: .standard, airAbsorption: false)[4])
         #expect(abs(eyring / expected - 1) < 1e-12)
         #expect(abs(zone.absorptionArea[4] - 4 * 0.2 * 0.5 * 60) < 1e-9)
+        // Receiver identity contributes to the tail seed; keep this fixture reproducible.
         let settings = RoomResponseSettings(
-            room: room, source: RoomPoint(name: "S", position: source),
-            receivers: [RoomPoint(name: "R", position: receiver)], airAbsorption: false, duration: 0.6,
+            room: room,
+            source: RoomPoint(
+                id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, name: "S", position: source),
+            receivers: [
+                RoomPoint(
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!, name: "R",
+                    position: receiver)
+            ], airAbsorption: false, duration: 0.6,
             maximumReflectionOrder: 40, diffuseRays: 20_000, lowFrequencyModel: false)
         let result = try RoomResponseGenerator.generate(settings)
         // Single bands of one random realization vary by a few percent, with the specular part's

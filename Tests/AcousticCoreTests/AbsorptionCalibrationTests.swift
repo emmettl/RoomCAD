@@ -11,9 +11,17 @@ struct AbsorptionCalibrationTests {
         // decays more slowly than Eyring's formula says.
         var room = ShoeboxRoom(size: [9, 6, 4], material: .uniform(0.05, scattering: 0.1, name: "Plaster"))
         room.floor = .uniform(0.5, scattering: 0.3, name: "Audience")
+        // Receiver identity contributes to the tail seed; keep this fixture reproducible.
         let settings = RoomResponseSettings(
-            room: room, source: RoomPoint(name: "S", position: [2, 3, 1.5]),
-            receivers: [RoomPoint(name: "R", position: [6.5, 2.2, 1.2])], airAbsorption: false, duration: 1.2,
+            room: room,
+            source: RoomPoint(
+                id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, name: "S",
+                position: [2, 3, 1.5]),
+            receivers: [
+                RoomPoint(
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!, name: "R",
+                    position: [6.5, 2.2, 1.2])
+            ], airAbsorption: false, duration: 1.2,
             maximumReflectionOrder: 12, diffuseRays: 10_000)
         // As given it decays in about 1.5 s, against Eyring's 0.9 s.
         let target: [Double?] = [nil, nil, 1.2, 1.2, 1.2, 1.2, nil, nil]

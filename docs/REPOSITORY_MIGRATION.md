@@ -27,3 +27,13 @@ name the old repository prefix remain historical context.
 The nested application is retired in BombCAD only after standalone verification.
 Its former documentation paths and package README become redirects. BombCAD's checks
 then cover BombCAD; RoomCAD's dedicated Mac mini CI owns the standalone application.
+
+## Reproducible decay fixtures
+
+The first standalone full suite exposed a random-identity-dependent fitted-zone decay
+assertion. Receiver UUIDs contribute to the tail seed even when `randomSeed` is fixed.
+The absorption-calibration and absorbing-zone reference fixtures now use canonical
+source/receiver identities; geometry, ray counts, solver source, reference values and
+tolerances are unchanged. Both focused suites pass with those declared inputs. This
+bounds repeatability of these reference fixtures; it does not validate every random
+realization or imply that all stochastic model sensitivity is resolved.
