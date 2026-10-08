@@ -8,7 +8,7 @@ on:
       suite:
         description: Full application checks or bounded acoustic source conformance
         type: choice
-        options: [all, acoustics, boundaries]
+        options: [all, acoustics, boundaries, rigid-3d]
         default: all
 
 permissions:
@@ -83,5 +83,28 @@ jobs:
         with:
           name: boundary-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/boundary-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  rigid-3d:
+    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'rigid-3d'
+    runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify full 3D CPU and Metal fields
+        run: bash Scripts/check-rigid-3d.sh "${{ runner.temp }}/rigid-3d-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Require complete matching staggered fields from both backends
+        run: |
+          python3 Scripts/verify-rigid-3d-output.py "${{ runner.temp }}/rigid-3d-${{ github.run_id }}-${{ github.run_attempt }}/cpu"
+          python3 Scripts/verify-rigid-3d-output.py "${{ runner.temp }}/rigid-3d-${{ github.run_id }}-${{ github.run_attempt }}/metal"
+      - name: Retain 3D conformance and complete fields
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rigid-3d-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/rigid-3d-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           retention-days: 14
