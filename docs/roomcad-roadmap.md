@@ -1,5 +1,10 @@
 # RoomCAD and convolution reverb roadmap
 
+Repository update, 8 October 2026: RoomCAD is now standalone. CAD foundations and
+ImpulseResponseKit come from the exact ContinuumKit `0.1.0-alpha.2` tag. AcousticCore,
+Audition, documents, authored presets and measured fixtures remain application-owned.
+Earlier milestones below retain their historical sequence.
+
 Status: October 2026. The initial shared-package extraction is implemented:
 `Packages/SimulationKit` supplies SceneModel (Box and Grid), SceneView (OrbitCamera) and SceneRender
 (scene geometry, picking, a mesh renderer and the orbit controls both apps use).
@@ -14,7 +19,7 @@ A wave solver for low frequencies (M3) and broadband hybrid responses (M4 items 
 too. The Driftbox rack effect remains proposed work.
 
 The save-file foundation is also implemented: DocumentKit and BombCAD's `.bombcad` document workflow
-persist scene, run and view settings, with container integrity checks. See [Save files](save-files.md).
+persist scene, run and view settings, with container integrity checks. See [Save files](https://github.com/emmettl/bombcad/blob/285b620806418f39e4bc7a66be20191f2d366612/docs/save-files.md).
 Native document windows, autosave and unsaved-close handling are implemented. The importer is
 on main, with versioned embedded source meshes, stable part references and detached-edit round trips.
 
@@ -31,10 +36,10 @@ at 48 kHz does not make it broadband.
 
 ## Architecture and sharing
 
-Start with a shared Swift package containing focused library targets, consumed by separate
-BombCAD and RoomCAD app packages. Prefer one repository while shared APIs are changing, so
-both apps can be checked in the same commit. Decide the repository location before moving
-existing sources; this document does not prescribe a migration of the current checkout.
+ContinuumKit contains the released shared products, consumed by independent BombCAD and
+RoomCAD repositories. Each application pins an exact tested tag and owns its integration
+checks. Models move individually when their contracts and independent verification are ready.
+The standalone repository and first response interchange extraction are complete.
 
 | Module | Responsibility | Consumers |
 |---|---|---|
@@ -510,5 +515,5 @@ wave simulation and validated wall transmission are the largest uncertainties.
   a reference for impulse-response loading and partitioned convolution, not a Driftbox engine decision.
 - [HiFi-HARP](https://arxiv.org/abs/2510.21257): an example of broadband room responses combining
   low-frequency wave simulation with higher-frequency ray tracing.
-- [BombCAD air limitations](air-blast-model.md#limitations): precision, boundaries and geometry
+- [BombCAD air limitations](https://github.com/emmettl/bombcad/blob/285b620806418f39e4bc7a66be20191f2d366612/docs/air-blast-model.md#limitations): precision, boundaries and geometry
   issues that prevent treating the existing blast solver as an audio solver without changes.

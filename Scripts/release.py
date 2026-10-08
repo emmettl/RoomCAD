@@ -1,6 +1,6 @@
 """Prepare a Developer ID-signed, notarized RoomCAD release locally; never tags or publishes anything.
 
-The same steps as BombCAD's Scripts/release.py, for the RoomCAD package in this directory's parent."""
+Runs the RoomCAD repository's checks and packaging steps before local release preparation."""
 
 import argparse
 import hashlib
@@ -38,9 +38,9 @@ def metadata(plist):
     version = plist.get("CFBundleShortVersionString", "")
     build = plist.get("CFBundleVersion", "")
     if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
-        raise ValueError("Use a numeric major.minor.patch version in RoomCAD/Support/Info.plist.")
+        raise ValueError("Use a numeric major.minor.patch version in Support/Info.plist.")
     if not isinstance(build, str) or not re.fullmatch(r"[1-9]\d*", build):
-        raise ValueError("Use a positive integer build number in RoomCAD/Support/Info.plist.")
+        raise ValueError("Use a positive integer build number in Support/Info.plist.")
     if plist.get("LSMinimumSystemVersion") != MINIMUM_MACOS:
         raise ValueError("Update the release requirements before changing the macOS baseline.")
     if not plist.get("CFBundleIdentifier"):
@@ -130,12 +130,11 @@ def release(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["check", "prepare"])
-    # A notary profile is not tied to one app, so BombCAD's settings serve when RoomCAD has none of its own.
     parser.add_argument(
-        "--identity", default=os.environ.get("ROOMCAD_SIGNING_IDENTITY", os.environ.get("BOMBCAD_SIGNING_IDENTITY")))
+        "--identity", default=os.environ.get("ROOMCAD_SIGNING_IDENTITY"))
     parser.add_argument(
         "--notary-profile",
-        default=os.environ.get("ROOMCAD_NOTARY_PROFILE", os.environ.get("BOMBCAD_NOTARY_PROFILE")))
+        default=os.environ.get("ROOMCAD_NOTARY_PROFILE"))
     args = parser.parse_args()
     try:
         release(args)

@@ -589,7 +589,7 @@ half-cosine taper to the end of every channel.
 
 ## Verification
 
-`swift test --package-path RoomCAD` (also part of `make check`) tests the following:
+`swift test` (also part of `make check`) tests the following:
 
 - The band weights sum to one at every frequency.
 - First-order image positions, and reflection gains as products of coefficients.
@@ -633,7 +633,7 @@ half-cosine taper to the end of every channel.
 - WAV and metadata round trip, including unknown chunks and extensible files; integer PCM,
   non-finite samples and truncated files are rejected.
 
-`swift run -c release --package-path RoomCAD acousticbench` repeats the analytical checks, renders
+`swift run -c release acousticbench` repeats the analytical checks, renders
 a reference room and exports its responses. Its results on the development Mac:
 
 | Check | Result |

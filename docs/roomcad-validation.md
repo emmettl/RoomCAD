@@ -29,7 +29,7 @@ The two material sets are:
 - **Fitted estimates**, the initial ones scaled in each third octave so that Eyring's formula gives
   the measured reverberation time. This is what a designer would do after measuring.
 
-RoomCAD's version of the room is in `RoomCAD/Validation/bras-cr2/scene.json`, and how it was derived
+RoomCAD's version of the room is in `Validation/bras-cr2/scene.json`, and how it was derived
 is in that folder's README. In short:
 
 - **Geometry.** The plan is 14 vertical walls, taken from the SketchUp model's vertices; it ignores
@@ -44,7 +44,7 @@ is in that folder's README. In short:
 
 ## Method
 
-`make roomcad-validate` runs `acousticbench --bras-cr2` and then `--bras-cr3`. For CR2 it simulates all ten pairs, 3.5 s long like the
+`make validate` runs `acousticbench --bras-cr2` and then `--bras-cr3`. For CR2 it simulates all ten pairs, 3.5 s long like the
 measurements, in four configurations:
 
 - the initial materials with the wave solver;
@@ -90,8 +90,8 @@ frequencies.
 sound is compared as a level. It is correlated at the same position, and at other positions as a
 baseline.
 
-The measured parameters are kept in `RoomCAD/Validation/bras-cr2/measured.json`, so the comparison
-runs without downloading the measurements. `RoomCAD/Scripts/fetch-bras.py` fetches the 6 MB of
+The measured parameters are kept in `Validation/bras-cr2/measured.json`, so the comparison
+runs without downloading the measurements. `Scripts/fetch-bras.py` fetches the 6 MB of
 BRAS that the fixture is derived from, and `acousticbench --bras-cr2 --update-fixture` rebuilds the
 fixture from it. A run takes about 6 minutes on a Mac Studio (M4 Max), almost all of it in the wave
 solver.
@@ -245,7 +245,7 @@ BRAS's scene CR3 is the chamber music hall of the Konzerthaus Berlin. Its featur
 The reverberation time is about 1.3 s at mid frequencies. Its Schroeder frequency is about 40 Hz,
 so modes matter much less here than in CR2.
 
-RoomCAD's version is in `RoomCAD/Validation/bras-cr3/`. Unlike CR2's, it is not a floor plan.
+RoomCAD's version is in `Validation/bras-cr3/`. Unlike CR2's, it is not a floor plan.
 
 - **Pieces of air.** The room is built from 12 boxes and extrusions of air, joined, with the stage
   shell's panels and a 1 cm layer of seating cut out. RoomCAD turns them into a closed mesh with

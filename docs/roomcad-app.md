@@ -13,35 +13,34 @@ extractions.
 ## Running it
 
 ```bash
-swift run -c release --package-path RoomCAD RoomCAD
+swift run -c release RoomCAD
 ```
 
 ```bash
-make roomcad-app
+make app
 ```
 
-The second command builds `RoomCAD/dist/RoomCAD.app`, ad-hoc signed. Its icon (a room in plan, with
+The second command builds `dist/RoomCAD.app`, ad-hoc signed. Its icon (a room in plan, with
 a source's wavefronts and one path reflecting off a wall to a listener) is drawn by
-`RoomCAD/Scripts/make-icon.swift`; `make roomcad-icon` redraws `RoomCAD/Support/AppIcon.icns`. That bundle declares the
-`.roomcad` document type. It is not notarized, and RoomCAD has no release process yet.
+`Scripts/make-icon.swift`; `make icon` redraws `Support/AppIcon.icns`. That bundle declares the
+`.roomcad` document type. This local build is ad-hoc signed; the release process below prepares notarized builds.
 
 RoomCAD opens a new room at launch rather than the Open panel, unless macOS restores windows or a
 document is opened from Finder.
 
 ### Releasing RoomCAD
 
-`RoomCAD/Scripts/release.py` makes a Developer ID-signed, notarized build, with the same steps as
-BombCAD's (see [Releasing](releasing.md)). It never tags or publishes anything. It uses the same
-certificate and notary profile: `ROOMCAD_SIGNING_IDENTITY` and `ROOMCAD_NOTARY_PROFILE`, or BombCAD's
-variables if those are unset. Set the version in `RoomCAD/Support/Info.plist`, commit, then run:
+`Scripts/release.py` makes a Developer ID-signed, notarized build, with the same steps as
+BombCAD's (see [Releasing](RELEASING.md)). It never tags or publishes anything. It uses the same
+certificate and notary profile through `ROOMCAD_SIGNING_IDENTITY` and `ROOMCAD_NOTARY_PROFILE`. Set the version in `Support/Info.plist`, commit, then run:
 
 ```bash
-make roomcad-release-check
-make roomcad-release
+make release-check
+make release
 ```
 
 The script requires a clean checkout and a well-formed version. It runs RoomCAD's strict lint, its
-tests and the release script's tests, then builds `RoomCAD/dist/RoomCAD.app` in release and checks
+tests and the release script's tests, then builds `dist/RoomCAD.app` in release and checks
 that the app:
 
 - matches the source's version;
@@ -62,13 +61,13 @@ submission `fe528b2d-59cd-4a64-a889-096177cdcc20`:
 - A fresh expansion of the final ZIP matched its checksum, validated its stapled ticket, passed
   `codesign --verify --deep --strict` and was accepted by `spctl`. It holds the recordings with their
   credits, the icon, `LICENSE` and `THIRD-PARTY-NOTICES.md`, and it rendered its offscreen snapshot.
-- The ZIP, checksum and manifest are attached to the GitHub release `roomcad-v0.1.0`, tagged on that
-  commit. It is not marked latest, so the repository's latest release remains BombCAD's. The copy
+- The ZIP, checksum and manifest remain at the original
+  [BombCAD release](https://github.com/emmettl/bombcad/releases/tag/roomcad-v0.1.0), tagged on that commit. It is not marked latest, so the repository's latest release remains BombCAD's. The copy
   downloaded back matched the checksum.
 - The tag is on the RoomCAD branch, not main, because main had moved on with uncommitted work in
   progress at the time.
 
-The release tests run with `make roomcad-test`, with every external tool stubbed out. They check that
+The release tests run with `make test`, with every external tool stubbed out. They check that
 a rejected notarization, a Gatekeeper refusal, missing recordings and missing licences each stop the
 script before an archive is written.
 
@@ -216,7 +215,7 @@ script before an archive is written.
     any audio file you choose. The recordings are an operatic voice and synthesized drums from the
     OpenAIR library (CC BY-SA), and violin pizzicato from the University of Iowa Musical Instrument
     Samples (free to use). The window shows each clip's credit. Sources, licences and edits are in
-    `RoomCAD/Sources/Audition/Clips/CREDITS.md`, which ships inside the app. Files are mixed to mono, converted to the
+    `Sources/Audition/Clips/CREDITS.md`, which ships inside the app. Files are mixed to mono, converted to the
     response's sample rate and cut to 60 s.
 - **Export WAV** (⌘E). Writes the conditioned response as 32-bit float WAV, with its JSON description
   beside it. Exports are always full quality: if the current response is a preview or out of date, the
@@ -286,11 +285,11 @@ source and the extended bands.
 Few absorption entries have published scattering. Choosing a material therefore sets its name and
 absorption and keeps the surface's scattering; a scattering preset sets only the scattering. The
 generated table is `Sources/AcousticCore/MaterialPresetData.swift`, pinned to the source commit, and
-pyroomacoustics' licence is in `RoomCAD/THIRD-PARTY-NOTICES.md`, which also ships in the app.
+pyroomacoustics' licence is in `THIRD-PARTY-NOTICES.md`, which also ships in the app.
 
 ## Document format
 
-A `.roomcad` document is a SimulationKit package (see [Save files](save-files.md)) with
+A `.roomcad` document uses the ContinuumKit DocumentKit container (see [Save files](https://github.com/emmettl/bombcad/blob/285b620806418f39e4bc7a66be20191f2d366612/docs/save-files.md)) with
 `documentType` `roomcad` and producer `RoomCAD`:
 
 ```text
@@ -337,7 +336,7 @@ saved again.
 
 ## Verification
 
-`swift test --package-path RoomCAD` covers the following:
+`swift test` covers the following:
 
 - **RoomDocumentTests:**
   - round trips, including per-band materials, floor plans, meshes and moved documents on disk;

@@ -20,7 +20,7 @@ cp Support/Info.plist "$app/Contents/Info.plist"
 # The icon is drawn by Scripts/make-icon.swift.
 cp Support/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 # The MIT licence asks for its notice to travel with every copy.
-cp ../LICENSE "$app/Contents/Resources/LICENSE"
+cp LICENSE "$app/Contents/Resources/LICENSE"
 # The material data's licence, and where the bundled recordings come from.
 cp THIRD-PARTY-NOTICES.md "$app/Contents/Resources/THIRD-PARTY-NOTICES.md"
 # Resource bundles, such as the bundled dry recordings. SwiftPM's accessor looks in the app's Resources
@@ -37,4 +37,4 @@ test -f "$app/Contents/Resources/ContinuumKit_SceneRender.bundle/Contents/Resour
   exit 1
 }
 codesign --force --sign - "$app"
-echo "Built RoomCAD/$app"
+echo "Built $app"

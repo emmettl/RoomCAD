@@ -5,7 +5,7 @@ Prints each sheet as tab-separated rows, or, with --json, writes {sheet: [[cell,
 Only what a data table needs is supported: shared strings, numbers, RK and MULRK numbers, and inline
 strings. Formulas give their cached numeric result where it is a number.
 
-Usage: python3 RoomCAD/Scripts/read-xls.py FILE.xls [--json]
+Usage: python3 Scripts/read-xls.py FILE.xls [--json]
 """
 
 import json

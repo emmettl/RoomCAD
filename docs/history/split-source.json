@@ -1,0 +1,515 @@
+{
+  "source_repository": "https://github.com/emmettl/bombcad",
+  "source_commit": "b283a63653d0886af047b75e098bcaefa4462b1f",
+  "application_files": [
+    {
+      "source_path": "RoomCAD/.gitignore",
+      "destination_path": ".gitignore",
+      "sha256": "70a213afeabe5ac38ae4c88b2c7002ce5068b91a3e57a032245ab809dc6fa460"
+    },
+    {
+      "source_path": "RoomCAD/Package.resolved",
+      "destination_path": "Package.resolved",
+      "sha256": "0f9f8f8a073e286d4a81830593b70aa75eeaef4187cf041a91486a2bd8dbcab9"
+    },
+    {
+      "source_path": "RoomCAD/Package.swift",
+      "destination_path": "Package.swift",
+      "sha256": "7edf3b61f8156742e3a9f527f3f969fa370f97bb7afae8ee7a90c0ad093dfa1f"
+    },
+    {
+      "source_path": "RoomCAD/README.md",
+      "destination_path": "README.md",
+      "sha256": "0752231defc3551ac3c5c69a4792bf063964e6cff2524891591c045edf9b0232"
+    },
+    {
+      "source_path": "RoomCAD/Scripts/build-app.sh",
+      "destination_path": "Scripts/build-app.sh",
+      "sha256": "e43be59cc83524191fcdfbc60b599ee991b9b49dd7d33f48ebbcf3662a879771"
+    },
+    {
+      "source_path": "RoomCAD/Scripts/fetch-bras.py",
+      "destination_path": "Scripts/fetch-bras.py",
+      "sha256": "605ca8884c5d1ded0bb3a9cd03f7134539197f395010960eff28cc522ab14f69"
+    },
+    {
+      "source_path": "RoomCAD/Scripts/make-icon.swift",
+      "destination_path": "Scripts/make-icon.swift",
+      "sha256": "c0ab96408069e5b6c2db2b0a410fed865bee9981354a4ced81657b9d30412c1b"
+    },
+    {
+      "source_path": "RoomCAD/Scripts/read-xls.py",
+      "destination_path": "Scripts/read-xls.py",
+      "sha256": "c2f923d48aa2d330daee3c0c2769403a9b4895a62c1e04df2a2abe4e7a98467e"
+    },
+    {
+      "source_path": "RoomCAD/Scripts/release.py",
+      "destination_path": "Scripts/release.py",
+      "sha256": "d7349569607055845e2269d3d1681119b860d5aaace40583666e7efcbe88b79e"
+    },
+    {
+      "source_path": "RoomCAD/Scripts/test-release.py",
+      "destination_path": "Scripts/test-release.py",
+      "sha256": "2af63647bb329eb49b9f455d4f172f5d7d811a741601081a6ddcf12606f9181c"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/AbsorptionCalibration.swift",
+      "destination_path": "Sources/AcousticCore/AbsorptionCalibration.swift",
+      "sha256": "64de3ef0c586cebc96919dbfc46cbf03ef4d7ad33a53d45a3808133eb0410a53"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/Atmosphere.swift",
+      "destination_path": "Sources/AcousticCore/Atmosphere.swift",
+      "sha256": "ba694618b07b8b706bc251d54902f21f7726d23b35ff0463c22dcf999380311c"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/BandRenderer.swift",
+      "destination_path": "Sources/AcousticCore/BandRenderer.swift",
+      "sha256": "6059845eaee832d1c0ee2e304e41cb95bd2dc50e92edef00790cecce2e159b44"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/DecayAnalysis.swift",
+      "destination_path": "Sources/AcousticCore/DecayAnalysis.swift",
+      "sha256": "31509f60775789b4882edecdec1d0af9304fc8e00f78b30a73eb9d8c498ec735"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/DiffuseRayTracer.swift",
+      "destination_path": "Sources/AcousticCore/DiffuseRayTracer.swift",
+      "sha256": "14ad2a47f48157ba2d7b3297ac5a13e51a2e5fa8f0de9cbfc8deb343a6e3ba55"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/DiffuseTail.swift",
+      "destination_path": "Sources/AcousticCore/DiffuseTail.swift",
+      "sha256": "56fd2875cd8e747484d51ba066a1a1a7e42fbae573860a74b3fbc279aeb92b5c"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/FittingZone.swift",
+      "destination_path": "Sources/AcousticCore/FittingZone.swift",
+      "sha256": "16a7ba8f2610b707bfa24fbbeec914ad34b2910fbdfb8dbdf08390982db219f6"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/FloorPlan.swift",
+      "destination_path": "Sources/AcousticCore/FloorPlan.swift",
+      "sha256": "cdca0b00eb81ae673df351aad246d4b4919fadb83a6a5651fa15e79b458d7410"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/HallShapes.swift",
+      "destination_path": "Sources/AcousticCore/HallShapes.swift",
+      "sha256": "535c173daa62a5881bff89fb430b47cd4e437fd0e387d336db11ff6e51003d32"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/ImageSourceModel.swift",
+      "destination_path": "Sources/AcousticCore/ImageSourceModel.swift",
+      "sha256": "e6a3adc54f9eec8dc18aede722b3d19aff8dc073335de56163efa0f6280f70ff"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/MaterialPresetData.swift",
+      "destination_path": "Sources/AcousticCore/MaterialPresetData.swift",
+      "sha256": "a76684accfd3149e6061695a62ec405f5888a597228199d1249bce0ecb727d56"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/MaterialPresets.swift",
+      "destination_path": "Sources/AcousticCore/MaterialPresets.swift",
+      "sha256": "10b5323eaf701c2fc122232121943e64430c1aa1b5989f8f344b1c3630203df5"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/MeshImageSources.swift",
+      "destination_path": "Sources/AcousticCore/MeshImageSources.swift",
+      "sha256": "da3c52955047dc8b3063a4227690dfcd27fd27c233202d2deefd32dc8f834a6c"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/MetalWaveSolver.swift",
+      "destination_path": "Sources/AcousticCore/MetalWaveSolver.swift",
+      "sha256": "88084e51ef8f131dc4ceaa1ad36e97a32586b05398e79377411c65418cffd938"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/Microphone.swift",
+      "destination_path": "Sources/AcousticCore/Microphone.swift",
+      "sha256": "7565445eb1a75143093da2c4b99de4ddfb77ac2e4b407301d4ca112db5f9f57f"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/OctaveBands.swift",
+      "destination_path": "Sources/AcousticCore/OctaveBands.swift",
+      "sha256": "29fbd2ea2bbe1db6f41c160985b87ba514ad7b33826796b18d188376cb642f02"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/Opening.swift",
+      "destination_path": "Sources/AcousticCore/Opening.swift",
+      "sha256": "f00daa511f6ffb2a9282dba00fde7a5dd442e99248d9eb4c11413a76a0a0edf0"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/PlanImageSources.swift",
+      "destination_path": "Sources/AcousticCore/PlanImageSources.swift",
+      "sha256": "f5d3b4aec1fc47bd34248dfb088a8e184eccae5de34ba0227af198c75e1352c5"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/RealFFT.swift",
+      "destination_path": "Sources/AcousticCore/RealFFT.swift",
+      "sha256": "63da5cb9c3ead610051a2b43faf3c345d4168d7e6580abd25ea202c18877b617"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/ResponseComparison.swift",
+      "destination_path": "Sources/AcousticCore/ResponseComparison.swift",
+      "sha256": "831f81eadccc10c262734634d795c9eb4bca979924c867417a43900ea9458883"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/RoomImport.swift",
+      "destination_path": "Sources/AcousticCore/RoomImport.swift",
+      "sha256": "2fdd5e537b323c1811257e84df1e53638e72def7f592c174dd464642a6236ca9"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/RoomMesh.swift",
+      "destination_path": "Sources/AcousticCore/RoomMesh.swift",
+      "sha256": "e93e1dc44f0e65e2c93054a7bd88057a13f2c39697e8d9bbf2ce0b29684d5cb8"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/RoomParameters.swift",
+      "destination_path": "Sources/AcousticCore/RoomParameters.swift",
+      "sha256": "84d1e9acddcdc0a2f9be535964007a2456e61d75f8873b0ed5c9741ce76e457b"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/RoomPresets.swift",
+      "destination_path": "Sources/AcousticCore/RoomPresets.swift",
+      "sha256": "f68736314f4aa9ccd05d606112976c8b408174e1c6830aad73e21aa75d9a96e8"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/RoomResponse.swift",
+      "destination_path": "Sources/AcousticCore/RoomResponse.swift",
+      "sha256": "9cd67ba1f182c2fdddcf76a0cf998d64c2d63974e7d8f730afc369f6ed490565"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/ShoeboxRoom.swift",
+      "destination_path": "Sources/AcousticCore/ShoeboxRoom.swift",
+      "sha256": "5059ffe41ad3ded140408fe0c3a215af08a94e7c5bb2b87822b92c58d1fa9e15"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/Solid.swift",
+      "destination_path": "Sources/AcousticCore/Solid.swift",
+      "sha256": "ef0e3d824481610ad8c2298c0b4fa213a24fffa9e88dedf1ff6389171dacd797"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/ValidationScene.swift",
+      "destination_path": "Sources/AcousticCore/ValidationScene.swift",
+      "sha256": "cd4ba62f728dad553108f3ea6d913bdfd9a822fc62d46892c07bec9a2622a11a"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/WaveAccuracy.swift",
+      "destination_path": "Sources/AcousticCore/WaveAccuracy.swift",
+      "sha256": "3e7053656dd3aff5d114f30fa0689b416a1d97933c24f73a47f9847d51676ba0"
+    },
+    {
+      "source_path": "RoomCAD/Sources/AcousticCore/WaveSolver.swift",
+      "destination_path": "Sources/AcousticCore/WaveSolver.swift",
+      "sha256": "aa4a6ba4a4c7686bcff2d102a1615644991e8d505fdd375a964cb124d67fc4d9"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/AuditionPreview.swift",
+      "destination_path": "Sources/Audition/AuditionPreview.swift",
+      "sha256": "8067cbae989d3244772c8b828f12a217f5492ff0e52b987669326ae9396fb234"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/Clips/CREDITS.md",
+      "destination_path": "Sources/Audition/Clips/CREDITS.md",
+      "sha256": "455562da0350dcc67126fce691b9ede983baf1843e5d0366551fb38e2fe7e319"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/Clips/clips.json",
+      "destination_path": "Sources/Audition/Clips/clips.json",
+      "sha256": "d1df79677e1abd9cebe31e8e3c06a5a495eaa06b172ec0c23f792d3584eede84"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/Clips/iowa-violin-pizzicato.flac",
+      "destination_path": "Sources/Audition/Clips/iowa-violin-pizzicato.flac",
+      "sha256": "8282b6eca54d3c5ecc827af48b3d60039e56f54e71c425c91a8b8645da422fad"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/Clips/openair-drums.flac",
+      "destination_path": "Sources/Audition/Clips/openair-drums.flac",
+      "sha256": "85710fe476d7771dcf5774951ab18acbfb7f4513379016b4642180cc11de6910"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/Clips/openair-operatic-voice.flac",
+      "destination_path": "Sources/Audition/Clips/openair-operatic-voice.flac",
+      "sha256": "15cc2190fae4647f1505978f6efb50464539d151a376498080a583f03b72f508"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/DryClip.swift",
+      "destination_path": "Sources/Audition/DryClip.swift",
+      "sha256": "30cf178570ee17e1ba27737d9bd6399ca2cfc33944c93e3cebcf98227f3eed5e"
+    },
+    {
+      "source_path": "RoomCAD/Sources/Audition/WaveformOverview.swift",
+      "destination_path": "Sources/Audition/WaveformOverview.swift",
+      "sha256": "19d0a1f0c22ceccb40e0ca26c40ee4c751842194c15d3e5903abd330be360e64"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/AuditionBar.swift",
+      "destination_path": "Sources/RoomCAD/AuditionBar.swift",
+      "sha256": "3552d888d9f0ea2d3444ea9610791d5a1cdb0565d3709fb261806613eab7eb7c"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/AuditionPlayer.swift",
+      "destination_path": "Sources/RoomCAD/AuditionPlayer.swift",
+      "sha256": "b40650081fdf5cbec1f306d8c97df342d42738056be971ed362400571d92b7b6"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/AuditionWaveform.swift",
+      "destination_path": "Sources/RoomCAD/AuditionWaveform.swift",
+      "sha256": "107b766024a8bf128d5b0499084997e9f8448a93f67ec96af6ce1b6b4d974566"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/CalibrationSection.swift",
+      "destination_path": "Sources/RoomCAD/CalibrationSection.swift",
+      "sha256": "0c4a4d1401042a2872093b60200b2d68caeaee05b759d1a3e40028e273910dae"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/ModelImportSheet.swift",
+      "destination_path": "Sources/RoomCAD/ModelImportSheet.swift",
+      "sha256": "f659d6ef4ba5f300e40fe208f4b20c00f140b168b034ce08d3174e513a7d60cc"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/ResponseView.swift",
+      "destination_path": "Sources/RoomCAD/ResponseView.swift",
+      "sha256": "679c34ecda36bceccff40ce59d688abc135c2e542cc56b86ce3bc0668e983743"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomCADApp.swift",
+      "destination_path": "Sources/RoomCAD/RoomCADApp.swift",
+      "sha256": "15492ae8ac2700696fb16d2d7def70ab89604a53406a85616938652f883bcfea"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomCADFile.swift",
+      "destination_path": "Sources/RoomCAD/RoomCADFile.swift",
+      "sha256": "83b82b2565c5787a71a7d93854f80661333d164263d176a995839f4ef72457a9"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomDrawing.swift",
+      "destination_path": "Sources/RoomCAD/RoomDrawing.swift",
+      "sha256": "a203b119cae7129161e97926592669347e235a3253ca7fef612b181d57e5594a"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomEditor.swift",
+      "destination_path": "Sources/RoomCAD/RoomEditor.swift",
+      "sha256": "2a872a8bef42d793262edf323e52ac05775e8370bc3f948cf7cec49f3c2361e5"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomEditorView.swift",
+      "destination_path": "Sources/RoomCAD/RoomEditorView.swift",
+      "sha256": "c07efea4316bd96cdb1a1519145c982d010e00b003b5582993b0158b0bdaeb3b"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomEdits.swift",
+      "destination_path": "Sources/RoomCAD/RoomEdits.swift",
+      "sha256": "fa0d75d85a18598b32509c42efc7effbbe092adc564e2ff87dcb904893460235"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomInspector.swift",
+      "destination_path": "Sources/RoomCAD/RoomInspector.swift",
+      "sha256": "19666b043e1257a34bffad8c10655ab4673dbf7c0618cfd87c3ba78cec8e982c"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomScene.swift",
+      "destination_path": "Sources/RoomCAD/RoomScene.swift",
+      "sha256": "8686fe8f192c92da941a7497e75548e0702ce09806f67449ebcfb4f1e0655cea"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/RoomView3D.swift",
+      "destination_path": "Sources/RoomCAD/RoomView3D.swift",
+      "sha256": "ee4841b1e43edc61273f4e901e5bebd71cce9a22f85af0fbf7676b0fe3a72a62"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/Snapshot.swift",
+      "destination_path": "Sources/RoomCAD/Snapshot.swift",
+      "sha256": "2940cff38c8708866e1e41861beaa0314d08fd05eef5ba6e7259bb7ec22ae61d"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomCAD/SpaceKey.swift",
+      "destination_path": "Sources/RoomCAD/SpaceKey.swift",
+      "sha256": "aeb0e54df4c449e6127a8ae3085b6b6bb218aea9b475a32114fa598ebc8e75c6"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomDocument/ResponseSummary.swift",
+      "destination_path": "Sources/RoomDocument/ResponseSummary.swift",
+      "sha256": "08acf287af7c4f4bec0040489e816651a766d31d873024952bbd4e305fb04f9e"
+    },
+    {
+      "source_path": "RoomCAD/Sources/RoomDocument/RoomProject.swift",
+      "destination_path": "Sources/RoomDocument/RoomProject.swift",
+      "sha256": "2b5b0d494c8001c4958f49b41d1e5b5d9a7b5bb53977321427f9b52f388b4c43"
+    },
+    {
+      "source_path": "RoomCAD/Sources/acousticbench/MeasuredRoom.swift",
+      "destination_path": "Sources/acousticbench/MeasuredRoom.swift",
+      "sha256": "3eb40c37fcdc249918b3dfeaf335eec021b17baa0b9f6ab45695e34a86cc8733"
+    },
+    {
+      "source_path": "RoomCAD/Sources/acousticbench/PresetTiming.swift",
+      "destination_path": "Sources/acousticbench/PresetTiming.swift",
+      "sha256": "a1f7aa6f6fdeb4428f114f2db324ab635ff4f3bc59bfd64687dd2784189c1686"
+    },
+    {
+      "source_path": "RoomCAD/Sources/acousticbench/WaveBenchmark.swift",
+      "destination_path": "Sources/acousticbench/WaveBenchmark.swift",
+      "sha256": "d6070b95e064dcef640b986d05f7bc4a0d4c0875eab60e1ef7e37a8958d00efa"
+    },
+    {
+      "source_path": "RoomCAD/Sources/acousticbench/main.swift",
+      "destination_path": "Sources/acousticbench/main.swift",
+      "sha256": "45913f4c7f5461b6ce085b17cf1b43cab72bf159d5fec93b3a40008d1f6298bb"
+    },
+    {
+      "source_path": "RoomCAD/Support/AppIcon.icns",
+      "destination_path": "Support/AppIcon.icns",
+      "sha256": "e2a1d23c8c40b74ad3c7c63fdfe46daa501bac624367eafe0b2a24854ec3b822"
+    },
+    {
+      "source_path": "RoomCAD/Support/Info.plist",
+      "destination_path": "Support/Info.plist",
+      "sha256": "9ccf50f97921ab873dba436aa69f5bcdacc10ed9b937d60cbc02f1456d37b80f"
+    },
+    {
+      "source_path": "RoomCAD/THIRD-PARTY-NOTICES.md",
+      "destination_path": "THIRD-PARTY-NOTICES.md",
+      "sha256": "db7189e1e7b2c4e6bb8377ea5c638e30863c2efb0c70f0fa0cf1f3d772b4ad67"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/AbsorptionCalibrationTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/AbsorptionCalibrationTests.swift",
+      "sha256": "1835aa7df483a19ddcd058c0f55a55584f5bd59b79c49d759e20197ab3abbbc5"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/AcousticCoreTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/AcousticCoreTests.swift",
+      "sha256": "ff1eb3bd6c9a6190e580e3aa33255a9a14dc503047c816f6878d313dd1779490"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/FittingZoneTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/FittingZoneTests.swift",
+      "sha256": "e546019249f9f5c807b8dfd853f89ed4a0cd104379befaa935e31e03d56d6f84"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/FloorPlanTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/FloorPlanTests.swift",
+      "sha256": "752228920cdb026e9a5a7a654940d740382d2ebab1f8c26957a77e6f6b3f326f"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/MaterialPresetTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/MaterialPresetTests.swift",
+      "sha256": "0f13a9866a1b5e3ef1f1ac4520af45c30f15c71cdbba3274cc4797502dee909d"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/MeasuredRoomTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/MeasuredRoomTests.swift",
+      "sha256": "ab3bbf31448b1d037d74c1d9aeea17800b08a91e3ca80b84ac70a75b069971a5"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/MicrophoneTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/MicrophoneTests.swift",
+      "sha256": "57f980d65869a524606dce69a26af19dc90a674c2f2700bb9394e132815ec03b"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/OpeningTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/OpeningTests.swift",
+      "sha256": "e57b0b675d44939e924b9355da56dceda4611b6cd2fb201becb642f361f44219"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/RoomImportTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/RoomImportTests.swift",
+      "sha256": "7ece28fd6e3374a3bca6058c427706e98315314b2ba4ac2ba623d2de15207f08"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/RoomMeshTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/RoomMeshTests.swift",
+      "sha256": "e7a7392e9e46032891b86c113be6790b2b3db6cfdcd8c6eb84485f293c4b120e"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/RoomParametersTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/RoomParametersTests.swift",
+      "sha256": "9332d1e5ce0954196dcabf9e36b97b843f446084db3ba52a22649852e04ed753"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/RoomPresetTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/RoomPresetTests.swift",
+      "sha256": "eaae9f61a6b627dd7d13a638419fe31b338beccebc4c3fab761c17e42fa1d28c"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/ScatteringTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/ScatteringTests.swift",
+      "sha256": "88860bd4e766778fc3eea862493f78983bd5bcde839542b690d48354bc59760e"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/SolidTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/SolidTests.swift",
+      "sha256": "ee13e371c6142f276964eb24630f9971367a43b818745f06c0dfefcfff62f5c3"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AcousticCoreTests/WaveSolverTests.swift",
+      "destination_path": "Tests/AcousticCoreTests/WaveSolverTests.swift",
+      "sha256": "87b3e2371f359f65241e8280ca6be2c205d0feadae9cd7855520020aa438cd6d"
+    },
+    {
+      "source_path": "RoomCAD/Tests/AuditionTests/AuditionTests.swift",
+      "destination_path": "Tests/AuditionTests/AuditionTests.swift",
+      "sha256": "a94d9416d4a5412c68c230bc6d4e24468e46b20085288e2b3732a9f885b3c058"
+    },
+    {
+      "source_path": "RoomCAD/Tests/RoomCADTests/RoomCADTests.swift",
+      "destination_path": "Tests/RoomCADTests/RoomCADTests.swift",
+      "sha256": "0be1d21e46880376ad1db84c94608f1bd8458f7a916b76345da362c35ed4b15d"
+    },
+    {
+      "source_path": "RoomCAD/Tests/RoomDocumentTests/RoomDocumentTests.swift",
+      "destination_path": "Tests/RoomDocumentTests/RoomDocumentTests.swift",
+      "sha256": "f470a3f2397085e8173f2546b1bc6243d67eb121d65fbf2782930605acdfffed"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr2/README.md",
+      "destination_path": "Validation/bras-cr2/README.md",
+      "sha256": "bab2250d88c18117a0a819f1e96f73f5771b7b73bcd081d32cc13aa335e18dec"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr2/measured.json",
+      "destination_path": "Validation/bras-cr2/measured.json",
+      "sha256": "0bbdefce4b6d048e1f0f3f2b21b4c3e4b09d7c9511698afd071e8f4463b40237"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr2/scene.json",
+      "destination_path": "Validation/bras-cr2/scene.json",
+      "sha256": "349e8670ca83329895c28c0350fe2afa1d777252a1ddb381f93190989c76678b"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr3/README.md",
+      "destination_path": "Validation/bras-cr3/README.md",
+      "sha256": "34540bce4735981d9eca6158943b03209e436d50b38b722538e31a10cd98c021"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr3/make-scene.py",
+      "destination_path": "Validation/bras-cr3/make-scene.py",
+      "sha256": "c43be23ceb8cddda98aefaea5305645ddfc12cd9d50d104b14928f7cf0559f65"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr3/measured.json",
+      "destination_path": "Validation/bras-cr3/measured.json",
+      "sha256": "eb5b9f558b79206f30039b09db20b611945e62fb0f30a2b20c920f6981f09ea1"
+    },
+    {
+      "source_path": "RoomCAD/Validation/bras-cr3/scene.json",
+      "destination_path": "Validation/bras-cr3/scene.json",
+      "sha256": "1cad64fc181faae7cd1803fde6c60ff50022fd810ef1c65b46266c47f2024451"
+    }
+  ],
+  "history_tool": {
+    "name": "git-filter-repo",
+    "version": "2.47.0",
+    "upstream_revision": "6f79afc8c90c592a3052e6cc53c2ca8907515bca",
+    "script_sha256": "67447413e273fc76809289111748870b6f6072f08b17efe94863a92d810b7d94"
+  },
+  "filtered_head": "da4c5ddd52ae8d252ba3e0ff8b6259cd2793e3a6",
+  "filtered_release_tag": "cf254c2f37fc3d5742b971b09bcffdafd7f2db41",
+  "application_byte_parity_before_administrative_edits": true,
+  "inherited_configuration": {
+    "source_path": ".swift-format",
+    "source_commit": "285b620806418f39e4bc7a66be20191f2d366612",
+    "sha256": "c0e422f8f60bdaa8bdb465b2372b8cf6498b512f7dcbf7c017f44b6ab9993bf0"
+  }
+}

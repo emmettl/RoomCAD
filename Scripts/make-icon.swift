@@ -1,8 +1,8 @@
 // Draws RoomCAD's icon: a room in plan on a dark tile, with a source sending out wavefronts and one
 // path reflecting off a wall to a listener.
-// Writes RoomCAD/Support/AppIcon.icns, and with --preview FILE.png also a 1024-pixel preview.
+// Writes Support/AppIcon.icns, and with --preview FILE.png also a 1024-pixel preview.
 //
-//     swift RoomCAD/Scripts/make-icon.swift
+//     swift Scripts/make-icon.swift
 import AppKit
 import CoreGraphics
 import Foundation
@@ -143,4 +143,4 @@ process.executableURL = URL(fileURLWithPath: "/usr/bin/iconutil")
 process.arguments = ["-c", "icns", iconset.path, "-o", support.appendingPathComponent("AppIcon.icns").path]
 try process.run()
 process.waitUntilExit()
-print(process.terminationStatus == 0 ? "Wrote RoomCAD/Support/AppIcon.icns" : "iconutil failed")
+print(process.terminationStatus == 0 ? "Wrote Support/AppIcon.icns" : "iconutil failed")

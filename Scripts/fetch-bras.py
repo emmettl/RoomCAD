@@ -6,10 +6,10 @@ BRAS (Benchmark for Room Acoustical Simulation, Aspöck et al., TU Berlin and RW
 under CC BY-SA 4.0 at https://depositonce.tu-berlin.de/items/38410727-febb-4769-8002-9c710ba393c4.
 Its archives are large, so this reads each archive's directory and then only the members needed, with
 HTTP range requests: about 6 MB for CR2 and 40-50 MB each for CR3 and CR4, instead of 2 GB. Files land in
-RoomCAD/.cache/bras-cr2, -cr3 and -cr4, which git ignores; RoomCAD's repository keeps only what is derived
+.cache/bras-cr2, -cr3 and -cr4, which git ignores; RoomCAD's repository keeps only what is derived
 from them, with attribution.
 
-Usage: python3 RoomCAD/Scripts/fetch-bras.py [CR2] [CR3] [CR4]   (all three by default)
+Usage: python3 Scripts/fetch-bras.py [CR2] [CR3] [CR4]   (all three by default)
 """
 
 import pathlib
