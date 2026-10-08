@@ -355,7 +355,7 @@ public enum RoomResponseGenerator {
         // A floor plan's image sources reach the wall order that fits their budget, and a few floor and
         // ceiling reflections beyond; rays carry every other specular path.
         let reach = settings.duration * settings.atmosphere.soundSpeed
-        var planImages: (images: [PlanImageSources.Image], wallOrder: Int, totalOrder: Int)?
+        let planImages: (images: [PlanImageSources.Image], wallOrder: Int, totalOrder: Int)?
         if let plan = effectiveRoom.plan {
             let generated = PlanImageSources(
                 room: effectiveRoom, plan: plan, source: settings.source.position
@@ -366,15 +366,19 @@ public enum RoomResponseGenerator {
             planImages = (generated.images, generated.order, total)
             tracer.specularWallLimit = generated.order
             tracer.specularOrderLimit = total
+        } else {
+            planImages = nil
         }
         // A mesh's image sources reach the order that fits their budget; rays carry every specular path
         // beyond it.
-        var meshImages: (images: [MeshImageSources.Image], order: Int)?
+        let meshImages: (images: [MeshImageSources.Image], order: Int)?
         if let mesh = effectiveRoom.mesh {
             let generated = MeshImageSources(geometry: .of(mesh), source: settings.source.position)
                 .images(maximumOrder: settings.maximumReflectionOrder, reach: reach)
             meshImages = generated
             tracer.specularOrderLimit = generated.order
+        } else {
+            meshImages = nil
         }
         // Where the order limit may omit specular reflections within the duration, rays carry them on.
         if planImages == nil, meshImages == nil,

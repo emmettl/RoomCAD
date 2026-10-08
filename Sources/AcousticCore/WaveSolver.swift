@@ -214,7 +214,9 @@ struct WaveSolver {
             if slabs == 1 {
                 body(0)
             } else {
-                DispatchQueue.concurrentPerform(iterations: slabs, execute: body)
+                // Each slab writes only its own planes of the field buffers.
+                nonisolated(unsafe) let body = body
+                DispatchQueue.concurrentPerform(iterations: slabs) { body($0) }
             }
         }
         let kx = Float(dt / dx)
@@ -601,7 +603,9 @@ extension WaveSolver {
             if slabs == 1 {
                 body(0)
             } else {
-                DispatchQueue.concurrentPerform(iterations: slabs, execute: body)
+                // Each slab writes only its own planes of the field buffers.
+                nonisolated(unsafe) let body = body
+                DispatchQueue.concurrentPerform(iterations: slabs) { body($0) }
             }
         }
         let kx = Float(dt / spacing.x)

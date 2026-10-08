@@ -57,7 +57,7 @@ struct EnvelopeChart: View {
 struct SpectrumChart: View {
     let summary: ResponseSummary
     var crossover: Double?
-    static let range = (low: -60.0, high: 0.0)
+    nonisolated static let range = (low: -60.0, high: 0.0)
 
     var body: some View {
         Canvas { context, size in
@@ -120,7 +120,7 @@ struct SpectrumChart: View {
 /// sound or an early reflection.
 struct EarlyChart: View {
     let summary: ResponseSummary
-    static let range = 50.0
+    nonisolated static let range = 50.0
 
     var body: some View {
         Canvas { context, size in

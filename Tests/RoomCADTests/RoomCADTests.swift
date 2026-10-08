@@ -287,6 +287,7 @@ struct SpaceKeyTests {
 }
 
 @Test("The diagnostics say where the wave solver's runs went")
+@MainActor
 func waveEngines() {
     #expect(DiagnosticsList.engines(runs: 2, gpu: 2) == "2 runs on the GPU")
     #expect(DiagnosticsList.engines(runs: 1, gpu: 0) == "1 run on the CPU")
@@ -576,6 +577,7 @@ func dragZoneAndOpening() throws {
 
 @Test(
     "Pushing a wall out or in resizes a box or a plan, keeping what is inside in place against the far walls")
+@MainActor
 func pushSurfaces() throws {
     var box = RoomProject.starter
     box.room.fittings = [RoomInspector.seating(in: box.room.size)]

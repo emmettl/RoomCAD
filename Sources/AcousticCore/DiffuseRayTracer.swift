@@ -104,7 +104,7 @@ struct DiffuseRayTracer {
 
         // A fixed number of chunks, each with its own random stream, merged in order: the result does not
         // depend on how many cores share the work.
-        func traceChunk(_ chunk: Int) -> [[[Double]]] {
+        @Sendable func traceChunk(_ chunk: Int) -> [[[Double]]] {
             var energy = Array(
                 repeating: Array(repeating: [Double](repeating: 0, count: bins), count: bands),
                 count: receivers.count)

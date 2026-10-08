@@ -258,7 +258,8 @@ final class AuditionPlayer {
         runStart = start
         // The rest of this pass, then whole passes if looping.
         dry.scheduleBuffer(dryRest, at: nil, options: [])
-        wet.scheduleBuffer(wetRest, at: nil, options: [], completionCallbackType: .dataPlayedBack) { _ in
+        wet.scheduleBuffer(wetRest, at: nil, options: [], completionCallbackType: .dataPlayedBack) {
+            [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self, self.run == thisRun, !self.loops else { return }
                 self.stopNodes()
