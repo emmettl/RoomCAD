@@ -511,5 +511,10 @@
     "source_path": ".swift-format",
     "source_commit": "285b620806418f39e4bc7a66be20191f2d366612",
     "sha256": "c0e422f8f60bdaa8bdb465b2372b8cf6498b512f7dcbf7c017f44b6ab9993bf0"
+  },
+  "ignore_configuration_merge": {
+    "parent_source_path": ".gitignore",
+    "nested_source_path": "RoomCAD/.gitignore",
+    "reason": "Both historical paths map to the new root; combine inherited build/output exclusions with the reference-data cache exclusion."
   }
 }
