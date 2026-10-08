@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      suite:
+        description: Full application checks or bounded acoustic source conformance
+        type: choice
+        options: [all, acoustics]
+        default: all
 
 permissions:
   contents: read
@@ -14,6 +20,7 @@ concurrency:
 
 jobs:
   check:
+    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 30
     steps:
@@ -30,5 +37,27 @@ jobs:
         with:
           name: roomcad-ci-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/roomcad-ci-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  acoustics:
+    runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify current CPU and Metal wave updates against shared cases
+        run: bash Scripts/check-acoustics.sh "${{ runner.temp }}/acoustic-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Require complete matching staggered fields from both backends
+        run: |
+          python3 Scripts/verify-acoustic-output.py "${{ runner.temp }}/acoustic-${{ github.run_id }}-${{ github.run_attempt }}/cpu"
+          python3 Scripts/verify-acoustic-output.py "${{ runner.temp }}/acoustic-${{ github.run_id }}-${{ github.run_attempt }}/metal"
+      - name: Retain acoustic conformance and complete fields
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: acoustic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/acoustic-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           retention-days: 14
