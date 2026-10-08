@@ -21,5 +21,8 @@ JSON evidence is losslessly compressed in private Edgerton.
 
 The impedance gate checks full-field accuracy, signed reflection, returned energy,
 work closure, at-least-first-order mixed spatial convergence and bounded half-step
-sensitivity. It does not claim independent impedance temporal order. Material
+sensitivity. The additional fixed 192×4 lattice series now checks independent second-order
+pressure and cumulative-loss time refinement against the core matrix-exponential
+reference, at nominal Courant numbers 0.6/0.3/0.15. Spatial reflection gates and
+the old sensitivity check remain. Material
 mapping, openings, body-diagonal 3D and oblique impedance remain outside scope.
