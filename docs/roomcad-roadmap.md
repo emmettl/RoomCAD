@@ -5,10 +5,10 @@ ImpulseResponseKit come from the exact ContinuumKit `0.1.0-alpha.2` tag. Acousti
 Audition, documents, authored presets and measured fixtures remain application-owned.
 Earlier milestones below retain their historical sequence.
 
-Status: October 2026. The initial shared-package extraction is implemented:
-`Packages/SimulationKit` supplies SceneModel (Box and Grid), SceneView (OrbitCamera) and SceneRender
-(scene geometry, picking, a mesh renderer and the orbit controls both apps use).
-BombCAD consumes it with compatibility aliases.
+Status: October 2026. The shared foundations are released in ContinuumKit, first built as
+BombCAD's `Packages/SimulationKit`. It supplies SceneModel (Box and Grid), SceneView (OrbitCamera),
+SceneRender (scene geometry, picking, a mesh renderer and the orbit controls both apps use),
+GeometryImport, DocumentKit and ImpulseResponseKit.
 
 The first acoustic backend is implemented in the separate `RoomCAD` package. It covers M2 items 1–3
 and 5: a rectangular-room image-source model with octave-band absorption, air attenuation, and
@@ -20,8 +20,9 @@ too. The Driftbox rack effect remains proposed work.
 
 The save-file foundation is also implemented: DocumentKit and BombCAD's `.bombcad` document workflow
 persist scene, run and view settings, with container integrity checks. See [Save files](https://github.com/emmettl/bombcad/blob/285b620806418f39e4bc7a66be20191f2d366612/docs/save-files.md).
-Native document windows, autosave and unsaved-close handling are implemented. The importer is
-on main, with versioned embedded source meshes, stable part references and detached-edit round trips.
+Native document windows, autosave and unsaved-close handling are implemented. BombCAD's importer is
+on its main branch, with versioned embedded source meshes, stable part references and detached-edit
+round trips.
 
 ## Goal
 
@@ -63,17 +64,18 @@ material properties are separate concepts.
 Driftbox's language, audio framework and rack interfaces must be inspected before deciding
 whether it can consume Swift libraries. WAV plus documented channel mapping is the initial
 interchange contract regardless of language. Structural solvers and editor components remain
-in BombCAD until RoomCAD needs them and their dependencies can be extracted cleanly.
+in BombCAD until RoomCAD needs them and their dependencies can be extracted cleanly into
+ContinuumKit.
 
 ### Reuse the model-import work
 
 The integrated BombCAD importer is a major shared foundation: OBJ/STL parsing, scale and axis
 conversion, placement, mesh diagnostics, preview overlays and selection can serve both apps.
-Its current implementation lives in BlastCore and BombCAD; extract the shared pieces when
-RoomCAD needs them. The OBJ and STL reader is now shared: SimulationKit's GeometryImport returns a
-file's polygons with their object, group and material names. BlastCore applies its own rules to them,
-as before: planar convex polygons, fanned into triangles, enclosing solids. RoomCAD turns them into
-a closed room. Placement, diagnostics, preview overlays and selection remain in BombCAD.
+The OBJ and STL reader is shared: ContinuumKit's GeometryImport returns a file's polygons with their
+object, group and material names. BombCAD's BlastCore applies its own rules to them, as before:
+planar convex polygons, fanned into triangles, enclosing solids. RoomCAD turns them into a closed
+room. Placement, diagnostics, preview overlays and selection remain in BombCAD; extract them into
+ContinuumKit when RoomCAD needs them.
 
 Keep the source mesh, stable part identifiers and material-group references as the canonical
 import. Voxel boxes are derived data for a particular solver and resolution. RoomCAD's
@@ -170,8 +172,9 @@ explicit contracts, not automatic dumps of live GPU or UI objects.
 
 Done when: imported projects reopen on another Mac without their original source files, all
 authoritative edits and reproducibility settings survive saving, and legacy layouts still open.
-The `.bombcad` package container and referenced source-mesh assets are implemented.
-`.roomcad` and a common application-neutral scene schema remain planned.
+The `.bombcad` package container and referenced source-mesh assets are implemented, and so are
+versioned `.roomcad` documents (see [RoomCAD app and documents](roomcad-app.md#document-format)).
+A common application-neutral scene schema remains planned.
 
 ## Milestones
 
@@ -246,26 +249,29 @@ Progress (October 2026):
 Done when: both apps build, existing BombCAD checks pass, and RoomCAD round-trips a scene
 and renders its source and receiver positions. Shared shader resources load in both apps.
 
-Progress (October 2026): items 3 and 4 are implemented. RoomCAD is a separate SwiftPM package with
-the RoomCAD app and the acousticbench tool. It depends on SimulationKit's DocumentKit and on nothing
-in BombCAD.
+Progress (October 2026): items 1–4 and 6 are implemented. RoomCAD is a standalone SwiftPM package
+and repository with the RoomCAD app and the acousticbench tool. It depends on an exact ContinuumKit
+tag and on nothing in BombCAD.
 
-The app edits a rectangular room, its surfaces, one source and 1 to 16 receivers in plan and section
-drawings and an inspector. It saves and reopens versioned `.roomcad` documents, which can keep the
-last response and track when it goes stale. It generates responses in the background and exports
-WAV. Both apps build and the round-trip tests pass. The drawings are checked by an offscreen snapshot;
-the window has not been seen on screen.
+The app first edited a rectangular room, its surfaces, one source and 1 to 16 receivers in plan and
+section drawings and an inspector; M5 extends it to other shapes and a 3D view. It saves and reopens
+versioned `.roomcad` documents, which can keep the last response and track when it goes stale. It
+generates responses in the background and exports WAV. The round-trip tests pass. The drawings and
+3D view are checked by offscreen snapshots, and the window has since been tried on screen (see M5
+item 5).
 
-Items 1, 2, 5 and 6 are not done:
+Items 1, 2 and 6 were done with M5 item 6 and imported rooms:
 
-- **Item 1.** The 2D drawings need no shared camera.
-- **Item 2.** Rendering is not shared yet.
-- **Item 5.** AcousticCore's wave solver uses Metal through its own small kernels, compiled when
-  first used. Nothing is shared with BombCAD's Metal code yet, since a shared utility would serve
-  one user only.
-- **Item 6.** GeometryImport extraction waits for imported rooms.
+- **Item 1.** Geometry and the orbit camera are ContinuumKit's SceneModel and SceneView.
+- **Item 2.** ContinuumKit's SceneRender draws scene descriptions without importing either solver.
+  Its shaders ship as a package resource and load in RoomCAD; BombCAD's blast renderer remains its
+  own.
+- **Item 6.** ContinuumKit's GeometryImport reads OBJ and STL for both apps. BlastCore keeps its
+  solid-volume acceptance and RoomCAD has its own enclosure adapter, `RoomImport`.
 
-There are no shared shader resources yet.
+Item 5 is not done. AcousticCore's wave solver uses Metal through its own small kernels, compiled
+when first used. Nothing is shared with BombCAD's Metal code yet, since a shared utility would serve
+one user only.
 
 ### M2 — Produce the first usable stereo reverb file
 
@@ -428,8 +434,9 @@ code.
   presets, a shoebox concert hall with balconies and a raked auditorium with a rear tier, and the
   measured chamber music hall are built this way. Each backend's supported geometry is documented in
   [Room-acoustics model](room-acoustics-model.md#rooms-of-any-shape). OBJ and STL models can be
-  imported as rooms, through the reader BombCAD shares. The app shows a mesh and edits its materials
-  but not its shape; editing solids in the app remains to do.
+  imported as rooms, through ContinuumKit's GeometryImport, which BombCAD also uses. The app shows a
+  mesh, edits its materials and pushes and pulls its planes (item 6); adding and removing its solids
+  in the app remains to do.
 - **Item 2.** This has started: 90 absorption and 7 scattering presets come from the annex of
   Vorländer's *Auralization*, via pyroomacoustics. Bands outside the published range are extended
   and labelled in each material's reference. Most surfaces still need scattering values. See
@@ -452,7 +459,7 @@ code.
   and exports are always full quality.
 - **Item 5.** Testing on screen has been done only by the user, who confirmed that the window,
   audition, waveform and space bar work. The app is otherwise checked by offscreen snapshots.
-- **Item 6.** The first version is done. SimulationKit's new SceneRender library holds:
+- **Item 6.** The first version is done. The SceneRender library, now in ContinuumKit, holds:
   - scene geometry: lit and translucent triangles and lines, with pick numbers;
   - picking by ray against the triangles seen from the front;
   - a Metal renderer with four-sample anti-aliasing and offscreen snapshots;

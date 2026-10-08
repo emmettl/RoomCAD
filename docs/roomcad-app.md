@@ -30,9 +30,9 @@ document is opened from Finder.
 
 ### Releasing RoomCAD
 
-`Scripts/release.py` makes a Developer ID-signed, notarized build, with the same steps as
-BombCAD's (see [Releasing](RELEASING.md)). It never tags or publishes anything. It uses the same
-certificate and notary profile through `ROOMCAD_SIGNING_IDENTITY` and `ROOMCAD_NOTARY_PROFILE`. Set the version in `Support/Info.plist`, commit, then run:
+`Scripts/release.py` makes a Developer ID-signed, notarized build (see [Releasing](RELEASING.md)).
+It never tags or publishes anything. It uses a Developer ID certificate and notarytool profile set
+through `ROOMCAD_SIGNING_IDENTITY` and `ROOMCAD_NOTARY_PROFILE`. Set the version in `Support/Info.plist`, commit, then run:
 
 ```bash
 make release-check
@@ -115,8 +115,8 @@ script before an archive is written.
 
   The view frames the room when it opens and when the room's size changes: from a three-quarter view
   above, as close as it can be with every corner within the middle 85% of the view. Everything else
-  is edited in the inspector. The camera controls and renderer are shared with BombCAD (see
-  [the roadmap](roomcad-roadmap.md#architecture-and-sharing)).
+  is edited in the inspector. The camera controls and renderer come from ContinuumKit, which BombCAD
+  also uses (see [the roadmap](roomcad-roadmap.md#architecture-and-sharing)).
 - **Plan and section.** Drawings of the room, looking down and looking north, with 1 m grid lines,
   the source in orange and receivers in blue. Drag a point to move it. Moves snap to centimetres and
   stay 5 cm inside the walls. A room of any shape (a mesh) is drawn as its outline edges projected

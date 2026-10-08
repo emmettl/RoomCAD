@@ -194,7 +194,7 @@ wall, lower an L-shaped room's floor, and raise a hall's highest ceiling.
 ### Importing a model
 
 `RoomImport` turns the polygons of a model file into a room. The app reads OBJ and STL files with
-SimulationKit's GeometryImport, the reader BombCAD uses too. The model must be the closed surface of
+ContinuumKit's GeometryImport, the reader BombCAD uses too. The model must be the closed surface of
 the room's air: a box, a hall or any shape drawn as one solid, or as the inside surface of a building's
 room. Then:
 
