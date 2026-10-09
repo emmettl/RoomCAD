@@ -5,14 +5,17 @@ cd "$root"
 suite=${1:-all}
 output=${2:-$(mktemp -d "${TMPDIR:-/tmp}/roomcad-shared-wave-output.XXXXXX")}
 revision=$(cat Fixtures/SharedWaveBenchmark/core-revision.txt)
+version=$(cat Fixtures/SharedWaveBenchmark/core-version.txt)
 mkdir -p "$output"
 python3 Scripts/test-tilted-pulse-pair.py
 python3 Scripts/test-shared-wave-gate.py
+python3 Scripts/test-shared-wave-pair.py
 scratch=$(mktemp -d "${TMPDIR:-/tmp}/roomcad-shared-wave-build.XXXXXX")
 task_completed=0
 trap 'task_status=$?; rm -rf "$scratch"; if test "$task_completed" != 1 && test "$task_status" = 0; then exit 1; fi; exit "$task_status"' EXIT
 source=${CONTINUUMKIT_BENCHMARK_SOURCE:-https://github.com/emmettl/ContinuumKit.git}
 git clone --quiet "$source" "$scratch/ContinuumKit"
+test "$(git -C "$scratch/ContinuumKit" rev-parse "$version^{commit}")" = "$revision"
 git -C "$scratch/ContinuumKit" checkout --quiet "$revision"
 export CONTINUUMKIT_BENCHMARK_SOURCE="$scratch/ContinuumKit"
 if test "$suite" = all; then suites='masked cylinder admittance absorbing-cylinder tilted-pulse'; else suites="$suite"; fi
