@@ -334,6 +334,20 @@ that allows bundling:
   (Zenodo, CC BY 4.0), cover test surfaces such as sine, square and saw-tooth profiles, not these
   materials.
 
+Heimes et al.'s measurements were also considered as scattering presets for structured surfaces,
+and are not bundled. Their random-incidence values follow ISO 17497-1 (version 0.1.0 of Zenodo
+records 10.5281/zenodo.17660108, derived, and 10.5281/zenodo.17660089, raw) and were measured in
+1:5 and 1:6 scale reverberation rooms, in third octaves from 2 kHz to 20 or 25 kHz. Most samples are
+at their own size (model scale 1), periods and depths of a few centimetres, so they give only the
+2, 4 and 8 kHz bands, and the 2 kHz band from two of its three third octaves. Extending 63 Hz to
+1 kHz from the 2 kHz value would claim scattering that such shallow structures do not have there.
+Averaged into octaves, 10 of the 25 measured results fall outside 0 to 1 in the bands they cover,
+up to 1.17 at 8 kHz, and the same sine profile measured in both laboratories gives 0.39 and about
+0.7 at 4 kHz. The two facade models, at 1:4 and 1:40, would cover 500 Hz to 4 kHz and 63 to 500 Hz,
+but the dataset gives their scale without stating a frequency conversion, and the 1:40 model's
+values exceed 1 from 250 Hz up. The comparison of the two laboratories is in a paper that was under
+review when the dataset was published.
+
 Choosing one of the 81 therefore sets its name and absorption and keeps the surface's scattering.
 Choosing an audience area also sets the theatre audience scattering. A scattering preset sets only
 the scattering, and replaces any assigned one. The generated table is

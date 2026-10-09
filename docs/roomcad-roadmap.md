@@ -453,7 +453,9 @@ code.
   and labelled in each material's reference. The nine areas of seated audience take the theatre
   audience scattering by category, and their reference says so. The other 81 surfaces still need
   scattering values: BRAS's are estimated for its rooms, under CC BY-SA, and the published tables and
-  guidance found have no licence that allows bundling. See
+  guidance found have no licence that allows bundling. Heimes et al.'s open measurements of
+  structured test surfaces were evaluated as further scattering presets and not added: most cover
+  only 2 kHz and up, and some fall outside 0 to 1. See
   [RoomCAD app and documents](roomcad-app.md#material-presets). Objects too many or too small to
   model as surfaces, such as chairs, desks, pews and ornament, can be added as fitted zones, with
   their density and absorption stated (see
