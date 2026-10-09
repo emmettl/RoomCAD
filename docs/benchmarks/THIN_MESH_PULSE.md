@@ -43,3 +43,7 @@ traces and global/patch work are below 2.09e-6 in their declared amplitude/energ
 normalizations (separate comparison bound 1e-4). Raw geometry and complete current
 headers are retained privately; exact previous full histories are referenced with
 canonical SHA-256/byte counts and a checked reconstruction script.
+
+The [wave-update extraction map](WAVE_UPDATE_EXTRACTION.md) records the proposed
+next CPU/Metal boundaries and separate source/receiver integration gates. No
+production loop or dependency pin changes in this design checkpoint.
