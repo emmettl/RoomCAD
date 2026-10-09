@@ -1,0 +1,20 @@
+{
+  "actualMetal": true,
+  "controls": 19,
+  "coreRevision": "56210bf1aae4046224597128f0a286e55585a521",
+  "coreVersion": "0.1.0-alpha.6",
+  "exactPairs": 96,
+  "originalReferences": [
+    "1597e163057ba165722ba71f409ee242c83f7116",
+    "2c8a6dc7723316ab137bd2e57047147111b0591a",
+    "da03ce3624777661d0cc35178cf8a49d2b40b109",
+    "ed52cd3d6fd9a62d5b5b36efa050a4be0fc9d6ef",
+    "f19b1d4266b93c135c492524697437ea599fa664"
+  ],
+  "producer": "33136177c27c589404f2b068f1c8545d0d7a0272",
+  "resolvedDependencyReports": 12,
+  "run": "https://github.com/emmettl/RoomCAD/actions/runs/38004414867",
+  "schemaVersion": 1,
+  "scope": "source-free shared benchmark consumers; production forcing/receiver adoption remains separate",
+  "status": "passed"
+}

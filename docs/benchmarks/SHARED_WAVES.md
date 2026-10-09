@@ -61,5 +61,11 @@ Shared manifests now use SwiftPM `exact: version`; preparation checks the annota
 tag resolves to the reviewed commit. Both producer and independent postcondition
 require every shared `Package.resolved` to contain that version and commit, and every
 original consumer to retain its frozen reference revision. Three negative controls
-reject a wrong version, wrong commit and revision-only resolution. The full actual
-CPU/Metal gate must pass for this committed producer before merging adoption.
+reject a wrong version, wrong commit and revision-only resolution. The [full actual
+CPU/Metal gate](https://github.com/emmettl/RoomCAD/actions/runs/38004414867) passed
+on producer `33136177c27c589404f2b068f1c8545d0d7a0272`: all 96 complete exact pairs
+and both producer/postcondition checks. All twelve retained resolved dependency
+reports contain the exact released version and reviewed tag commit.
+[Aggregate verification](shared-wave-alpha6-verification.json) records these identities;
+complete downloaded reports and checked lossless reconstruction are retained privately
+in Edgerton. The subsequent evidence documentation adds no numerical or adapter change.
