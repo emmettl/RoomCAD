@@ -1,11 +1,13 @@
 # RoomCAD against measured rooms
 
-This report compares RoomCAD's responses with measurements in two real rooms from the Benchmark for
-Room Acoustical Simulation (BRAS):
+This report compares RoomCAD's responses with measurements in three real rooms from the Benchmark
+for Room Acoustical Simulation (BRAS):
 
 - scene CR2, the seminar room at RWTH Aachen University;
 - scene CR3, the chamber music hall of the Konzerthaus Berlin, which is 20 times larger (see
-  [A larger room](#a-larger-room-the-chamber-music-hall)).
+  [A larger room](#a-larger-room-the-chamber-music-hall));
+- scene CR4, the Auditorium Maximum of TU Berlin, which is 60 times larger (see
+  [A large room](#a-large-room-the-auditorium)).
 
 It is the comparison that roadmap milestone M4 item 5 asks for. It sets out what agrees, what doesn't and why,
 and separates agreement with the measurements from what the model's assumptions decide.
@@ -44,7 +46,7 @@ is in that folder's README. In short:
 
 ## Method
 
-`make validate` runs `acousticbench --bras-cr2` and then `--bras-cr3`. For CR2 it simulates all ten pairs, 3.5 s long like the
+`make validate` runs `acousticbench --bras-cr2`, then `--bras-cr3` and `--bras-cr4`. For CR2 it simulates all ten pairs, 3.5 s long like the
 measurements, in four configurations:
 
 - the initial materials with the wave solver;
@@ -373,41 +375,195 @@ the absorption erratically, and the fit lowered it by 40% to reach the measured 
   objects lack.
 - **Early reflections.** These correlate at 0.47 ± 0.26, as before.
 
+## A large room: the auditorium
+
+### The room
+
+BRAS's scene CR4 is the Auditorium Maximum of TU Berlin, a lecture hall of 8,650 m³ for about 1,200
+people. Its features are:
+
+- a fan-shaped plan between brick walls, splayed at 8.9° from the axis;
+- stalls that rise 1.8 m towards the back, in 22 rows;
+- side galleries that rise along the walls to a rear balcony;
+- a stage 0.8 m above the front of the stalls, with a reflector over its front;
+- a concrete ceiling that rises from 10 to 13 m, with 35 white panels hung below it.
+
+The reverberation time is about 2.1 s at mid frequencies, and 2.4 s at 125 and 250 Hz. Its Schroeder
+frequency is about 30 Hz, so the wave solver's crossover is at 89–96 Hz, and the 125 Hz band is almost
+entirely geometrical.
+
+RoomCAD's version is in `Validation/bras-cr4/`. Like CR3's, it is built from pieces of air.
+
+- **Pieces of air.** A long section, with the stage, the raked stalls and the sloping ceiling, is
+  extruded across the hall. The rear balcony, the side galleries, the stage reflector, the ceiling
+  panels and a 1 cm layer of seating are cut out of it. The splayed side walls and the curved back wall
+  cut away everything beyond them. The mesh has 1,343 faces.
+- **Reading BRAS's model.** BRAS's SketchUp model has the room's dimensions only as faces. They were read
+  with `read-skp.py`, which recovers 1,826 faces whose areas match BRAS's own list of material areas.
+- **Simplifications.** The model leaves out the folds of the concrete ceiling above the panels, the
+  pillars, the stairs, the lobbies in the back corners and the side galleries' parapets. The
+  galleries' steps are a slope.
+- **Size.** Its volume is 8,727 m³, against 8,650 m³ in BRAS's documentation. Its surface area is
+  4,963 m², against 5,851 m². Most of the missing area is concrete: 1,142 m² here, against 1,774 m².
+
+The folder's README lists the pieces, the source files with their checksums, and the material areas.
+
+### Materials fitted to this model
+
+The surface is 15% smaller than in BRAS's model, and the volume about the same. So with BRAS's fitted
+materials, Eyring's formula gives times about 13% longer than measured at 125 and 250 Hz. The set
+**fitted to this model** (see [Method](#method)) corrects this, as in CR3.
+
+### Results
+
+T30, mean over the ten pairs, with JNDs in brackets:
+
+| | 63 Hz | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
+|---|---|---|---|---|---|---|---|---|
+| Measured | 2.89 ± 0.62 | 2.40 ± 0.09 | 2.38 ± 0.06 | 2.07 ± 0.04 | 2.10 ± 0.04 | 1.85 ± 0.02 | 1.42 ± 0.01 | 0.89 ± 0.03 |
+| Initial | 3.15 (+1.8) | 3.49 (+9.1) | 2.81 (+3.6) | 2.34 (+2.7) | 2.17 (+0.7) | 1.53 (−3.5) | 1.08 (−4.8) | 0.64 (−5.6) |
+| Fitted by BRAS | 2.78 (−0.7) | 3.09 (+5.8) | 2.95 (+4.8) | 2.60 (+5.1) | 2.52 (+4.1) | 2.15 (+3.3) | 1.62 (+2.8) | 0.92 (+0.8) |
+| Fitted to this model | 2.94 (+0.4) | 2.90 (+4.2) | 2.66 (+2.4) | 2.38 (+3.0) | 2.40 (+2.9) | 2.02 (+1.9) | 1.55 (+1.8) | 0.93 (+0.9) |
+| Fitted to this model, no wave solver | 3.35 (+3.2) | 2.92 (+4.3) | 2.66 (+2.4) | 2.38 (+3.0) | 2.40 (+2.9) | 2.02 (+1.9) | 1.55 (+1.8) | 0.93 (+0.9) |
+
+Early decay, clarity, definition and centre time, fitted to this model:
+
+| | | 63 Hz | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
+|---|---|---|---|---|---|---|---|---|---|
+| EDT (s) | Measured | 1.80 ± 0.27 | 2.21 ± 0.35 | 2.42 ± 0.14 | 2.09 ± 0.10 | 2.19 ± 0.14 | 1.86 ± 0.09 | 1.42 ± 0.10 | 0.61 ± 0.09 |
+| | Simulated | 2.90 (+12) | 2.64 (+3.9) | 2.62 (+1.6) | 2.38 (+2.7) | 2.37 (+1.6) | 1.94 (+0.8) | 1.53 (+1.6) | 0.90 (+9.5) |
+| C80 (dB) | Measured | 1.4 ± 1.8 | −0.6 ± 1.6 | −1.8 ± 2.5 | 0.3 ± 1.7 | −0.6 ± 1.2 | −0.0 ± 0.8 | 2.0 ± 2.0 | 8.4 ± 2.1 |
+| | Simulated | −0.9 (−2.3) | −1.6 (−1.0) | −2.8 (−1.0) | −1.5 (−1.8) | −1.3 (−0.7) | 0.1 (+0.1) | 1.7 (−0.3) | 5.1 (−3.2) |
+| D50 | Measured | 0.50 ± 0.10 | 0.32 ± 0.08 | 0.28 ± 0.14 | 0.40 ± 0.10 | 0.35 ± 0.08 | 0.37 ± 0.07 | 0.47 ± 0.15 | 0.74 ± 0.12 |
+| | Simulated | 0.37 (−2.4) | 0.32 (−0.1) | 0.26 (−0.2) | 0.33 (−1.4) | 0.33 (−0.3) | 0.39 (+0.3) | 0.48 (+0.2) | 0.63 (−2.1) |
+| Ts (ms) | Measured | 117 ± 19 | 147 ± 12 | 166 ± 31 | 127 ± 21 | 142 ± 14 | 125 ± 11 | 91 ± 21 | 39 ± 13 |
+| | Simulated | 177 (+6.0) | 178 (+3.1) | 191 (+2.5) | 161 (+3.4) | 160 (+1.7) | 127 (+0.2) | 95 (+0.5) | 56 (+1.7) |
+
+- **The initial materials.** At 1 kHz they predict T30 within 3%, at 250 and 500 Hz it is 13–18% long,
+  and at 125 Hz 45% long. From 2 to 8 kHz it is 17–28% short: the initial high-frequency absorption is
+  too high, as in CR2.
+- **Decay, fitted to this model.** T30 is 9–21% too long from 125 Hz to 4 kHz: 21% at 125 Hz, 12–15%
+  from 250 Hz to 1 kHz and 9% at 2 and 4 kHz. That is less than in the chamber music hall (13–40%),
+  but it points the same way: the simplified room is less diffuse than Eyring's formula assumes.
+  EDT is 0.8–2.7 JND long from 250 Hz to 4 kHz. With BRAS's own fitted set, the decay is 14–29% too
+  long from 125 Hz to 4 kHz.
+- **Clarity, definition and centre time.** Fitted to this model, C80 and D50 are within one JND
+  from 1 to 4 kHz, and centre time from 2 to 4 kHz. At 500 Hz, C80 is 1.8 dB low and centre time 34 ms long. From 125 to 500 Hz, centre
+  time is 2.5–3.4 JND long, following the long decay.
+- **8 kHz.** EDT is 0.90 s against 0.61 s measured, and C80 3.2 dB low, as in the other two rooms:
+  probably the dodecahedron's directivity, which RoomCAD does not model.
+- **Low frequencies.** At 63 Hz, with the wave solver, T30 is within 2% of the measurement. Without the
+  solver it is 16% long, and C80 and D50 are 3–4 JND low. But at 63 Hz even the solver's early decay is
+  far too slow: EDT is 2.90 s against 1.80 s, and C80 and D50 are 2.3–2.4 JND low. The measured EDT at
+  63 Hz is much shorter than its T30 (2.89 s), so the hall's early low-frequency energy decays faster
+  than its late energy, though the spread across the pairs is large there. The model does not
+  reproduce this. Possible causes are what it leaves out, such as the lobbies and the folded ceiling,
+  and walls that absorb little at grazing incidence in the wave solver.
+- **Low-frequency fine structure.** It correlates at 0.29 ± 0.17 at the same position, against 0.01–0.03
+  at other positions. Without the wave solver it does not correlate (0.03). So the solver captures part
+  of the position-specific pattern below its crossover, at 89–96 Hz, even in this hall. The best match
+  comes with simulated frequencies 1% lower, which is 0.32.
+- **Early reflections.** These correlate at 0.51 ± 0.20 at the same position, against 0.28 at others,
+  close to the chamber music hall. With the initial materials the correlation is 0.46.
+
+### Chairs as fitted zones
+
+`CR4_ModelSimplifications.pdf` counts 1,172 chairs: 418 on the rake and 12 in the last row in each half
+of the stalls, 26 on each side gallery and 260 on the rear balcony (BRAS's list of materials gives 1,192
+seats). The configuration **fitted to this model, with chairs** adds them as fitted zones 0.9 m high, each
+chair with an estimated 1.5 m² of surface, as in CR3. Zones are boxes, so over the rake and the galleries
+they are cut into lengths, each at its middle's floor height. T30, against the measurement:
+
+| | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
+|---|---|---|---|---|---|---|---|
+| Without chairs | +21% | +12% | +15% | +14% | +9% | +9% | +4% |
+| With chairs | +12% | +13% | +18% | +17% | +14% | +14% | +7% |
+
+Unlike in the chamber music hall, the chairs shorten the decay only at 125 Hz, by 8%. From 250 Hz to
+8 kHz they lengthen it by 2–5%. At 500 Hz they raise C80 by 1.2 dB, to within 0.6 JND, and improve D50
+and centre time by about one JND. Elsewhere clarity, definition and centre time change by less than a
+JND. They lower the early reflections'
+correlation from 0.51 to 0.31 ± 0.20, against 0.19 at other positions. The receivers are 1.23 m above
+the floor, just above the zones, so the zones scatter the floor reflections and the first reflections
+from the low walls before they arrive. The measured responses keep those reflections, so this suggests
+that a uniform zone 0.9 m deep overstates the chairs' effect on the early sound.
+
+### Fitted by simulating the model
+
+The fit kept, in each band, the closest of six simulations. The absorption rose by 10–24% from 125 Hz to
+8 kHz, most at 125 Hz; at 63 Hz it was unchanged.
+
+| | | 63 Hz | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
+|---|---|---|---|---|---|---|---|---|---|
+| T30 (s) | Measured | 2.89 ± 0.62 | 2.40 ± 0.09 | 2.38 ± 0.06 | 2.07 ± 0.04 | 2.10 ± 0.04 | 1.85 ± 0.02 | 1.42 ± 0.01 | 0.89 ± 0.03 |
+| | Simulated | 2.84 (−0.4) | 2.40 (−0.0) | 2.40 (+0.2) | 2.09 (+0.2) | 2.09 (−0.1) | 1.83 (−0.2) | 1.40 (−0.3) | 0.89 (+0.2) |
+| EDT (s) | Measured | 1.80 ± 0.27 | 2.21 ± 0.35 | 2.42 ± 0.14 | 2.09 ± 0.10 | 2.19 ± 0.14 | 1.86 ± 0.09 | 1.42 ± 0.10 | 0.61 ± 0.09 |
+| | Simulated | 2.78 (+11) | 2.15 (−0.6) | 2.33 (−0.8) | 2.09 (−0.0) | 2.08 (−1.0) | 1.78 (−0.9) | 1.36 (−0.9) | 0.81 (+6.8) |
+| C80 (dB) | Measured | 1.4 ± 1.8 | −0.6 ± 1.6 | −1.8 ± 2.5 | 0.3 ± 1.7 | −0.6 ± 1.2 | −0.0 ± 0.8 | 2.0 ± 2.0 | 8.4 ± 2.1 |
+| | Simulated | −0.8 (−2.2) | −0.9 (−0.4) | −1.8 (−0.0) | −0.6 (−0.9) | −0.4 (+0.2) | 0.7 (+0.8) | 2.4 (+0.4) | 5.6 (−2.8) |
+| D50 | Measured | 0.50 ± 0.10 | 0.32 ± 0.08 | 0.28 ± 0.14 | 0.40 ± 0.10 | 0.35 ± 0.08 | 0.37 ± 0.07 | 0.47 ± 0.15 | 0.74 ± 0.12 |
+| | Simulated | 0.38 (−2.4) | 0.33 (+0.2) | 0.29 (+0.3) | 0.38 (−0.4) | 0.38 (+0.6) | 0.43 (+1.1) | 0.51 (+0.8) | 0.66 (−1.7) |
+| Ts (ms) | Measured | 117 ± 19 | 147 ± 12 | 166 ± 31 | 127 ± 21 | 142 ± 14 | 125 ± 11 | 91 ± 21 | 39 ± 13 |
+| | Simulated | 168 (+5.1) | 148 (+0.1) | 166 (+0.0) | 137 (+1.0) | 137 (−0.5) | 114 (−1.1) | 85 (−0.6) | 52 (+1.3) |
+
+- **T30.** It now matches within 0.4 JND in every band.
+- **The shape of the decay.** From 125 Hz to 4 kHz, EDT, C80, D50 and centre time are all within about
+  1.1 JND. Here, unlike in the chamber music hall, matching T30 does not leave the early decay too
+  fast: the simulated decay has the measured shape. The fan-shaped plan, the splayed and stepped
+  surfaces and the hung panels mix the sound better than the chamber music hall's simplified box.
+- **63 and 8 kHz.** The early decay is still far too slow at both ends: EDT is 11 JND long at 63 Hz,
+  where the fit left the absorption unchanged, and 6.8 JND long at 8 kHz, where the
+  source's directivity is probably the cause.
+- **Early reflections.** These correlate at 0.42 ± 0.19, against 0.25 at other positions.
+
+A run of `acousticbench --bras-cr4` takes about 12 minutes on a Mac Studio (M4 Max): about 50–60 s for each
+source in each configuration, and the six calibration simulations.
+
 ## What the comparison shows
 
 1. **Mid frequencies.** In the seminar room, from 250 Hz to 2 kHz, with only published material data,
    RoomCAD predicts reverberation time within 12%, and clarity and definition within about one JND.
    In the chamber music hall, with materials fitted to the model, clarity, definition and centre time
-   are within about one JND from 500 Hz to 4 kHz.
+   are within about one JND from 500 Hz to 4 kHz. In the auditorium, C80 and D50 are within one JND
+   from 1 to 4 kHz.
 2. **Diffuseness.** With absorption fitted so that Eyring's formula gives the measured T30, the
    geometrical model decays more slowly than the measurement, because the simplified rooms are not
-   fully diffuse: 7–17% from 125 to 500 Hz in the seminar room, and 13–40% in the chamber music hall.
+   fully diffuse: 7–17% from 125 to 500 Hz in the seminar room, 13–40% in the chamber music hall, and
+   9–21% from 125 Hz to 4 kHz in the auditorium.
    Fitting materials to a measured T30 should therefore be done with RoomCAD itself rather than with
    Eyring's formula, which `AbsorptionCalibration` now does. In the seminar room, absorption fitted
    that way leaves EDT, clarity, definition and centre time within about 1.1 JND from 500 Hz to 4 kHz.
-   In the chamber music hall, it shows the simplified hall's decay sagging at 500 Hz.
+   In the chamber music hall, it shows the simplified hall's decay sagging at 500 Hz. In the
+   auditorium, whose fan-shaped plan, stepped surfaces and hung panels mix the sound better, it leaves
+   EDT, clarity, definition and centre time within about 1.1 JND from 125 Hz to 4 kHz.
 3. **Scattering by objects.** A hall simplified to smooth surfaces needs the scattering of its
    pillars, ornament and seating put back. Raising every surface's scattering to at least 0.5 halves
    the chamber music hall's excess decay.
 4. **Low-frequency modes.** In the seminar room, the wave solver reproduces the modal fine structure
    and its position dependence, with mode frequencies within about 1.5%. In the hall, whose modes
-   overlap above 40 Hz, neither model reproduces the fine structure, nor is it expected to.
+   overlap above 40 Hz, neither model reproduces the fine structure, nor is it expected to. In the
+   auditorium, the wave solver, below about 95 Hz, gives a weak but position-specific correlation
+   (0.29, against 0.01–0.03 at other positions and 0.03 without it).
 5. **Low-frequency decay.** The bare wave solver's locally reacting walls let modes that graze them
    outlast a diffuse field, by about 30% here. With each band matched to the diffuse decay, the solver
    gives the measured T30, EDT, clarity and definition at 63 and 125 Hz within about 2 JND in the
-   seminar room, and the measured T30 at 63 Hz in the hall.
-6. **Early reflections.** These follow the measured pattern at most positions in both rooms
-   (correlation 0.61 and 0.46, against 0.22 at the wrong position).
+   seminar room, and the measured T30 at 63 Hz in the hall and the auditorium. In the auditorium the
+   early decay at 63 Hz is still far too slow: EDT is 2.9 s against 1.8 s measured.
+6. **Early reflections.** These follow the measured pattern at most positions in all three rooms
+   (correlation 0.61, 0.46 and 0.51, against 0.22–0.28 at the wrong position). In the auditorium, chairs
+   as uniform fitted zones lower it to 0.31.
 7. **Published low-frequency absorption.** For walls such as plaster and concrete, it is much lower
-   than real rooms behave, in both rooms, which a designer must allow for.
+   than real rooms behave, in all three rooms, which a designer must allow for.
 
 ## Limitations of the comparison
 
-- **Two rooms.** Both are rectangular in essence. BRAS's CR4, an auditorium with a raked floor,
-  rising side galleries and a fan-shaped plan, could be built from solids in the same way but has not
-  been.
-- **Large objects.** The chamber music hall's chairs are modelled as fitted zones, with an estimated
-  surface area each. Its pillars and ornament are not modelled.
+- **Three rooms.** Two are rectangular in essence; the auditorium has a fan-shaped plan, a raked floor
+  and rising galleries. BRAS's reference scenes RS1–7 and its first complex room, CR1, which is coupled
+  to a reverberation chamber, are not compared.
+- **Large objects.** The chairs of the chamber music hall and the auditorium are modelled as fitted
+  zones, with an estimated surface area each. Zones are boxes, so over the auditorium's rake and
+  galleries they are cut into lengths. The halls' pillars and ornament, and the auditorium's folded
+  ceiling, stairs and corner lobbies, are not modelled.
 - **The source.** It is treated as omnidirectional, at each driver's height. Its directivity, the
   size of its drivers, and the crossover's phase are not modelled.
 - **Geometry.** It is simplified, as listed above, and wall materials are averaged by area.
@@ -421,10 +577,13 @@ the absorption erratically, and the fit lowered it by 40% to reach the measured 
 `MeasuredRoomTests` keeps parts of this comparison in the regular test suite, using the fixture:
 
 - the simplified room's volume and material averaging;
-- the early-reflection correlation, above 0.55 at the same position and below 0.35 at others.
+- the early-reflection correlation, above 0.55 at the same position and below 0.35 at others;
 - that the chamber music hall's solids make a valid closed room, within 10% of BRAS's volume, with
   every source and receiver inside;
-- that refitting its materials makes Eyring's estimate the time asked for, within 1%.
+- that refitting its materials makes Eyring's estimate the time asked for, within 1%;
+- that the auditorium's solids make a valid closed room, within 10% of BRAS's volume, with every
+  receiver and every driver of both loudspeakers inside, and 1,172 chairs in fitted zones whose
+  centres are in the room.
 
 The decay and wave-solver comparisons take minutes in a debug build. They run in the bench and are
 not part of the tests.

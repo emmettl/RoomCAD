@@ -2,10 +2,10 @@ import AcousticCore
 import Foundation
 import ImpulseResponseKit
 
-/// Compares RoomCAD with a measured room of the BRAS database: the seminar room CR2 or the chamber music
-/// hall CR3.
+/// Compares RoomCAD with a measured room of the BRAS database: the seminar room CR2, the chamber music
+/// hall CR3 or the auditorium CR4.
 ///
-///   acousticbench --bras-cr2 | --bras-cr3 [--update-fixture] [--reuse-simulation]
+///   acousticbench --bras-cr2 | --bras-cr3 | --bras-cr4 [--update-fixture] [--reuse-simulation]
 ///
 /// With `--update-fixture`, the measured responses are read from the cache that
 /// `RoomCAD/Scripts/fetch-bras.py` fills, and the parameters derived from them are written to

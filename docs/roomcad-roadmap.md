@@ -216,8 +216,8 @@ Progress (October 2026):
   and documented in [Room-acoustics model](room-acoustics-model.md#output). The defaults are
   48 kHz, one channel per receiver, emission at frame 0, a common gain only, and both complete and
   reflections-only content.
-- **Measured reference rooms (item 5).** These are the seminar room CR2 and the chamber music hall
-  CR3 of the BRAS database; see [RoomCAD against measured rooms](roomcad-validation.md). The acousticbench reference room remains
+- **Measured reference rooms (item 5).** These are the seminar room CR2, the chamber music hall CR3
+  and the auditorium CR4 of the BRAS database; see [RoomCAD against measured rooms](roomcad-validation.md). The acousticbench reference room remains
   illustrative.
 - **Performance budgets (item 5).** On a Mac Studio (M4 Max, 14 cores, 36 GB):
   - each of the first ten room presets generates within 6 s with the wave solver, while no other app
@@ -380,9 +380,9 @@ Items 2–4 are implemented with the M3 solver:
   agree within 2.3 dB across the presets, except at 63 Hz in the L-shaped room (diffraction round the
   corner) and the stone church (the floor's boundary gain).
 
-Item 5 is done for two measured rooms: [RoomCAD against measured rooms](roomcad-validation.md)
-compares ten measured responses in each of a 145 m³ seminar room and a 3,100 m³ chamber music hall
-from the BRAS database. In the seminar room:
+Item 5 is done for three measured rooms: [RoomCAD against measured rooms](roomcad-validation.md)
+compares ten measured responses in each of a 145 m³ seminar room, a 3,100 m³ chamber music hall and an
+8,650 m³ auditorium from the BRAS database. In the seminar room:
 
 - **Reverberation.** With published absorption data, reverberation time from 250 Hz to 2 kHz is
   within 12%, and clarity and definition within about one just-noticeable difference.
@@ -402,7 +402,17 @@ In the chamber music hall, built from solids, with absorption fitted to the simp
   and chairs that scatter sound in the real one, and more scattering takes away about half the excess.
 - **Low frequencies.** At 63 Hz the wave solver gives the measured T30.
 
-BRAS's third room, the auditorium CR4, is not yet modelled. Listening comparisons are not done.
+In the auditorium, built from solids with its fan-shaped plan, raked stalls and rising galleries:
+
+- **Reverberation.** With absorption fitted to the simplified model by Eyring's formula, the decay is
+  9–21% too long from 125 Hz to 4 kHz, and C80 and D50 are within one JND from 1 to 4 kHz.
+- **Shape of the decay.** With absorption fitted by simulating the model, T30 matches, and EDT, C80,
+  D50 and centre time are within about 1.1 JND from 125 Hz to 4 kHz.
+- **Low frequencies.** At 63 Hz the wave solver gives the measured T30 but an early decay much slower
+  than measured (EDT 2.9 s against 1.8 s).
+- **Chairs.** As uniform fitted zones they lower the early reflections' correlation from 0.51 to 0.31.
+
+Listening comparisons are not done.
 Item 6 is done: every export's metadata keeps the settings, random seed and crossover. It also states
 the usable band, and, with the wave solver, its phase-velocity error at the crossover and that its decay
 was matched to Eyring's.

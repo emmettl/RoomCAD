@@ -87,4 +87,30 @@ struct MeasuredRoomTests {
             airAbsorption: true)
         #expect(eyring[3...6].allSatisfy { abs(($0 ?? 0) / 1.5 - 1) < 0.01 })
     }
+
+    @Test("The simplified auditorium is a closed room holding its sources, receivers and chairs")
+    func auditorium() throws {
+        let directory = Self.directory.deletingLastPathComponent().appendingPathComponent("bras-cr4")
+        let scene = try ValidationScene.load(directory.appendingPathComponent("scene.json"))
+        let settings = scene.settings(
+            set: "initial", source: "LS1", driver: 0, receivers: (1...5).map { "MP\($0)" }, duration: 0.1)
+        try settings.validate()
+        let room = settings.room
+        // BRAS gives 8,650 m³; this model leaves out the lobbies in the back corners and the ceiling's folds.
+        #expect(abs(room.volume / 8650 - 1) < 0.1)
+        #expect(settings.receivers.allSatisfy { room.contains($0.position) })
+        // Every driver of both loudspeakers is in the room.
+        for source in ["LS1", "LS2"] {
+            for driver in 0..<3 {
+                let s = scene.settings(
+                    set: "initial", source: source, driver: driver, receivers: [], duration: 0.1)
+                #expect(room.contains(s.source.position))
+            }
+        }
+        // 1,172 chairs, as counted in BRAS's notes on the model, in zones whose centres are in the room.
+        let zones = room.fittings ?? []
+        #expect(abs((scene.fittings ?? []).reduce(0) { $0 + $1.count } - 1172) < 1e-6)
+        #expect(zones.count == scene.fittings?.count)
+        #expect(zones.allSatisfy { room.contains(($0.low + $0.high) / 2) })
+    }
 }

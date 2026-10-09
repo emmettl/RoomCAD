@@ -27,6 +27,7 @@ check: lint test ci-test build
 validate:
 	swift run -c release acousticbench --bras-cr2
 	swift run -c release acousticbench --bras-cr3
+	swift run -c release acousticbench --bras-cr4
 
 icon:
 	swift Scripts/make-icon.swift

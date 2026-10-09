@@ -671,7 +671,7 @@ a reference room and exports its responses. Its results on the development Mac:
 ### Comparison with a measured room
 
 [RoomCAD against measured rooms](roomcad-validation.md) compares RoomCAD with ten measured responses
-in each of two rooms from the BRAS database. In the 145 m³ seminar room:
+in each of three rooms from the BRAS database. In the 145 m³ seminar room:
 
 - **Reverberation.** With only published absorption data, the reverberation time from 250 Hz to
   2 kHz is within 12%, and clarity within about one just-noticeable difference.
@@ -687,6 +687,15 @@ In the 3,100 m³ chamber music hall, built from solids, with absorption fitted t
 - **Clarity and definition.** C80, D50 and centre time are within about one JND from 500 Hz to 4 kHz.
 - **Reverberation.** The decay is 13–40% too long, because the simplified hall lacks the pillars,
   ornament and chairs that scatter sound in the real one.
+
+In the 8,650 m³ auditorium, with its fan-shaped plan, raked stalls and rising galleries, also built from
+solids:
+
+- **Reverberation.** With absorption fitted to this model by Eyring's formula, the decay is 9–21% too
+  long from 125 Hz to 4 kHz. Fitted by simulating the model, T30 matches, and EDT, C80, D50 and centre
+  time are within about 1.1 JND from 125 Hz to 4 kHz.
+- **Low frequencies.** At 63 Hz the wave solver gives the measured T30, but an early decay much slower
+  than measured.
 
 `RoomParameters` computes the ISO 3382-1 parameters it uses: EDT, T20, T30, C50, C80, D50 and
 centre time, with Lundeby's noise compensation for measured responses.
@@ -793,8 +802,9 @@ The roadmap orders the work as follows:
 - wave-solver walls that also absorb at grazing incidence, such as extended-reaction or
   frequency-dependent complex impedances, checked against the measured room;
 - fitted zones that follow a raked floor or a wall, rather than boxes, and sourced densities for
-  common furnishings;
-- the remaining BRAS auditorium, CR4, built from solids.
+  common furnishings: in the auditorium, uniform boxes of chairs over the rake disturb the early
+  reflections more than the real chairs do;
+- an early decay at 63 Hz in the auditorium as fast as the measured one.
 
 A synthetic late tail (M2 item 4) is no longer needed: rays carry every reflection beyond the image
 sources' order.
@@ -824,7 +834,7 @@ The ray tracer and image sources could run on the GPU.
   materials database (https://github.com/LCAV/pyroomacoustics, MIT licence).
 - L. Aspöck, M. Vorländer, F. Brinkmann, D. Ackermann and S. Weinzierl, *Benchmark for Room
   Acoustical Simulation (BRAS)*, TU Berlin and RWTH Aachen, 2020, DOI 10.14279/depositonce-6726.3,
-  CC BY-SA 4.0, for the measured seminar room and chamber music hall.
+  CC BY-SA 4.0, for the measured seminar room, chamber music hall and auditorium.
 - A. Lundeby, T. E. Vigran, H. Bietz and M. Vorländer, "Uncertainties of measurements in room
   acoustics", *Acustica* 81, 344–355, 1995, for noise compensation in measured decay.
 - ISO 17497-1:2004, *Acoustics — Sound-scattering properties of surfaces — Part 1: Measurement of the
