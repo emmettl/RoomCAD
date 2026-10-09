@@ -8,7 +8,7 @@ on:
       suite:
         description: Full application checks or bounded acoustic source conformance
         type: choice
-        options: [all, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse]
+        options: [all, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout]
         default: all
 
 permissions:
@@ -244,5 +244,24 @@ jobs:
         with:
           name: tilted-pulse-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/tilted-pulse-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  extruded-layout:
+    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'extruded-layout'
+    runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Audit actual equivalent plan and extrusion geometry layouts
+        run: bash Scripts/check-extruded-layout.sh "${{ runner.temp }}/extruded-layout-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Retain complete geometry arrays and explicit assignment gaps
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extruded-layout-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/extruded-layout-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           retention-days: 14
