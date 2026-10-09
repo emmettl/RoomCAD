@@ -1,8 +1,25 @@
-# Actual source tilted-plan pulse adapter
+# Actual source tilted plan and thin-mesh pulse adapter
 
-Pins an independently tested immutable Core contract. Actual plan/material/gridLayout,
-CPU simulateMasked numerical blocks and actual Metal wave kernels are bound without
-changing production source. Whole native fields and every source wall pressure are
-retained. Causal region norms, echo amplitude/shift and smooth patch work are checked
-separately from the finite plan's global energy ledger. Only this z-invariant floor
-plan is declared; mesh face selection and other angles remain separate cases.
+Pins the unchanged independent Core contract for one z-invariant xi=3 tilted room.
+Actual FloorPlan/RoomMesh.extruding, material/gridLayout, verbatim CPU simulateMasked
+numerical blocks and actual Metal kernels are bound without changing production code.
+The default `--representation plan` retains the original source model name; `mesh`
+selects a closed thin extrusion with rigid caps. Both use the same six space/time
+resolutions, exact initial preparation and physical causal-region/work references.
+
+All native p/u/v/w fields, every wall pressure at every step, global and patch work,
+original/scaled layouts and clocks remain in the independent result contract.
+Geometry diagnostics retain actual material-face/normal-sample identities and
+unresolved crossings. A separate outward-plane segment oracle checks every closed
+face. No declared mesh may use fallback. Every source result and both convergence
+reports must pass; a diagnostic spatial gap cannot pass paired conformance.
+
+The suite preserves plan output at cpu/metal and adds mesh/cpu and mesh/metal.
+`verify-tilted-pulse-pair.py` requires all 24 source histories, twelve exact plan/mesh
+pairs, identical full fields/traces/work/errors/layouts/clocks, and consistent source
+provenance. Each representation also passes the unchanged independent validator.
+General imported meshes, other angles/materials and measured acoustics remain
+separate contracts. Release pins and production sources are unchanged.
+
+Five independent Python controls use a hand-counted six-cell trapezoid and reject
+cap substitution, wrong normal samples, fallback and incomplete identities.

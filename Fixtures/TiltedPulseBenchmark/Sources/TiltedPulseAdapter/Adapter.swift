@@ -101,6 +101,13 @@ final class TiltedPulseGPU {
     }
 }
 
+struct PulseGeometryAudit: Encodable {
+    let caseID, representation: String
+    let resolution: TiltedPulseResolution
+    let inside: [UInt8], layoutFaces: [Float], spacing: [Double], layoutDt: Double
+    let selectedFaces, normalSampleFaces, unresolvedCrossings: [Int]
+}
+
 @main struct TiltedPulseAdapter {
     static func main() throws {
         let args = CommandLine.arguments
@@ -108,7 +115,18 @@ final class TiltedPulseGPU {
             ["cpu", "metal"].contains(args[at + 1])
         else { throw BenchmarkFailure.invalidCase }
         let backend = args[at + 1]
-        try TiltedPulseCommand.run(model: "RoomCAD.\(backend).tilted-pulse", supported: true) {
+        var representation = "plan"
+        if let index = args.firstIndex(of: "--representation") {
+            guard index + 1 < args.count else { throw BenchmarkFailure.invalidCase }
+            representation = args[index + 1]
+        }
+        guard ["plan", "mesh"].contains(representation),
+            let outputIndex = args.firstIndex(of: "--output"), outputIndex + 1 < args.count
+        else { throw BenchmarkFailure.invalidCase }
+        let output = URL(fileURLWithPath: args[outputIndex + 1])
+        var audits: [PulseGeometryAudit] = []
+        let suffix = representation == "plan" ? "tilted-pulse" : "tilted-mesh-pulse"
+        try TiltedPulseCommand.run(model: "RoomCAD.\(backend).\(suffix)", supported: true) {
             c, r in
             let grid = try TiltedPulseGrid(c, r)
             let spacing = grid.spacing
@@ -120,11 +138,16 @@ final class TiltedPulseGPU {
                 alpha, name: "Independent xi=3 tilted pulse",
                 reference: "Independently authored statistical absorption integral")
             var room = ShoeboxRoom(size: SIMD3<Double>(c.lengths), material: material)
-            room.plan = FloorPlan(
+            let plan = FloorPlan(
                 corners: [
                     [0, 0], [c.intercept, 0], [c.intercept - c.lengths[1] / 2, c.lengths[1]],
                     [0, c.lengths[1]],
                 ], walls: [material, absorber, material, material])
+            if representation == "plan" {
+                room.plan = plan
+            } else {
+                room.mesh = .extruding(plan, height: c.lengths[2], floor: material, ceiling: material)
+            }
             let atmosphere = Atmosphere(
                 temperatureCelsius: pow(c.speed / 331.3, 2) * 273.15 - 273.15, relativeHumidity: 0,
                 pressureKilopascals: 101.325)
@@ -136,7 +159,52 @@ final class TiltedPulseGPU {
             let actualLayout = solver.gridLayout(source: [c.centre, 0.25, c.lengths[2] / 2], receivers: [])
             guard actualLayout.inside == grid.inside else {
                 throw BenchmarkFailure.failedConformance(
-                    "Actual plan mask disagrees with independent half-plane occupancy")
+                    "Actual source mask disagrees with independent half-plane occupancy")
+            }
+            let nx = r.nx
+            let ny = r.ny
+            let count = actualLayout.count
+            var selected = [Int](repeating: -1, count: 6 * count)
+            var normalSamples = selected
+            var unresolved: [Int] = []
+            let geometry = room.mesh.map(MeshGeometry.of)
+            for index in actualLayout.faces.indices where actualLayout.faces[index] >= 0 {
+                let side = index / count
+                let cell = index % count
+                let axis = side / 2
+                let centre =
+                    (SIMD3<Double>(Double(cell % nx), Double((cell / nx) % ny), Double(cell / (nx * ny)))
+                        + 0.5)
+                    * solver.spacing
+                var direction = SIMD3<Double>(repeating: 0)
+                direction[axis] = (side % 2 == 0 ? -1 : 1) * solver.spacing[axis]
+                let midpoint = centre + direction / 2
+                if let geometry {
+                    if let hit = geometry.nearestHit(origin: centre, direction: direction, limit: 1 + 1e-9) {
+                        selected[index] = hit.face
+                    } else {
+                        selected[index] = geometry.nearestFace(midpoint)
+                        unresolved.append(index)
+                    }
+                    if axis < 2, let sides = geometry.extrusionSideFaces {
+                        normalSamples[index] = geometry.nearestFace(midpoint, among: sides)
+                    } else {
+                        normalSamples[index] = selected[index]
+                    }
+                } else {
+                    selected[index] = axis == 2 ? side : plan.nearestWall([midpoint.x, midpoint.y])
+                    normalSamples[index] = selected[index]
+                }
+            }
+            audits.append(
+                PulseGeometryAudit(
+                    caseID: c.id, representation: representation, resolution: r,
+                    inside: actualLayout.inside, layoutFaces: actualLayout.faces,
+                    spacing: spacing, layoutDt: solver.timeStep, selectedFaces: selected,
+                    normalSampleFaces: normalSamples, unresolvedCrossings: unresolved))
+            guard unresolved.isEmpty else {
+                throw BenchmarkFailure.failedConformance(
+                    "Declared thin mesh has unresolved boundary crossings")
             }
             var layout = actualLayout
             for i in layout.faces.indices where layout.faces[i] >= 0 {
@@ -145,7 +213,6 @@ final class TiltedPulseGPU {
             let wallCells = grid.wallCells
             let wallRates = try grid.rates(faces: layout.faces, dt: dt)
             let volume = spacing.reduce(1, *)
-            let count = r.nx * r.ny * r.nz
             var p = initial.p.map { Float($0 / c.density) }
             var u = [Float](repeating: 0, count: count)
             var v = u
@@ -228,5 +295,8 @@ final class TiltedPulseGPU {
                 wallCells: wallCells, wallPressures: wallTrace, dissipation: dissipation,
                 patchDissipation: patchDissipation)
         }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        try encoder.encode(audits).write(to: output.appendingPathComponent("geometry.json"))
     }
 }
