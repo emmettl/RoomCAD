@@ -7,7 +7,10 @@ class GateControls(unittest.TestCase):
  def test_incomplete_success_status_becomes_failure(self):
   # Bash 3.2 can enter EXIT with $?=0 after an unset-variable expansion. Never certify early exit.
   with tempfile.TemporaryDirectory() as folder:
-   code='set -euo pipefail; task_completed=0; scratch='+folder+'; trap \'task_status=$?; if test "$task_completed" != 1 && test "$task_status" = 0; then exit 1; fi; exit "$task_status"\' EXIT; arguments=(); printf "%s" "${arguments[@]}"'
+   source=(root/'Scripts/check-shared-waves.sh').read_text().splitlines()
+   trap=next(line for line in source if line.startswith("trap '"))
+   self.assertIn('task_completed=0',source)
+   code='set -euo pipefail; task_completed=0; scratch='+folder+'; '+trap+'; arguments=(); printf "%s" "${arguments[@]}"'
    result=subprocess.run(['/bin/bash','-c',code],capture_output=True,text=True)
    self.assertNotEqual(result.returncode,0)
  def test_nonempty_argument_list_works(self):

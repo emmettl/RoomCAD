@@ -7,6 +7,7 @@ output=${2:-$(mktemp -d "${TMPDIR:-/tmp}/roomcad-shared-wave-output.XXXXXX")}
 revision=$(cat Fixtures/SharedWaveBenchmark/core-revision.txt)
 mkdir -p "$output"
 python3 Scripts/test-tilted-pulse-pair.py
+python3 Scripts/test-shared-wave-gate.py
 scratch=$(mktemp -d "${TMPDIR:-/tmp}/roomcad-shared-wave-build.XXXXXX")
 task_completed=0
 trap 'task_status=$?; rm -rf "$scratch"; if test "$task_completed" != 1 && test "$task_status" = 0; then exit 1; fi; exit "$task_status"' EXIT
