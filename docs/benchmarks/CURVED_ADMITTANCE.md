@@ -55,3 +55,7 @@ refinement and full pressure/velocity/work histories. Passing area and a single 
 substep is insufficient for that claim. AcousticCore remains application-owned;
 no release tag, dependency pin or measured fixture changes are part of this work.
 Durable complete evidence is retained privately in Edgerton.
+
+The [coupled cylinder candidate](ABSORBING_CYLINDER.md) adds independent continuum
+and fixed-graph field/work gates. Source success must be established on both actual
+CPU and Metal adapters; this is separate from the prescribed-load area checkpoint.
