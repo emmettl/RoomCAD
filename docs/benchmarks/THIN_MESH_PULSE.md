@@ -25,3 +25,21 @@ mesh accuracy or measured material validity. Raw app-derived evidence remains in
 private Edgerton; public Core may record aggregate findings. Source hashes are
 compared with the preceding full application/eleven-suite mini checkpoint because
 this change affects benchmark bindings and CI only.
+
+## Physical-mini checkpoint, 9 October 2026
+
+[Focused run 37948058999](https://github.com/emmettl/RoomCAD/actions/runs/37948058999)
+passes the five independent controls, all 24 actual pulse records and twelve exact
+plan/mesh pairs. Every source boundary and normal-sample identity matches the
+independent plane oracle, with no unresolved crossing. Full native fields and
+all-step wall traces, work, reflection/shift and errors are identical per backend.
+All 31 AcousticCore hashes match full application run 37938336795; production
+code and the original independent Core pin are unchanged.
+
+Finest spatial pressure L2 is 2.57%, x velocity 2.00%, y velocity 7.12%. Reflection
+is about 0.4572166 against 0.45700594, with a 1.24 mm pulse-coordinate lag. Time
+refines at second order. Direct CPU/Metal maxima over every native field, all wall
+traces and global/patch work are below 2.09e-6 in their declared amplitude/energy
+normalizations (separate comparison bound 1e-4). Raw geometry and complete current
+headers are retained privately; exact previous full histories are referenced with
+canonical SHA-256/byte counts and a checked reconstruction script.
