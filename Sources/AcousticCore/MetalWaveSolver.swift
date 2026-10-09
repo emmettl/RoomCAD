@@ -354,10 +354,25 @@ extension WaveSolver {
                     where !active(i + step.x, j + step.y, k + step.z) {
                         let face = point + SIMD3<Double>(step) * spacing / 2
                         if let mesh, let faceImpedance {
-                            let nearest = mesh.nearestFace(face)
+                            // Select the wall this centre-to-neighbour segment crosses. A thin
+                            // room's cap can be nearer to the midpoint without bounding this link.
+                            // Retain the legacy fallback for unresolved edge/degenerate queries.
+                            let boundary =
+                                mesh.nearestHit(
+                                    origin: point, direction: SIMD3<Double>(step) * spacing,
+                                    limit: 1 + 1e-9)?.face ?? mesh.nearestFace(face)
+                            // An extrusion keeps its floor-plan area quadrature: sample the
+                            // closest in-plane side normal, excluding caps. Material ownership
+                            // still comes from the crossed face. General meshes use its normal.
+                            let measure: Int
+                            if axis < 2, let sides = mesh.extrusionSideFaces {
+                                measure = mesh.nearestFace(face, among: sides)
+                            } else {
+                                measure = boundary
+                            }
                             faces[side * count + at] =
-                                beta(faceImpedance[nearest], spacing[axis])
-                                * Float(areaWeight(mesh.faces[nearest].normal))
+                                beta(faceImpedance[boundary], spacing[axis])
+                                * Float(areaWeight(mesh.faces[measure].normal))
                         } else if room.plan != nil, axis < 2 {
                             faces[side * count + at] = planFace(
                                 [face.x, face.y], height: face.z, depth: spacing[axis])

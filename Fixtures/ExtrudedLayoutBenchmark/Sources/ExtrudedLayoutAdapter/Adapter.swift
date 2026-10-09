@@ -14,6 +14,8 @@ struct Layout: Encodable {
 struct Record: Encodable {
     let schemaVersion = 1
     let specification: Specification, representation: String, layout: Layout, materialImpedances: [Double?]
+    let unresolvedCrossings: [Int]
+    let normalSampleFaces: [Int]
 }
 func argument(_ name: String) throws -> String {
     guard let i = CommandLine.arguments.firstIndex(of: name), i + 1 < CommandLine.arguments.count else {
@@ -66,26 +68,41 @@ for c in specifications.cases {
         let ny = solver.cells.y
         let count = layout.count
         var selected = [Int](repeating: -1, count: 6 * count)
+        var unresolved: [Int] = []
+        var normalSamples = selected
         let geometry = MeshGeometry.of(mesh)
         for index in layout.faces.indices where layout.faces[index] >= 0 {
             let side = index / count
             let cell = index % count
             let axis = side / 2
-            var point =
+            let centre =
                 (SIMD3<Double>(Double(cell % nx), Double((cell / nx) % ny), Double(cell / (nx * ny))) + 0.5)
                 * solver.spacing
-            point[axis] += (side % 2 == 0 ? -0.5 : 0.5) * solver.spacing[axis]
-            // Diagnostic repeats the current source selection only; the shared oracle uses segment exits.
-            selected[index] =
-                representation == "mesh"
-                ? geometry.nearestFace(point) : (axis == 2 ? side : plan.nearestWall([point.x, point.y]))
+            var direction = SIMD3<Double>(repeating: 0)
+            direction[axis] = (side % 2 == 0 ? -1 : 1) * solver.spacing[axis]
+            let midpoint = centre + direction / 2
+            // Diagnostic repeats current source selection; the oracle uses independent planes.
+            if representation == "mesh" {
+                if let hit = geometry.nearestHit(origin: centre, direction: direction, limit: 1 + 1e-9) {
+                    selected[index] = hit.face
+                } else {
+                    selected[index] = geometry.nearestFace(midpoint)
+                    unresolved.append(index)
+                }
+            } else {
+                selected[index] = axis == 2 ? side : plan.nearestWall([midpoint.x, midpoint.y])
+            }
+            normalSamples[index] =
+                representation == "mesh" && axis < 2 && geometry.extrusionSideFaces != nil
+                ? geometry.nearestFace(midpoint, among: geometry.extrusionSideFaces!) : selected[index]
         }
         let record = Record(
             specification: c, representation: representation,
             layout: Layout(
                 inside: layout.inside, faces: layout.faces, selectedFaces: selected,
                 spacing: [solver.spacing.x, solver.spacing.y, solver.spacing.z], dt: solver.timeStep),
-            materialImpedances: impedance.map { $0.isFinite ? $0 : nil })
+            materialImpedances: impedance.map { $0.isFinite ? $0 : nil }, unresolvedCrossings: unresolved,
+            normalSampleFaces: normalSamples)
         try encoder.encode(record).write(
             to: output.appendingPathComponent(c.id + "-" + representation + ".layout.json"))
     }
