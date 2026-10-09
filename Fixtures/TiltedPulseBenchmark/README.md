@@ -20,3 +20,6 @@ pairs, identical full fields/traces/work/errors/layouts/clocks, and consistent s
 provenance. Each representation also passes the unchanged independent validator.
 General imported meshes, other angles/materials and measured acoustics remain
 separate contracts. Release pins and production sources are unchanged.
+
+Five independent Python controls use a hand-counted six-cell trapezoid and reject
+cap substitution, wrong normal samples, fallback and incomplete identities.
