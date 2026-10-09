@@ -36,3 +36,20 @@ physical mini run. Raw application evidence stays private in Edgerton; public Co
 may retain aggregate findings. This gate precedes release and production source-write,
 receiver, cancellation and lifetime integration; the optimized box CPU path and
 Edgerton's forced/damped 2D wave model remain separate contracts.
+
+## Verified source-free checkpoint
+
+Producer `9aaa91410e82d63ee9e7ceb73afc701bd3e7f068` passes the
+[full physical-mini gate](https://github.com/emmettl/RoomCAD/actions/runs/38001607985):
+96 exact original/shared records across all five suites and both backends, including
+all 24 tilted plan/mesh records. Both producer and independent postcondition enforce
+the complete count/tree. Original independent bounds and every retained numerical
+/schema field are unchanged. Twelve exact tilted plan/mesh pairs preserve physical
+wall identities and zero unresolved crossing. The earlier incomplete green run and
+subsequent failed generator run are not conformance evidence.
+
+Sixteen local schema/plane/producer controls cover wrong source fields/clocks/layouts,
+missing velocity, wrong reference pin, early cleanup status and partial report trees.
+The final addition after the tested producer contains only control tests/docs; model,
+observer, generator and numerical validation bodies match the verified candidate.
+Complete raw outputs and checked reconstruction are retained privately in Edgerton.
