@@ -20,3 +20,5 @@ All four fields are checked, with geometry volume, modified energy, blocked-face
 and inactive preservation gates. CI's `cylinder` choice also runs with `all` and requires
 both CPU and real Metal. Full histories/layouts are retained as CI artifacts and durable
 private Edgerton evidence. This establishes no measured or arbitrary-curved-room accuracy.
+
+[Absorbing wall admittance audit](CURVED_ADMITTANCE.md) separates physical area from isolated wall-flow integration.
