@@ -20,7 +20,9 @@ thermo=subprocess.check_output(['git','ls-tree','-r','--name-only',original,'Sou
 for path in thermo:
  if git(original,path)!=git(shared,path):raise ValueError('Original reference thermodynamics changed: '+path)
 main=a.output/'Sources'/target/'Adapter.swift';text=main.read_text()
-start=text.index('final class ');end=text.index('@main ',start)
+start=text.index('final class ');end=text.index('\n}\n',start)+3
+# Only replace the original evolution class. Preserve every app-owned audit declaration before main.
+main_start=text.index('@main ',end);retained_declarations=text[end:main_start]
 gpu=re.search(r'final class (\w+)',text[start:end]).group(1)
 text=text[:start]+'typealias '+gpu+' = SharedWaveGPU\n\n'+text[end:]
 cpu_files=list((a.output/'Sources'/target).glob('Source*CPU.swift'))
@@ -34,6 +36,7 @@ text=text.replace('cpu.advance(', 'try cpu.advance(').replace('cpu?.advance(', '
 text,count=re.subn(r'c\s*:\s*(\w+)\.speed',lambda m:m.group(0)+', density: '+m.group(1)+'.density',text)
 if count!=2:raise ValueError('Expected CPU/GPU physical density bindings')
 text=text.replace('RoomCAD.\\(backend).','RoomCAD.shared.\\(backend).')
+if retained_declarations not in text:raise ValueError('App-owned audit declarations changed during binding')
 main.write_text(text)
 shutil.copyfile(a.root/'Fixtures/SharedWaveBenchmark/Facades.swift',a.output/'Sources'/target/'SharedWaveFacades.swift')
 (a.output/'core-revision.txt').write_text(shared+'\n')
