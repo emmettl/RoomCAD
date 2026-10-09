@@ -39,11 +39,12 @@ public struct RoomParameters: Codable, Equatable, Sendable {
         return samples.firstIndex { abs($0) >= 0.1 * peak } ?? 0
     }
 
-    /// The parameters of `samples` in `band` of `OctaveBands`, timed from the band's onset.
+    /// The parameters of `samples` in `band` of `OctaveBands`, timed from the band's onset. The band is
+    /// an octave in every case (`OctaveBands.measurementWeight`), the lowest and highest included.
     public static func measure(_ samples: [Float], sampleRate: Int, band: Int, noiseCompensated: Bool)
         -> RoomParameters
     {
-        let filtered = DecayAnalysis.octaveBand(samples, sampleRate: sampleRate, band: band)
+        let filtered = DecayAnalysis.measuredOctaveBand(samples, sampleRate: sampleRate, band: band)
         let energy = filtered[onset(filtered)...].map { Double($0) * Double($0) }
         return measure(energy: energy, sampleRate: sampleRate, noiseCompensated: noiseCompensated)
     }
@@ -89,17 +90,25 @@ public struct RoomParameters: Codable, Equatable, Sendable {
 
     /// Where the decay meets the background noise, and the energy the decay would have had beyond it.
     ///
-    /// After Lundeby et al.: the noise level is the mean of the last tenth; a line is fitted to the
-    /// smoothed decay from 5 dB below its start to 10 dB above the noise and extended to meet the noise;
-    /// the fit and the crossing are refined a few times with the noise taken after the crossing. Nil if
-    /// the response does not reach a noise floor.
+    /// After Lundeby et al.: the noise level is the mean of the last tenth; a line is fitted to the decay
+    /// in 10 ms blocks from 5 dB below its start to where it first comes within 10 dB of the noise, and
+    /// extended to meet the noise; the fit and the crossing are refined a few times with the noise taken
+    /// after the crossing. Where the decay first comes within 10 dB of the noise is judged over 50 ms, so
+    /// that a dip between beating modes doesn't end the fit early, and a burst of noise later on doesn't
+    /// extend it into the noise. Nil if the response does not reach a noise floor.
     static func noiseCut(_ energy: [Double], sampleRate: Int) -> (index: Int, tail: Double)? {
         let rate = Double(sampleRate)
         let block = max(Int(0.01 * rate), 1)
         let blocks = energy.count / block
         guard blocks > 20 else { return nil }
-        let levels = (0..<blocks).map { b in
-            10 * log10(max(energy[(b * block)..<((b + 1) * block)].reduce(0, +) / Double(block), 1e-300))
+        let means = (0..<blocks).map { b in
+            energy[(b * block)..<((b + 1) * block)].reduce(0, +) / Double(block)
+        }
+        let levels = means.map { 10 * log10(max($0, 1e-300)) }
+        // Two blocks either side: 50 ms.
+        let smoothed = (0..<blocks).map { b in
+            let window = means[max(b - 2, 0)...min(b + 2, blocks - 1)]
+            return 10 * log10(max(window.reduce(0, +) / Double(window.count), 1e-300))
         }
         func noise(from index: Int) -> Double {
             let start = max(min(index, blocks - blocks / 10), blocks / 2)
@@ -113,9 +122,9 @@ public struct RoomParameters: Codable, Equatable, Sendable {
         var slope = 0.0
         var intercept = 0.0
         for _ in 0..<5 {
-            guard let first = levels.firstIndex(where: { $0 <= top - 5 }),
-                let last = levels.lastIndex(where: { $0 >= floor + 10 }), last > first + 2
-            else { return nil }
+            guard let first = levels.firstIndex(where: { $0 <= top - 5 }) else { return nil }
+            let last = (smoothed[(first + 1)...].firstIndex { $0 < floor + 10 } ?? blocks) - 1
+            guard last > first + 2 else { return nil }
             let fit = line(Array(levels[first...last]), offset: first)
             slope = fit.slope
             intercept = fit.intercept

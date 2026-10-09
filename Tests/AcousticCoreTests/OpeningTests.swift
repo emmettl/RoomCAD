@@ -68,8 +68,9 @@ struct OpeningTests {
             return try RoomResponseGenerator.generate(settings, cancellation: CancellationFlag()).response
                 .channels[0]
         }
+        // In octaves as measured, closed below 31 Hz at 63 Hz, which the wave solver matches its decay in.
         func t30(_ samples: [Float], band: Int) throws -> Double {
-            let filtered = DecayAnalysis.octaveBand(samples, sampleRate: 48_000, band: band)
+            let filtered = DecayAnalysis.measuredOctaveBand(samples, sampleRate: 48_000, band: band)
             return try #require(DecayAnalysis.reverberationTime(filtered, sampleRate: 48_000))
         }
         let closed = try response([])

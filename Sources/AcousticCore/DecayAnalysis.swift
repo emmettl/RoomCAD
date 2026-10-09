@@ -23,6 +23,14 @@ public enum DecayAnalysis {
         }
     }
 
+    /// The part of `samples` in one octave band as measured, by `OctaveBands.measurementWeight`: the
+    /// band used to compare a response's parameters with a measurement's.
+    public static func measuredOctaveBand(_ samples: [Float], sampleRate: Int, band: Int) -> [Float] {
+        RealFFT.zeroPhaseFilter(samples, sampleRate: Double(sampleRate)) {
+            OctaveBands.measurementWeight(band: band, frequency: $0)
+        }
+    }
+
     /// Reverberation time in seconds from a least-squares line fitted to the decay curve between `from`
     /// and `to` dB, extrapolated to 60 dB (T30 for -5 to -35 dB). Nil if the curve does not reach `to`.
     public static func reverberationTime(

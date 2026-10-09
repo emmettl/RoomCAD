@@ -392,9 +392,11 @@ extension WaveSolver {
                 }
                 return (real, imag)
             }
-            // Each band's extra damping, from the probes' summed energy in the band, above 20 Hz, over the
-            // response's length: the zero-phase band filter wraps its ringing before an arrival round to the
-            // end of the run.
+            // Each band's extra damping, from the probes' summed energy in the band over the response's
+            // length: the zero-phase band filter wraps its ringing before an arrival round to the end of the
+            // run. The band is the octave a measurement gives T30 in, and Eyring's estimate is for, closed
+            // below 31 Hz at 63 Hz; the room's sparse modes below that ring longer and would otherwise set
+            // the damping of the whole band.
             var damping: [Int: Double] = [:]
             if matchesDiffuseDecay {
                 let spectra = run.signals[receivers.count...].map(transfer)
@@ -406,9 +408,7 @@ extension WaveSolver {
                         var imag = real
                         for k in 1..<half {
                             let f = Double(k) / (Double(steps) * dt)
-                            let w =
-                                OctaveBands.weight(band: band, frequency: f)
-                                * OctaveBands.rise(f, crossover: 20)
+                            let w = OctaveBands.measurementWeight(band: band, frequency: f)
                             real[k] = spectrum.real[k] * w
                             imag[k] = spectrum.imag[k] * w
                         }
@@ -541,7 +541,9 @@ extension WaveSolver {
         for band in included {
             var solver = self
             solver.impedanceBands = [band]
-            let materials = Surface.allCases.map { room[$0] } + (room.plan?.walls ?? [])
+            // A mesh's faces take their own materials, not the box's.
+            let materials =
+                Surface.allCases.map { room[$0] } + (room.plan?.walls ?? []) + (room.mesh?.materials ?? [])
             let key = materials.map { solver.impedance(material: $0) }
             if let index = groups.firstIndex(where: { $0.key == key }) {
                 groups[index].bands.append(band)

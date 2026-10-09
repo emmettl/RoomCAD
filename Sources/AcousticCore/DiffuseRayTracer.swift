@@ -81,6 +81,8 @@ struct DiffuseRayTracer {
         let reach = duration * c
         let radius = receiverRadius
         let volumes = receivers.map { insideVolume(of: $0.position, radius: radius) }
+        // Nothing reaches a receiver sooner than the direct sound; see `arrival`.
+        let direct = receivers.map { simd_distance(source, $0.position) }
         // Energy decay by air per metre, for intensity.
         let air =
             airAbsorption
@@ -191,7 +193,10 @@ struct DiffuseRayTracer {
                             let enter = max(0, -b - root)
                             let leave = min(segment, -b + root)
                             guard leave > enter else { continue }
-                            let distance = travelled + (enter + leave) / 2
+                            let distance = Self.arrival(
+                                travelled: travelled, offset: offset, radius: radius, enter: enter,
+                                leave: leave,
+                                direct: direct[r])
                             let bin = Int(distance / c / Self.binWidth)
                             guard bin < bins else { continue }
                             var scale = 4 * Double.pi * (leave - enter) / volumes[r]
@@ -301,6 +306,22 @@ struct DiffuseRayTracer {
             }
         }
         return energy
+    }
+
+    /// The path length at which a ray's crossing of a receiver's sphere is counted: `travelled` to the
+    /// segment's start, `offset` from the receiver, the chord from `enter` to `leave` along it.
+    ///
+    /// A crossing is timed at the middle of its chord. A ray that sets off from within the sphere,
+    /// though, scattered or reflected there by an object of a fitted zone or a surface near the
+    /// receiver, could then seem to arrive up to the sphere's radius sooner than sound can: before the
+    /// direct sound. Its energy reaches the receiver by the path through that point, at `travelled` plus
+    /// the distance from there, which is never sooner. Nothing is counted before the direct sound.
+    static func arrival(
+        travelled: Double, offset: SIMD3<Double>, radius: Double, enter: Double, leave: Double,
+        direct: Double
+    ) -> Double {
+        let startsInside = simd_length_squared(offset) < radius * radius
+        return max(travelled + (startsInside ? simd_length(offset) : (enter + leave) / 2), direct)
     }
 
     /// Absorbs at a reflection and chooses, with importance weights, whether it scatters.
