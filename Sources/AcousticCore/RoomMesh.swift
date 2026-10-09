@@ -302,6 +302,9 @@ final class MeshGeometry: @unchecked Sendable {
     private(set) var planeOfFace: [Int] = []
     private(set) var nodes: [Node] = []
     private var order: [Int] = []
+    /// Full-height vertical sides between two flat caps, or nil for a general mesh.
+    /// Their closest-point normals reproduce the floor plan's in-plane area quadrature.
+    private(set) var extrusionSideFaces: [Int]?
 
     private static let lock = NSLock()
     nonisolated(unsafe) private static var recent: [MeshGeometry] = []
@@ -334,6 +337,23 @@ final class MeshGeometry: @unchecked Sendable {
                 low: corners.reduce(corners[0]) { simd_min($0, $1) },
                 high: corners.reduce(corners[0]) { simd_max($0, $1) }, open: mesh.faces[index].open,
                 material: mesh.faces[index].material)
+        }
+        let low = mesh.bounds.min.z
+        let high = mesh.bounds.max.z
+        let tolerance = 1e-10 * max(1, high - low)
+        let sides = faces.indices.filter { abs(faces[$0].normal.z) < 1e-10 }
+        let caps = faces.indices.filter { abs(faces[$0].normal.z) >= 1e-10 }
+        if !sides.isEmpty && caps.count >= 2 && high > low,
+            sides.allSatisfy({
+                abs(faces[$0].low.z - low) < tolerance && abs(faces[$0].high.z - high) < tolerance
+            }),
+            caps.allSatisfy({
+                let f = faces[$0]
+                return abs(abs(f.normal.z) - 1) < 1e-10 && abs(f.high.z - f.low.z) < tolerance
+                    && (abs(f.low.z - low) < tolerance || abs(f.low.z - high) < tolerance)
+            })
+        {
+            extrusionSideFaces = sides
         }
         order = Array(faces.indices)
         nodes.reserveCapacity(2 * faces.count)
@@ -542,8 +562,19 @@ final class MeshGeometry: @unchecked Sendable {
 
     /// The face nearest a point, by brute force over the faces whose boxes could hold a nearer one.
     func nearestFace(_ point: SIMD3<Double>) -> Int {
+        nearestFace(point, candidates: faces.indices)
+    }
+
+    /// The nearest face within a nonempty physical-surface subset.
+    func nearestFace(_ point: SIMD3<Double>, among indices: [Int]) -> Int {
+        precondition(!indices.isEmpty)
+        return nearestFace(point, candidates: indices)
+    }
+
+    private func nearestFace<Indices: Sequence>(_ point: SIMD3<Double>, candidates: Indices) -> Int
+    where Indices.Element == Int {
         var best = (distance: Double.infinity, face: 0)
-        for face in faces.indices {
+        for face in candidates {
             let f = faces[face]
             let gap = simd_length(simd_max(simd_max(f.low - point, point - f.high), SIMD3(repeating: 0)))
             guard gap < best.distance else { continue }
