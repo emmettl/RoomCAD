@@ -34,3 +34,5 @@ Build a Finder-launchable app with `make app`; run the full local checks with `m
 The dedicated physical Mac mini runs [CI](docs/CI.md). Source history is retained from
 BombCAD; see [repository migration](docs/REPOSITORY_MIGRATION.md). Historical signed
 0.1.0 downloads remain at the [original release](https://github.com/emmettl/bombcad/releases/tag/roomcad-v0.1.0).
+
+Masked acoustic geometry contracts: [scope and checks](docs/benchmarks/MASKED_DOMAINS.md).
