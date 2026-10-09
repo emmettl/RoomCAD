@@ -186,6 +186,7 @@ extension ShoeboxRoom {
         mesh.vertices = mesh.vertices.map { $0 - low }
         var room = self
         room.mesh = mesh
+        room.pieces = pieces?.map { $0.translated(by: -low) }
         room.size = high - low
         return room
     }

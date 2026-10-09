@@ -435,8 +435,9 @@ code.
   measured chamber music hall are built this way. Each backend's supported geometry is documented in
   [Room-acoustics model](room-acoustics-model.md#rooms-of-any-shape). OBJ and STL models can be
   imported as rooms, through ContinuumKit's GeometryImport, which BombCAD also uses. The app shows a
-  mesh, edits its materials and pushes and pulls its planes (item 6); adding and removing its solids
-  in the app remains to do.
+  mesh, edits its materials and pushes and pulls its planes (item 6). A hall built from pieces keeps
+  them in its document, and boxes can be joined to it, cut out of it, edited and removed in the
+  inspector. Adding extrusions and intersections in the app remains to do.
 - **Item 2.** This has started: 90 absorption and 7 scattering presets come from the annex of
   Vorländer's *Auralization*, via pyroomacoustics. Bands outside the published range are extended
   and labelled in each material's reference. Most surfaces still need scattering values. See
@@ -473,7 +474,9 @@ code.
   take a drag for an object instead of the camera, with Option and Command passed on; BombCAD keeps
   orbiting. Any room's walls, floor and ceiling push and pull with Command-drag: a box's or plan's
   surfaces, or a mesh's planes. A floor plan's corners drag by handles at the top of their edges.
-  Still to do: adding and removing pieces of a hall, which needs the document to keep them. BombCAD's blast renderer remains its own.
+  A hall built from pieces pushes and pulls its pieces rather than its mesh's corners, so it stays
+  editable as pieces. The piece chosen in the inspector is outlined in the view. BombCAD's blast
+  renderer remains its own.
 
 ### M6 — Add a convolution reverb to Driftbox rack
 

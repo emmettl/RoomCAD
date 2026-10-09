@@ -613,6 +613,84 @@ func pushSurfaces() throws {
     let longer = try #require(hall.pushingSurface(mesh.faces[back].material, face: back, by: 2))
     #expect(abs(longer.room.size.x - hall.room.size.x - 2) < 1e-9)
     #expect(longer.source == hall.source)
+    // A hall built from pieces keeps them, and its mesh is what they make.
+    let pieces = try #require(longer.room.pieces)
+    #expect(sameMesh(pieces.room(materials: mesh.materials, labels: mesh.labels), longer.room.mesh))
+    // A mesh without pieces moves its own corners.
+    var imported = hall
+    imported.room.pieces = nil
+    let moved = try #require(imported.pushingSurface(mesh.faces[back].material, face: back, by: 2))
+    #expect(moved.room.pieces == nil && abs(moved.room.size.x - hall.room.size.x - 2) < 1e-9)
+}
+
+/// Whether two meshes have the same faces, materials and labels, with corners within a nanometre.
+private func sameMesh(_ a: RoomMesh?, _ b: RoomMesh?) -> Bool {
+    guard let a, let b else { return a == nil && b == nil }
+    return a.faces == b.faces && a.materials == b.materials && a.labels == b.labels
+        && a.vertices.count == b.vertices.count
+        && zip(a.vertices, b.vertices).allSatisfy { simd_distance($0, $1) < 1e-9 }
+}
+
+@Test("Boxes join to or cut out of a hall's air, change, and come out again, leaving the hall as it was")
+func editPieces() throws {
+    let hall = try #require(RoomPresets.all.first { $0.id == "shoebox-concert-hall" })
+        .applied(to: RoomProject.starter)
+    let pieces = try #require(hall.room.pieces)
+    // An alcove past the back wall: the room grows; the source and receivers stay put.
+    let joined = try #require(hall.addingPiece(.join))
+    let alcove = try #require(joined.room.pieces?.last)
+    #expect(alcove.operation == .join && alcove.name == "Alcove 1")
+    #expect(joined.room.size.x > hall.room.size.x && joined.room.volume > hall.room.volume)
+    #expect(joined.source == hall.source && joined.receivers == hall.receivers)
+    try joined.validate()
+    // A pillar: the room loses its volume.
+    let cut = try #require(hall.addingPiece(.cut))
+    let pillar = try #require(cut.room.pieces?.last)
+    #expect(
+        abs(hall.room.volume - cut.room.volume - 0.64 * hall.room.size.z) < 0.64 * hall.room.size.z * 0.05)
+    // Made wider, then turned into a join, which inside the air changes nothing but the seating layer
+    // it fills again.
+    var wider = pillar
+    guard case .box(var low, let high, let materials) = pillar.shape else {
+        Issue.record()
+        return
+    }
+    low.x -= 0.4
+    wider.shape = .box(low: low, high: high, materials: materials)
+    let widened = try #require(cut.replacingPiece(wider))
+    #expect(widened.room.volume < cut.room.volume)
+    wider.operation = .join
+    #expect(abs(try #require(cut.replacingPiece(wider)).room.volume - hall.room.volume) < 0.02)
+    // Inside out, refused.
+    var inverted = pillar
+    inverted.shape = .box(low: high, high: low, materials: materials)
+    #expect(cut.replacingPiece(inverted) == nil)
+    // Removed again, the hall is as it was; the first piece cannot be removed.
+    let removed = try #require(cut.removingPiece(pillar.id))
+    #expect(sameMesh(removed.room.mesh, hall.room.mesh))
+    #expect(removed.room.pieces?.map(\.id) == pieces.map(\.id))
+    #expect(hall.removingPiece(pieces[0].id) == nil)
+    // Taking the hall itself away leaves the stage house, so the points move inside it.
+    let stageOnly = try #require(hall.removingPiece(pieces[1].id))
+    #expect(stageOnly.room.volume < hall.room.volume)
+    try stageOnly.validate()
+    // A room without pieces has none to add.
+    #expect(RoomProject.starter.addingPiece(.cut) == nil)
+}
+
+@MainActor
+@Test("The 3D view outlines the piece chosen in the inspector")
+func outlinePiece() throws {
+    let hall = try #require(RoomPresets.all.first { $0.id == "shoebox-concert-hall" })
+        .applied(to: RoomProject.starter)
+    let pieces = try #require(hall.room.pieces)
+    let plain = RoomScene(settings: hall)
+    let outlined = RoomScene(settings: hall, highlighted: pieces[4].id)
+    #expect(outlined.geometry.lines.count == plain.geometry.lines.count + 24)
+    #expect(RoomScene.edges(of: pieces[0]).count == 12)
+    let raked = try #require(
+        RoomPresets.all.first { $0.id == "raked-auditorium" }?.applied(to: hall).room.pieces)
+    #expect(RoomScene.edges(of: raked[0]).count == 18)
 }
 
 @MainActor

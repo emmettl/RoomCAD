@@ -183,6 +183,13 @@ Both hall presets have six materials: audience, other floors, walls, ceiling, st
 walls. Measured scenes describe their geometry the same way (see
 [the chamber music hall](roomcad-validation.md#a-larger-room-the-chamber-music-hall)).
 
+A room built this way keeps its pieces (`HallPiece`), in order: the first is the air the others
+start from, and each later one is joined, cut or intersected in turn. A piece is a box with a
+material for each face, or an extrusion with a material for each side and end; materials are
+numbered as the mesh's. The mesh is rebuilt from the pieces whenever they change, keeping its
+materials, so pieces can be added, changed and removed after the room is built. Rebuilding the
+presets' pieces gives exactly the meshes built before the pieces were kept.
+
 ### Pushing a surface
 
 `RoomMesh.pushingPlane` moves the plane of one face along its normal: every corner on that plane
@@ -190,6 +197,24 @@ moves, every face on it goes with them, and the faces that meet it stretch. The 
 if a face would no longer be flat, if a moving corner's path would cross another face, or if the
 room would fail its checks. Tests push a box's wall out and refuse pulling it through the opposite
 wall, lower an L-shaped room's floor, and raise a hall's highest ceiling.
+
+In a room built from pieces, the pieces move instead (`[HallPiece].pushing`), and the mesh is
+rebuilt from them:
+
+- **Faces on the plane.** A box's face or an extrusion's end on the plane moves along the normal,
+  stretching the piece. So does an extrusion's side on the plane, such as a raked hall's sloping
+  ceiling. A corner that only touches the plane stays.
+- **Pieces moving whole.** A box cut out of the air whose opposite face rests on no other piece moves
+  whole instead, since it stands on the surface rather than spanning the room. Examples are the
+  seating on a floor and a balcony against a back wall. A side balcony reaching the front wall
+  stretches.
+- **Pieces carried along.** A cut box resting on a piece that moves whole goes with it, such as the
+  seating on that balcony.
+- **Refusals.** A move that would turn a piece inside out is refused, as is one after which no face
+  lies on the moved plane.
+
+If no piece has a face on the plane, the mesh's corners move as above, and the room stops keeping
+its pieces.
 
 ### Importing a model
 

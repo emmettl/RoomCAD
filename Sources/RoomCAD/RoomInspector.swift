@@ -114,6 +114,79 @@ struct ZoneEditor: View {
     }
 }
 
+/// Edits a piece of air: its name, how it combines with the pieces before it, and a box's corners and
+/// face materials. An extrusion's shape changes only by pushing the room's surfaces in the 3D view.
+struct PieceEditor: View {
+    @Binding var piece: HallPiece
+    /// Whether this is the first piece, which the others are joined to or cut from.
+    let isFirst: Bool
+    /// The room's surface names, by material index.
+    let surfaces: [String]
+    static let faceNames = ["West face", "East face", "South face", "North face", "Bottom", "Top"]
+
+    var body: some View {
+        TextField("Name", text: $piece.name).endsEditingOnSubmit()
+        if isFirst {
+            LabeledContent("Combined", value: "The air the others start from")
+        } else if piece.operation == .intersect {
+            LabeledContent("Combined", value: "Intersected with the pieces before it")
+        } else {
+            Picker("Combined", selection: $piece.operation) {
+                Text("Joined to the air").tag(HallPiece.Operation.join)
+                Text("Cut out of the air").tag(HallPiece.Operation.cut)
+            }
+        }
+        switch piece.shape {
+        case .box:
+            ForEach(0..<3, id: \.self) { axis in
+                let name = OpeningEditor.axisNames[axis]
+                NumberField(title: "From \(name)", value: corner(low: true, axis), unit: "m")
+                NumberField(title: "To \(name)", value: corner(low: false, axis), unit: "m")
+            }
+            ForEach(0..<6, id: \.self) { face in
+                Picker(Self.faceNames[face], selection: material(face)) {
+                    ForEach(surfaces.indices, id: \.self) { Text(surfaces[$0]).tag($0) }
+                }
+            }
+        case .extrusion(let points, let axis, let from, let to, _, _):
+            Text(
+                String(
+                    format:
+                        "A %d-sided outline extruded along %@ from %.2f to %.2f m. Command-drag its surfaces "
+                        + "in the 3D view to reshape it.", points.count, OpeningEditor.axisNames[axis], from,
+                    to)
+            )
+            .font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    private func corner(low: Bool, _ axis: Int) -> Binding<Double> {
+        Binding(
+            get: {
+                guard case .box(let l, let h, _) = piece.shape else { return 0 }
+                return low ? l[axis] : h[axis]
+            },
+            set: { value in
+                guard case .box(var l, var h, let m) = piece.shape else { return }
+                if low { l[axis] = value } else { h[axis] = value }
+                piece.shape = .box(low: l, high: h, materials: m)
+            })
+    }
+
+    private func material(_ face: Int) -> Binding<Int> {
+        Binding(
+            get: {
+                guard case .box(_, _, let m) = piece.shape, face < m.count else { return 0 }
+                return m[face]
+            },
+            set: { value in
+                guard case .box(let l, let h, var m) = piece.shape, face < m.count else { return }
+                m[face] = value
+                piece.shape = .box(low: l, high: h, materials: m)
+            })
+    }
+}
+
 /// Edits a point's name and position.
 struct PointEditor: View {
     @Binding var point: RoomPoint
@@ -255,6 +328,9 @@ struct MaterialEditor: View {
 /// All inputs to a response, grouped as in the document.
 struct RoomInspector: View {
     @Binding var project: RoomProject
+    /// The piece of air being edited, outlined in the 3D view.
+    @Binding var selectedPiece: UUID?
+    @State private var pieceError: String?
     @State private var pendingPreset: RoomPreset?
     @State private var choosingModel = false
     @State private var pendingModel: PendingModel?
@@ -362,6 +438,9 @@ struct RoomInspector: View {
                 if project.settings.room.mesh == nil {
                     NumberField(title: "Height (z)", value: settings.room.size.component(2), unit: "m")
                 }
+            }
+            if let pieces = project.settings.room.pieces {
+                piecesSection(pieces)
             }
             Section("Surface absorption") {
                 if let mesh = project.settings.room.mesh {
@@ -560,6 +639,7 @@ struct RoomInspector: View {
 
     private func setShape(_ plan: FloorPlan?) {
         project.settings.room.mesh = nil
+        project.settings.room.pieces = nil
         project.settings.room.plan = plan
         // Openings in walls belong to one kind of room or the other.
         project.settings.openings.removeAll {
@@ -617,6 +697,86 @@ struct RoomInspector: View {
             Opening(
                 name: "Opening \(project.settings.openings.count + 1)", surface: .north,
                 centre: [size.x / 2, height / 2], size: [width, height]))
+    }
+
+    /// The pieces of air a built room is made of: each can be opened to edit it, which outlines it in the
+    /// 3D view, and removed; boxes can be added.
+    private func piecesSection(_ pieces: [HallPiece]) -> some View {
+        Section("Pieces of air") {
+            Text(
+                "The room is the first piece, with each later one joined to it, cut out of it or intersected with it in turn."
+            )
+            .font(.caption).foregroundStyle(.secondary)
+            ForEach(Array(pieces.enumerated()), id: \.element.id) { index, piece in
+                DisclosureGroup(
+                    isExpanded: Binding(
+                        get: { selectedPiece == piece.id },
+                        set: { selectedPiece = $0 ? piece.id : nil })
+                ) {
+                    PieceEditor(piece: pieceBinding(piece.id), isFirst: index == 0, surfaces: surfaceNames)
+                    if index > 0 {
+                        Button("Remove \(piece.name)", role: .destructive) {
+                            apply(project.settings.removingPiece(piece.id))
+                            if pieceError == nil { selectedPiece = nil }
+                        }
+                    }
+                } label: {
+                    Text(piece.name)
+                    Text(Self.operationName(piece.operation, first: index == 0)).foregroundStyle(.secondary)
+                }
+            }
+            HStack {
+                Button("Join a Box") { addPiece(.join) }
+                    .help("An alcove or extension joined to the air; set its corners to place it")
+                Button("Cut a Box") { addPiece(.cut) }
+                    .help("A pillar, platform or balcony cut out of the air; set its corners to place it")
+            }
+            if let pieceError {
+                Label(pieceError, systemImage: "exclamationmark.triangle").foregroundStyle(.red).font(
+                    .callout)
+            }
+        }
+    }
+
+    static func operationName(_ operation: HallPiece.Operation, first: Bool) -> String {
+        if first { return "the starting air" }
+        switch operation {
+        case .join: return "joined"
+        case .cut: return "cut out"
+        case .intersect: return "intersected"
+        }
+    }
+
+    /// The names of the room's surfaces, by material index.
+    private var surfaceNames: [String] {
+        guard let mesh = project.settings.room.mesh else { return [] }
+        return mesh.materials.indices.map { mesh.labels?[safe: $0] ?? mesh.materials[$0].name }
+    }
+
+    /// A piece by ID; a change rebuilds the room, and one that would leave no valid room is refused.
+    private func pieceBinding(_ id: UUID) -> Binding<HallPiece> {
+        Binding(
+            get: {
+                project.settings.room.pieces?.first { $0.id == id }
+                    ?? HallPiece(
+                        name: "", operation: .join, shape: .box(low: .zero, high: .one, materials: []))
+            },
+            set: { piece in apply(project.settings.replacingPiece(piece)) })
+    }
+
+    private func addPiece(_ operation: HallPiece.Operation) {
+        apply(project.settings.addingPiece(operation))
+        if pieceError == nil { selectedPiece = project.settings.room.pieces?.last?.id }
+    }
+
+    /// Takes edited settings, or says why the edit was refused.
+    private func apply(_ settings: RoomResponseSettings?) {
+        if let settings {
+            project.settings = settings
+            pieceError = nil
+        } else {
+            pieceError = "That change would not leave a valid room, so it was not made."
+        }
     }
 
     private func zoneBinding(_ index: Int) -> Binding<FittingZone> {

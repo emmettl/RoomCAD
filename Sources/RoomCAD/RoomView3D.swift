@@ -20,6 +20,8 @@ final class RoomViewport: OrbitControlling {
     }
     @ObservationIgnored private(set) lazy var commandQueue = device?.makeCommandQueue()
     @ObservationIgnored private var shown: RoomResponseSettings?
+    /// The piece of air outlined, chosen in the inspector.
+    @ObservationIgnored private var highlighted: UUID?
     /// The room size the camera was last framed for.
     @ObservationIgnored private var framedSize: SIMD3<Double>?
     /// Receives settings edited in the view: a point dragged, or a surface's material chosen.
@@ -31,11 +33,13 @@ final class RoomViewport: OrbitControlling {
     @ObservationIgnored private var pushing:
         (index: Int, face: Int, start: RoomResponseSettings, point: SIMD3<Double>, normal: SIMD3<Double>)?
 
-    /// Shows `settings`' room, framing the camera on it the first time and whenever its size changes.
-    func show(_ settings: RoomResponseSettings) {
-        guard settings != shown else { return }
+    /// Shows `settings`' room, outlining the piece `highlighted`, framing the camera on it the first time
+    /// and whenever its size changes.
+    func show(_ settings: RoomResponseSettings, highlighted: UUID? = nil) {
+        guard settings != shown || highlighted != self.highlighted else { return }
         shown = settings
-        let scene = RoomScene(settings: settings)
+        self.highlighted = highlighted
+        let scene = RoomScene(settings: settings, highlighted: highlighted)
         self.scene = scene
         renderer?.setGeometry(scene.geometry)
         if framedSize != settings.room.size {
@@ -308,6 +312,8 @@ extension RoomScene {
 /// scroll to zoom, click a surface, zone or point to select it.
 struct RoomView3D: View {
     @Binding var settings: RoomResponseSettings
+    /// A piece of air to outline.
+    var highlightedPiece: UUID? = nil
     @State private var viewport = RoomViewport()
 
     var body: some View {
@@ -356,10 +362,11 @@ struct RoomView3D: View {
             .padding(8)
         }
         .onAppear {
-            viewport.show(settings)
+            viewport.show(settings, highlighted: highlightedPiece)
             viewport.onEdit = { settings = $0 }
         }
-        .onChange(of: settings) { viewport.show(settings) }
+        .onChange(of: settings) { viewport.show(settings, highlighted: highlightedPiece) }
+        .onChange(of: highlightedPiece) { viewport.show(settings, highlighted: highlightedPiece) }
     }
 }
 

@@ -1,10 +1,11 @@
 import AcousticCore
+import Foundation
 import SceneRender
 import simd
 
 /// A room as a 3D scene: its surfaces coloured by material, open faces and openings in translucent
-/// green, fitted zones as translucent brown boxes, the source and receivers as spheres, and each
-/// directional microphone's aim as a line.
+/// green, fitted zones as translucent brown boxes, the source and receivers as spheres, each
+/// directional microphone's aim as a line, and the outline of a piece of air chosen in the inspector.
 ///
 /// Every room is drawn as a mesh: a box or a floor plan is turned into one first. Its faces point into
 /// the room, so from outside the near walls are cut away.
@@ -55,6 +56,7 @@ struct RoomScene {
     static let zoneColour = SIMD4<Float>(0.6, 0.4, 0.2, 0.22)
     static let edgeColour = SIMD4<Float>(0.15, 0.15, 0.15, 0.7)
     static let cornerColour = SIMD4<Float>(0.3, 0.3, 0.32, 1)
+    static let pieceColour = SIMD4<Float>(0.8, 0.15, 0.55, 1)
 
     /// Gentle, distinct colours for the room's materials, in turn.
     static let palette: [SIMD4<Float>] = [
@@ -85,7 +87,8 @@ struct RoomScene {
         )
     }
 
-    init(settings: RoomResponseSettings) {
+    /// The scene of `settings`' room, outlining the piece `highlighted`, if it has one by that ID.
+    init(settings: RoomResponseSettings, highlighted: UUID? = nil) {
         let room = settings.room
         (mesh, names) = Self.surfaces(of: room)
         var scene = SceneGeometry()
@@ -122,6 +125,11 @@ struct RoomScene {
                 }
             }
         }
+        if let piece = room.pieces?.first(where: { $0.id == highlighted }) {
+            for (a, b) in Self.edges(of: piece) {
+                scene.addLine(point(a), point(b), colour: Self.pieceColour)
+            }
+        }
         for (index, zone) in (room.fittings ?? []).enumerated() {
             scene.addBox(
                 point(zone.low), point(zone.high), colour: Self.zoneColour, pick: Item.zone(index).pick,
@@ -149,6 +157,37 @@ struct RoomScene {
             }
         }
         geometry = scene
+    }
+
+    /// A piece's edges: a box's twelve, or an extrusion's outline at each end and its corners between.
+    static func edges(of piece: HallPiece) -> [(SIMD3<Double>, SIMD3<Double>)] {
+        switch piece.shape {
+        case .box(let low, let high, _):
+            let corner = { (i: Int) in
+                SIMD3(i & 1 == 0 ? low.x : high.x, i & 2 == 0 ? low.y : high.y, i & 4 == 0 ? low.z : high.z)
+            }
+            return [
+                (0, 1), (2, 3), (4, 5), (6, 7), (0, 2), (1, 3), (4, 6), (5, 7), (0, 4), (1, 5), (2, 6),
+                (3, 7),
+            ]
+            .map { (corner($0.0), corner($0.1)) }
+        case .extrusion(let points, let axis, let from, let to, _, _):
+            let (a, b) = HallPiece.planeAxes(axis)
+            func point(_ p: SIMD2<Double>, _ c: Double) -> SIMD3<Double> {
+                var v = SIMD3<Double>(repeating: 0)
+                v[a] = p.x
+                v[b] = p.y
+                v[axis] = c
+                return v
+            }
+            return points.indices.flatMap { i -> [(SIMD3<Double>, SIMD3<Double>)] in
+                let (p, q) = (points[i], points[(i + 1) % points.count])
+                return [
+                    (point(p, from), point(q, from)), (point(p, to), point(q, to)),
+                    (point(p, from), point(p, to)),
+                ]
+            }
+        }
     }
 
     /// An opening's four corners in the room, a centimetre in from its surface so it shows in front of

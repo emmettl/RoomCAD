@@ -111,7 +111,19 @@ script before an archive is written.
     In a room of any shape, from a preset or a model, the face under the pointer moves with every
     face on its plane, and the corners on that plane drag the faces that meet them. A shoebox hall's
     back wall or a stage house's roof moves this way. A step is refused if it would bend a face, as
-    moving one plane of a raked floor's neighbour can, or take a corner through another face;
+    moving one plane of a raked floor's neighbour can, or take a corner through another face.
+
+    A hall built from pieces of air moves its pieces instead, and is rebuilt from them, so pieces
+    can still be added and removed afterwards (see
+    [Pushing a surface](room-acoustics-model.md#pushing-a-surface)):
+    - a piece's face on the plane moves with it, so the hall and the side balconies lengthen with a
+      pushed back wall;
+    - a piece cut out of the air whose far side rests on nothing moves whole, such as the stalls'
+      seating with the floor, or the back balcony with the back wall;
+    - whatever rests on a piece that moves whole goes with it, such as the balcony's seating.
+
+    Only a plane no piece lies on moves the mesh's corners, and the hall then stops keeping its
+    pieces;
 
   The view frames the room when it opens and when the room's size changes: from a three-quarter view
   above, as close as it can be with every corner within the middle 85% of the view. Everything else
@@ -133,6 +145,22 @@ script before an archive is written.
     [Rooms of any shape](room-acoustics-model.md#rooms-of-any-shape)): its size is shown but not
     edited, and each of its materials is edited with its label and area. **Shape** turns it back into
     a box or a floor plan. Its openings are open faces, so the openings list is not offered;
+  - for a hall built from pieces, **Pieces of air** lists them in order, each joined to the air,
+    cut out of it or intersected with it:
+    - opening a piece outlines it in magenta in the 3D view, and edits its name and, after the first,
+      whether it is joined or cut;
+    - a box also edits its corners and the material of each of its six faces, from the hall's
+      surfaces;
+    - an extrusion changes shape only by pushing the hall's surfaces in the 3D view;
+    - **Join a Box** adds an alcove reaching 3 m past the far end in x, and **Cut a Box** a 0.8 m
+      square pillar from floor to ceiling in the middle; both take the material that covers most of
+      the hall, and are placed by setting their corners;
+    - every piece after the first can be removed.
+
+    Each change rebuilds the hall and moves everything with it so it starts at the origin; the source
+    and receivers move to roomy spots if they are no longer well inside. A change that would leave no
+    valid room, such as a box turned inside out or the hall cut away, is refused, and the inspector
+    says so;
   - each surface's absorption and scattering, either one value for all bands or band by band, with the
     material's name and reference;
   - whole rooms from **Load Room Preset…** (see below);
@@ -240,8 +268,10 @@ script before an archive is written.
 | Shoebox concert hall | 26 × 18 × 14 m, and an 8 m stage house | Balcony round three sides, upholstered seats, wooden linings |
 | Raked auditorium | 26 m deep, 18 → 32 m wide, 10–13 m high | Raked seating, rear tier, sloping ceiling, brick walls |
 
-The last two are built from solids. They have six materials, labelled audience, floors, walls,
-ceiling, stage floor and stage walls, instead of six box surfaces.
+The last two are built from solids, and keep their pieces: the shoebox hall's stage house and hall,
+its three balcony slabs and two layers of seating, and the auditorium's long section, its fan-shaped
+plan and its rear tier. They have six materials, labelled audience, floors, walls, ceiling, stage
+floor and stage walls, instead of six box surfaces.
 
 Every surface's absorption comes from the published table below. Scattering comes from a published
 set where one fits: theatre audience in the hall, and rows of desks in the office and classroom.
@@ -305,8 +335,12 @@ Example.roomcad/
 name, a reference and eight octave-band absorption coefficients. A room may also have fitted zones (name,
 corners, density, absorption per band and reference), and a floor plan
 (corners and one material per wall) or a mesh (vertices; faces, each a list of corners with a
-material index and whether it is open; the materials; and their labels). The file also holds the source and
-receivers, each with a UUID, name and position.
+material index and whether it is open; the materials; and their labels). A mesh built from pieces
+also keeps them, in order, under `pieces`: each has a UUID, a name, an operation (`join`, `cut` or
+`intersect`) and a shape, either a box (two corners and six material indices, in the order -x, +x,
+-y, +y, -z, +z) or an extrusion (its points, axis, ends, and the material indices of its sides and
+ends). The mesh is saved too, as the pieces made it, so a reader that does not know pieces opens the
+hall unchanged. The file also holds the source and receivers, each with a UUID, name and position.
 
 `settings.json` holds the atmosphere and air-absorption switch. It also holds the sample rate,
 duration, maximum reflection order, content, low-frequency cutoff and export settings:
@@ -383,8 +417,11 @@ saved again.
     nearest corner or the top; openings held within their surface; and both dragged in the view;
   - pushing surfaces: a box's walls, floor and ceiling and a plan's walls, with everything shifted
     when a low wall moves, steps refused when the room would be invalid, a hall's back wall pushed
-    through its mesh, and a Command-drag in the view that pushes the east wall without moving the
-    camera;
+    through its pieces, an imported mesh's through its corners, and a Command-drag in the view that
+    pushes the east wall without moving the camera;
+  - a hall's pieces: an alcove joined and a pillar cut, which grow and shrink the hall, a pillar
+    widened and turned into a join, a box turned inside out refused, the first piece kept, a piece
+    removed leaving the hall as it was, and the chosen piece outlined in the 3D view;
   - plan corners: moved out, moved past the origin with everything shifting, refused where walls
     would cross, and dragged by their handle in the view;
   - fitting absorption to a target reverberation time, and refusing to fit without one.

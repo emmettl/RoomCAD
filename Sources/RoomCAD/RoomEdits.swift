@@ -1,4 +1,5 @@
 import AcousticCore
+import Foundation
 import simd
 
 /// Edits made in the 3D view, as changes to the settings.
@@ -236,10 +237,83 @@ extension Array {
     subscript(safe index: Int) -> Element? { indices.contains(index) ? self[index] : nil }
 }
 
+extension RoomMesh {
+    /// Whether a face lies on the plane `normal · p = offset`, facing the same way.
+    func hasFace(normal: SIMD3<Double>, offset: Double) -> Bool {
+        faces.indices.contains { face in
+            simd_dot(normalAndArea(face).normal, normal) > 1 - 1e-6
+                && abs(simd_dot(normal, vertices[faces[face].corners[0]]) - offset) < 1e-6
+        }
+    }
+}
+
+extension RoomResponseSettings {
+    /// These settings with the room rebuilt from `pieces`, keeping its materials: everything moves with
+    /// the mesh so that it starts at the origin, and the source and receivers move somewhere roomy if they
+    /// are no longer well inside (see `replacingRoom`). Nil if the pieces make no valid room.
+    func replacingPieces(with pieces: [HallPiece]) -> RoomResponseSettings? {
+        guard let mesh = room.mesh, let rebuilt = pieces.room(materials: mesh.materials, labels: mesh.labels)
+        else { return nil }
+        var result = self
+        result.room.mesh = rebuilt
+        result.room.pieces = pieces
+        let (low, high) = rebuilt.bounds
+        result = result.translating(by: -low)
+        result.room.size = high - low
+        result = result.replacingRoom(with: result.room)
+        guard (try? result.validate()) != nil else { return nil }
+        return result
+    }
+
+    /// These settings with a box added to the room's pieces: joined, an alcove 4 m deep reaching out
+    /// past the room's far end in x; cut, a 0.8 m square pillar from floor to ceiling in the middle.
+    /// Its faces take the material that covers most of the room. Nil if the room has no pieces or the
+    /// box would leave no valid room.
+    func addingPiece(_ operation: HallPiece.Operation) -> RoomResponseSettings? {
+        guard let pieces = room.pieces, let mesh = room.mesh else { return nil }
+        let areas = mesh.materialAreas
+        let material = areas.indices.max { areas[$0] < areas[$1] } ?? 0
+        let size = room.size
+        let centre = size / 2
+        let kind = operation == .cut ? "Pillar" : "Alcove"
+        let number = pieces.count { $0.name.hasPrefix(kind) } + 1
+        let piece: HallPiece =
+            operation == .cut
+            ? .box(
+                "\(kind) \(number)", .cut, [centre.x - 0.4, centre.y - 0.4, 0],
+                [centre.x + 0.4, centre.y + 0.4, size.z],
+                materials: Array(repeating: material, count: 6))
+            : .box(
+                "\(kind) \(number)", .join, [size.x - 1, size.y * 0.35, 0],
+                [size.x + 3, size.y * 0.65, min(3, size.z)], materials: Array(repeating: material, count: 6))
+        return replacingPieces(with: pieces + [piece])
+    }
+
+    /// These settings with the piece of that ID replaced by `piece`. Nil if it would leave no valid room.
+    func replacingPiece(_ piece: HallPiece) -> RoomResponseSettings? {
+        guard var pieces = room.pieces, let index = pieces.firstIndex(where: { $0.id == piece.id }) else {
+            return nil
+        }
+        pieces[index] = piece
+        return replacingPieces(with: pieces)
+    }
+
+    /// These settings without the piece of that ID. The first piece, which the others are joined to or
+    /// cut from, stays. Nil if removing it would leave no valid room.
+    func removingPiece(_ id: UUID) -> RoomResponseSettings? {
+        guard var pieces = room.pieces, let index = pieces.firstIndex(where: { $0.id == id }), index > 0
+        else {
+            return nil
+        }
+        pieces.remove(at: index)
+        return replacingPieces(with: pieces)
+    }
+}
+
 extension RoomResponseSettings {
     /// These settings with everything in the room moved by `offset`: the source and receivers, the
-    /// zones, a plan's corners or a mesh's vertices, and openings' positions on the surfaces they move
-    /// along. The room's size is unchanged.
+    /// zones, a plan's corners or a mesh's vertices and pieces, and openings' positions on the surfaces
+    /// they move along. The room's size is unchanged.
     func translating(by offset: SIMD3<Double>) -> RoomResponseSettings {
         var result = self
         result.source.position += offset
@@ -252,6 +326,7 @@ extension RoomResponseSettings {
         }
         result.room.plan?.corners = room.plan?.corners.map { $0 + SIMD2(offset.x, offset.y) } ?? []
         result.room.mesh?.vertices = room.mesh?.vertices.map { $0 + offset } ?? []
+        result.room.pieces = room.pieces?.map { $0.translated(by: offset) }
         for index in result.openings.indices where result.openings[index].wall == nil {
             let (a, b) = result.openings[index].surface.planeAxes
             result.openings[index].centre += SIMD2(offset[a], offset[b])
@@ -262,18 +337,35 @@ extension RoomResponseSettings {
     /// These settings with surface `index` (numbered as in `RoomScene.surfaces(of:)`) pushed out of the
     /// room by `distance` metres, or pulled in for a negative one: a box's wall, floor or ceiling, or a
     /// plan's wall, with its two corners, or its floor or ceiling. What is inside keeps its place
-    /// relative to the surfaces that do not move. In a mesh, `face` says which face's plane moves (see
-    /// `RoomMesh.pushingPlane`). Nil if the result would not be a valid room.
+    /// relative to the surfaces that do not move. In a mesh, `face` says which face's plane moves: in a
+    /// mesh built from pieces, the pieces' faces on that plane move and the mesh is rebuilt (see
+    /// `[HallPiece].pushing`); in any other mesh, or if no piece has a face there, the mesh's own corners
+    /// move (see `RoomMesh.pushingPlane`) and the pieces are given up. Nil if the result would not be a
+    /// valid room.
     func pushingSurface(_ index: Int, face: Int? = nil, by distance: Double) -> RoomResponseSettings? {
         let step = (distance * 100).rounded() / 100
         var result = self
         if let mesh = room.mesh {
-            guard let face, mesh.faces.indices.contains(face), mesh.faces[face].material == index,
-                let pushed = mesh.pushingPlane(of: face, by: step)
-            else { return nil }
-            result.room.mesh = pushed
+            guard let face, mesh.faces.indices.contains(face), mesh.faces[face].material == index else {
+                return nil
+            }
+            let normal = mesh.normalAndArea(face).normal
+            let offset = simd_dot(normal, mesh.vertices[mesh.faces[face].corners[0]])
+            if let pieces = room.pieces, step != 0,
+                let moved = pieces.pushing(plane: normal, offset: offset, by: -normal * step)
+            {
+                guard let rebuilt = moved.room(materials: mesh.materials, labels: mesh.labels),
+                    rebuilt.hasFace(normal: normal, offset: offset - step)
+                else { return nil }
+                result.room.mesh = rebuilt
+                result.room.pieces = moved
+            } else {
+                guard let pushed = mesh.pushingPlane(of: face, by: step) else { return nil }
+                result.room.mesh = pushed
+                if step != 0 { result.room.pieces = nil }
+            }
             // Keep the mesh starting at the origin, shifting everything with it.
-            let (low, high) = pushed.bounds
+            guard let (low, high) = result.room.mesh?.bounds else { return nil }
             result = result.translating(by: -low)
             result.room.size = high - low
             guard (try? result.validate()) != nil else { return nil }

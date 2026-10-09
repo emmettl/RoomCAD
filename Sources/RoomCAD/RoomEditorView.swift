@@ -15,6 +15,8 @@ struct RoomEditorView: View {
     @State private var spaceKey = SpaceKeyMonitor()
     @State private var chart = Chart.envelope
     @State private var view = RoomView.drawings
+    /// The piece of air chosen in the inspector, outlined in the 3D view.
+    @State private var selectedPiece: UUID?
 
     enum Chart { case envelope, spectrum, early }
     enum RoomView { case drawings, threeD }
@@ -49,7 +51,7 @@ struct RoomEditorView: View {
                             drawing(.elevation)
                         }
                     case .threeD:
-                        RoomView3D(settings: $document.project.settings)
+                        RoomView3D(settings: $document.project.settings, highlightedPiece: selectedPiece)
                     }
                 }
                 .frame(minHeight: 260)
@@ -57,7 +59,7 @@ struct RoomEditorView: View {
                     .frame(minHeight: 220)
             }
             .frame(minWidth: 560)
-            RoomInspector(project: $document.project)
+            RoomInspector(project: $document.project, selectedPiece: $selectedPiece)
                 .frame(minWidth: 300, idealWidth: 340, maxWidth: 440)
         }
         .toolbar {

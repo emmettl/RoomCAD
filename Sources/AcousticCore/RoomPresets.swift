@@ -18,9 +18,9 @@ public struct RoomPreset: Identifiable, Sendable {
     /// For a room that is not rectangular, its corners in metres, anticlockwise; every wall takes the
     /// north wall's material.
     var planCorners: [SIMD2<Double>]? = nil
-    /// For a room built from pieces: its builder, given the materials for `HallShapes.labels`, those
-    /// materials, and the source's and the listeners' centre in the builder's coordinates.
-    var hall: (@Sendable ([SurfaceMaterial]) -> RoomMesh)? = nil
+    /// For a room built from pieces: its pieces, the materials for `HallShapes.labels`, and the source's
+    /// and the listeners' centre in the pieces' coordinates.
+    var hall: (@Sendable () -> [HallPiece])? = nil
     var hallSurfaces: [(absorption: String, scattering: Scattering)] = []
     var hallSource: SIMD3<Double> = .zero
     var hallListener: SIMD3<Double> = .zero
@@ -72,7 +72,9 @@ public struct RoomPreset: Identifiable, Sendable {
         var room = ShoeboxRoom(size: size, material: .rigid)
         var centre: SIMD3<Double>
         if let hall {
-            room.mesh = hall(hallSurfaces.map(material))
+            let pieces = hall()
+            room.mesh = HallShapes.room(pieces, materials: hallSurfaces.map(material))
+            room.pieces = pieces
             let low = room.mesh!.bounds.min
             room = room.fittingMesh()
             result.source.position = hallSource - low
@@ -238,10 +240,10 @@ public enum RoomPresets {
                 "26 × 18 × 14 m with a stage house and a balcony round three sides: upholstered seats, wooden "
                 + "linings",
             size: [34, 18, 14], surfaces: [:],
-            hall: { materials in
+            hall: {
                 HallShapes.shoebox(
                     length: 26, width: 18, height: 14, stageDepth: 8, stageWidth: 14, stageHeight: 11,
-                    stageRise: 1, balconyHeight: 6, balconyDepth: 3, materials: materials)
+                    stageRise: 1, balconyHeight: 6, balconyDepth: 3)
             },
             hallSurfaces: [
                 ("audience_upholstered_chairs_1", .published("theatre_audience")),
@@ -256,10 +258,10 @@ public enum RoomPresets {
                 "26 m deep, widening from 18 to 32 m: raked seating, a rear tier and a sloping ceiling; brick "
                 + "walls",
             size: [33, 32, 13], surfaces: [:],
-            hall: { materials in
+            hall: {
                 HallShapes.raked(
                     depth: 26, frontWidth: 18, backWidth: 32, frontHeight: 10, backHeight: 13, rake: 6,
-                    stageDepth: 7, tierDepth: 8, tierHeight: 3, materials: materials)
+                    stageDepth: 7, tierDepth: 8, tierHeight: 3)
             },
             hallSurfaces: [
                 ("audience_upholstered_chairs_1", .published("theatre_audience")),

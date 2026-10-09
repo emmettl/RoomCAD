@@ -106,6 +106,9 @@ public struct ShoeboxRoom: Codable, Equatable, Sendable {
     /// A room of any shape, which takes the place of the box's surfaces and any plan. Its corners lie
     /// within `[0, size]`.
     public var mesh: RoomMesh?
+    /// For a mesh built from pieces of air, the pieces, in the mesh's coordinates; the mesh is rebuilt from
+    /// them when they change (see `rebuildingFromPieces`). Nil for any other room.
+    public var pieces: [HallPiece]?
     /// Zones of scattering objects, such as seating or ornament; nil or empty for none.
     public var fittings: [FittingZone]?
 
