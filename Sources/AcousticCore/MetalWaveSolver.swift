@@ -253,7 +253,8 @@ extension WaveSolver {
         /// One flag per cell: whether it is simulated.
         var inside: [UInt8]
         /// Six faces per cell, in the order -x, +x, -y, +y, -z, +z, each laid out over all cells; -1 marks a
-        /// face to a neighbour, otherwise the wall term β = c dt / (2 ξ d).
+        /// face to a neighbour, otherwise the wall term β = c dt a / (2 ξ d), where a is the
+        /// local surface-area weight (one for an axis-aligned wall).
         var faces: [Float]
         var sourceCells: [Int]
         /// Injection weights scaled by c² dt / V.
@@ -308,6 +309,12 @@ extension WaveSolver {
         }
         let surfaceImpedance = Dictionary(uniqueKeysWithValues: Surface.allCases.map { ($0, impedance($0)) })
         let wallImpedance = room.plan?.walls.map { impedance(material: $0) } ?? []
+        // A planar surface contributes |n_x| + |n_y| + |n_z| times its physical area to the
+        // Cartesian staircase. Share its admittance over those grid faces using the local
+        // unit normal. This changes wall work, not cell volumes or interior fluxes.
+        func areaWeight(_ normal: SIMD3<Double>) -> Double {
+            1 / (abs(normal.x) + abs(normal.y) + abs(normal.z))
+        }
         // Air in an open face, otherwise the face's material.
         let faceImpedance = room.mesh.map { mesh in
             mesh.faces.indices.map {
@@ -329,7 +336,9 @@ extension WaveSolver {
             let start = plan.start(wall)
             let along = simd_dot(point - start, simd_normalize(plan.end(wall) - start))
             let open = openings.contains { $0.wall == wall && $0.contains([along, height]) }
+            let normal = plan.inwardNormal(wall)
             return beta(open ? 1 : wallImpedance[wall], depth)
+                * Float(areaWeight([normal.x, normal.y, 0]))
         }
         var faces = [Float](repeating: -1, count: 6 * count)
         let steps: [(SIMD3<Int>, Int)] = [
@@ -345,8 +354,10 @@ extension WaveSolver {
                     where !active(i + step.x, j + step.y, k + step.z) {
                         let face = point + SIMD3<Double>(step) * spacing / 2
                         if let mesh, let faceImpedance {
-                            faces[side * count + at] = beta(
-                                faceImpedance[mesh.nearestFace(face)], spacing[axis])
+                            let nearest = mesh.nearestFace(face)
+                            faces[side * count + at] =
+                                beta(faceImpedance[nearest], spacing[axis])
+                                * Float(areaWeight(mesh.faces[nearest].normal))
                         } else if room.plan != nil, axis < 2 {
                             faces[side * count + at] = planFace(
                                 [face.x, face.y], height: face.z, depth: spacing[axis])
