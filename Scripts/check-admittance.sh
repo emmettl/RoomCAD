@@ -18,9 +18,10 @@ for backend in cpu metal; do
  python3 "$scratch/ContinuumKit/Scripts/benchmark-metadata.py" --root "$root" \
   --repository https://github.com/emmettl/RoomCAD --precision Float32 --dependency "continuumkit=$revision" \
   --output "$output/$backend/environment.json" Sources/AcousticCore/*.swift \
-  Scripts/prepare-admittance-reference.py Scripts/check-admittance.sh Fixtures/AdmittanceBenchmark/Sources/AdmittanceAdapter/Adapter.swift
+  Scripts/prepare-admittance-reference.py Scripts/check-admittance.sh Scripts/verify-wall-area.py Fixtures/AdmittanceBenchmark/Sources/AdmittanceAdapter/Adapter.swift
  swift run --package-path "$scratch/consumer" -c release -Xswiftc -enable-testing -Xswiftc -warnings-as-errors AdmittanceAdapter \
   --backend "$backend" --output "$output/$backend" --metadata "$output/$backend/environment.json"
  python3 "$scratch/ContinuumKit/Scripts/verify-admittance-output.py" "$output/$backend"
+ python3 Scripts/verify-wall-area.py "$output/$backend"
  cp "$scratch/consumer/Package.resolved" "$output/$backend/consumer-Package.resolved"
 done

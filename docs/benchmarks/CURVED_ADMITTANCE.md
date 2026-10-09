@@ -17,7 +17,41 @@ exponential reference, rate refinement and pressure-loss/midpoint-wall-work chec
 This verifies the first local flow substep, not an entire absorbing-cylinder transient.
 
 Physical prescribed-load admittance is audited separately against real side area. A
-geometry failure is explicitly `gap`, never a physical pass. CI verifies complete reports
-and numerical contracts while preserving that gap; fixing the layout is separate bounded
-numerical work. No production sources, tagged dependencies, old gates or measured fixtures
-are changed. Durable complete evidence is retained privately in Edgerton.
+geometry failure is explicitly `gap`, never a physical pass. The original audit is
+retained unchanged as evidence of the former full-staircase area bias. Current source
+additionally requires all twelve records per backend to pass the same 0.5% physical
+area gate through `Scripts/verify-wall-area.py`; a complete gap report now fails
+application CI.
+
+## Local area correction
+
+For a locally planar surface of area A with unit normal n, the three Cartesian
+staircase-face families have areas A|n_x|, A|n_y| and A|n_z|. Their sum is
+A s, where s = |n_x| + |n_y| + |n_z|. Weighting each local face admittance by
+1/s gives A in the resolved-plane limit. This follows from orthogonal projection;
+it is a local geometry rule rather than an integrated cylinder calibration.
+
+`WaveSolver.gridLayout` applies that weight to the nearest mesh face or plan wall,
+including open faces with air impedance. Both CPU and Metal consume the same layout.
+For axis-aligned normals the weight is exactly one. For unit normals it lies between
+1/sqrt(3) and one, so coefficients stay non-negative. Rigid coefficients remain zero.
+Cell occupancy, full-cell volume, interior fluxes and stepping kernels are unchanged.
+
+`WallAreaTests` integrates actual original layout coefficients against independent
+circle/rotated-square/tilted-cube areas. It checks mesh and plan forms, non-uniform
+pressure with two side materials, air-impedance mesh openings, anisotropic spacing,
+refinement and exact aligned-box coefficient parity. These prescribed-load checks do
+not evolve a coupled acoustic field.
+
+A staircase surface-area error is a known issue in room-acoustic FDTD; see the primary
+[PFFDTD implementation notes](https://github.com/bsxfun/pffdtd#staircasing-in-fdtd).
+That implementation describes a normal inner-product correction. The 1/s local
+normalization here is independently derived above; no PFFDTD code is copied.
+
+The correction reduces admittance-area bias; staircase location, corner assignment,
+material discontinuities and reflected-wave errors remain. The next gate is an
+independent **coupled absorbing-cylinder transient**, with separate spatial and temporal
+refinement and full pressure/velocity/work histories. Passing area and a single local
+substep is insufficient for that claim. AcousticCore remains application-owned;
+no release tag, dependency pin or measured fixture changes are part of this work.
+Durable complete evidence is retained privately in Edgerton.
