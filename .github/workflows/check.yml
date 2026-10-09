@@ -8,7 +8,7 @@ on:
       suite:
         description: Full application checks or bounded acoustic source conformance
         type: choice
-        options: [all, acoustics, boundaries, rigid-3d, oblique, masked]
+        options: [all, acoustics, boundaries, rigid-3d, oblique, masked, cylinder]
         default: all
 
 permissions:
@@ -152,5 +152,28 @@ jobs:
         with:
           name: masked-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/masked-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  cylinder:
+    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'cylinder'
+    runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify cylinder-domain CPU and Metal fields
+        run: bash Scripts/check-cylinder.sh "${{ runner.temp }}/cylinder-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Require complete matching staggered fields from both backends
+        run: |
+          python3 Scripts/verify-cylinder-output.py "${{ runner.temp }}/cylinder-${{ github.run_id }}-${{ github.run_attempt }}/cpu"
+          python3 Scripts/verify-cylinder-output.py "${{ runner.temp }}/cylinder-${{ github.run_id }}-${{ github.run_attempt }}/metal"
+      - name: Retain cylinder conformance, occupancy and connectivity fields
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cylinder-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cylinder-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           retention-days: 14
