@@ -160,6 +160,16 @@ struct WaveSolverTests {
         // The bare boundary model, without matching the decay to a diffuse field's.
         solver.matchesDiffuseDecay = false
         #expect(solver.bandGroups == [[0], [1, 2]])
+        // A room of any shape groups its bands by its faces' materials too. Grouped by the box's, which a
+        // mesh leaves rigid, every band shared one run, with walls absorbing the bands' mean.
+        var meshed = ShoeboxRoom(size: [1, 1, 1], material: .rigid)
+        meshed.mesh = RoomMesh.box(
+            [4, 2.2, 1.8],
+            materials: Dictionary(uniqueKeysWithValues: Surface.allCases.map { ($0, room[$0]) }))
+        meshed = meshed.fittingMesh()
+        let meshSolver = WaveSolver(
+            room: meshed, sampleRate: 48_000, topFrequency: 200, atmosphere: .standard)
+        #expect(meshSolver.bandGroups == [[0], [1, 2]])
         // The first axial mode lies in the 63 Hz band and the third in the 125 Hz band; nothing else is
         // within 25 Hz of either on the y and z centre lines.
         let fftLength = 1 << 18

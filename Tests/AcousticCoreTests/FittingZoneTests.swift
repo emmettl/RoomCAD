@@ -140,6 +140,44 @@ struct FittingZoneTests {
         #expect(abs(rate / expected - 1) < 0.03)
     }
 
+    @Test("Sound scattered by objects round a receiver never reaches it before the direct sound")
+    func causal() throws {
+        // Seating 1 m deep under a source on a stage and a receiver just above it, as in an auditorium, in
+        // a room large enough that the receiver's sphere (1.4 m) reaches well into the seating. Timed at
+        // the middle of their chords, rays from the source scattered within the sphere on the source's
+        // side counted up to 4 ms before the direct sound, and the response had energy before it.
+        let size: SIMD3<Double> = [20, 16, 8]
+        var room = ShoeboxRoom(size: size, material: .anechoic)
+        room.fittings = [
+            FittingZone(
+                name: "Seats", low: [2, 2, 0], high: [18, 14, 1], density: 1,
+                absorption: Array(repeating: 0, count: 8))
+        ]
+        let source: SIMD3<Double> = [4, 8, 2.5]
+        let receiver: SIMD3<Double> = [12, 8, 1.3]
+        let c = Atmosphere.standard.soundSpeed
+        let direct = simd_distance(source, receiver) / c
+        let tracer = DiffuseRayTracer(
+            room: room, source: source, atmosphere: .standard, airAbsorption: false, rayCount: 40_000, seed: 3
+        )
+        let energy = tracer.trace(receivers: [receiver], duration: 0.1)
+        let first = Int(direct / DiffuseRayTracer.binWidth)
+        for band in energy[0].indices {
+            #expect(energy[0][band][..<first].allSatisfy { $0 == 0 })
+            #expect(energy[0][band][first..<(first + 5)].reduce(0, +) > 0)
+        }
+
+        let settings = RoomResponseSettings(
+            room: room, source: RoomPoint(name: "S", position: source),
+            receivers: [RoomPoint(name: "R", position: receiver)], airAbsorption: false, duration: 0.1,
+            lowFrequencyCutoff: 0, lowFrequencyModel: false)
+        let samples = try RoomResponseGenerator.generate(settings).response.channels[0]
+        func sum(_ range: Range<Int>) -> Double { samples[range].reduce(0) { $0 + Double($1) * Double($1) } }
+        // The renderer's kernel reaches 32 samples, under a millisecond, before each arrival.
+        let onset = Int(direct * 48_000)
+        #expect(sum(0..<(onset - 48)) < 1e-6 * sum(onset - 48..<samples.count))
+    }
+
     @Test("Objects that absorb make a rigid room decay at c q α, as Sabine's formula with 4 q α V predicts")
     func absorbingObjects() throws {
         // Objects 5 m apart on average, the room's size. Much denser objects make sound spread by diffusion,

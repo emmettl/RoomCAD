@@ -39,6 +39,8 @@ which git ignores.
 RoomCAD's `acousticbench --bras-cr2 --update-fixture` derives this file from the ten dodecahedron
 room impulse responses `CR2_RIR_LS{1,2}_MP{1–5}_Dodecahedron.wav`. For each pair it gives:
 
-- the ISO 3382-1 parameters in each octave band, with Lundeby's noise compensation;
+- the ISO 3382-1 parameters in each octave band, the 63 Hz and 8 kHz bands closed below about 31 Hz and above
+  about 16 kHz like the others, with Lundeby's noise compensation (see the comparison's Method; the file was
+  rebuilt in October 2026, when both were corrected);
 - the low-frequency spectrum, 30–175 Hz, 1/24 octave apart;
 - the early reflections above 500 Hz in 1 ms bins.

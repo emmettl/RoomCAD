@@ -443,7 +443,9 @@ public enum RoomResponseGenerator {
                 diffuse[index], into: &renderer, roomVolume: settings.room.volume,
                 soundSpeed: settings.atmosphere.soundSpeed,
                 seed: Self.tailSeed(settings.randomSeed, receiver: settings.receivers[index].id),
-                bands: reported)
+                bands: reported,
+                earliest: simd_distance(receiver.position, settings.source.position)
+                    / settings.atmosphere.soundSpeed)
             let total = specularEnergy + diffuseEnergy
             results.store(
                 Channel(

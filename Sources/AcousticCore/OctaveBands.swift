@@ -23,6 +23,18 @@ public enum OctaveBands {
         return below * above
     }
 
+    /// Weight of `band` at `frequency` for measuring a response in octave bands, as ISO 3382-1 does with
+    /// octave filters. It is `weight`, except that the lowest and highest bands, which `weight` leaves open
+    /// down to 0 Hz and up to the Nyquist frequency so that the bands sum to one, are closed an octave
+    /// beyond their inner crossover by the same half cosine. Every band then has the same shape, and the
+    /// 63 Hz and 8 kHz bands don't take in what a source radiates below 31 Hz or above 16 kHz.
+    public static func measurementWeight(band: Int, frequency: Double) -> Double {
+        var w = weight(band: band, frequency: frequency)
+        if band == 0 { w *= rise(frequency, crossover: centres[0] / 2.squareRoot()) }
+        if band == count - 1 { w *= 1 - rise(frequency, crossover: centres[count - 1] * 2.squareRoot()) }
+        return w
+    }
+
     /// Smooth step from 0 below a crossover to 1 above it, as a half cosine in log frequency.
     static func rise(_ frequency: Double, crossover: Double) -> Double {
         guard frequency > 0 else { return 0 }

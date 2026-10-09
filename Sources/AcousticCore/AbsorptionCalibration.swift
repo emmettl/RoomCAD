@@ -54,10 +54,11 @@ public enum AbsorptionCalibration {
             var trial = settings
             trial.room = room.scalingAbsorption(by: factors)
             let channels = try simulate(trial)
+            // In the octave bands a measurement's times are given in.
             let times = OctaveBands.centres.indices.map { band -> Double? in
                 let measured = channels.compactMap {
                     DecayAnalysis.reverberationTime(
-                        DecayAnalysis.octaveBand($0, sampleRate: settings.sampleRate, band: band),
+                        DecayAnalysis.measuredOctaveBand($0, sampleRate: settings.sampleRate, band: band),
                         sampleRate: settings.sampleRate)
                 }
                 return measured.count == channels.count && !measured.isEmpty

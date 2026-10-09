@@ -86,9 +86,16 @@ near walls are not biased. That normalization makes a free-field source give 1/r
 an image source's squared gain. Deposits go into 1 ms bins per octave band, with air absorption applied
 over the path length.
 
+A crossing is timed at the middle of its chord, which blurs arrival times by up to R/c, 4 ms for a
+1.4 m sphere. A ray scattered or reflected inside the sphere, by a fitted zone's objects around the
+receiver or a floor just below it, could then seem to arrive before the direct sound. Such a ray is
+timed instead by its path through the point where it set off, which never arrives sooner, and nothing is
+counted before the direct sound. In the auditorium, with chairs as zones, energy had appeared up to
+6 ms before the direct sound, 15–40 dB below it.
+
 `DiffuseTail` turns each receiver's histogram, smoothed over ±2 ms or ±2% of the time since emission,
 whichever is wider, into impulses with random signs at
-random times within each bin. Each bin's impulses share its energy equally in every band, so they add
+random times within each bin, none before the direct sound and with no smoothing across it. Each bin's impulses share its energy equally in every band, so they add
 incoherently to it. Their density follows a room's reflection density, 4πc³t²/V per second, between
 2,000 and 20,000 per second. They go through the same renderer as the image sources.
 
@@ -294,6 +301,8 @@ in the plan and section.
 Tests check zones against exact results:
 
 - The direct sound loses exactly e^(−qd) of its energy crossing d metres of a zone.
+- With seating under a source and a receiver just above it, no scattered energy reaches the receiver
+  before the direct sound, in the rays or in the rendered response.
 - A folded box path starts at the receiver, ends at the source, keeps the image's distance, and turns
   once per reflection.
 - Box, floor-plan and mesh image sources lose the same energy to a zone, to within 10⁻⁹, in a box
@@ -410,9 +419,12 @@ fill the room, at least 10 per wavelength at the top of the crossover's transiti
   the normal-incidence relation instead made the walls absorb about half as much again at α = 0.3, and
   left the wave part 1.5–5.6 dB too quiet at the crossover.
 - **Frequency-dependent walls.** Each octave band below the crossover's top gets the impedance its own
-  absorption gives. Bands whose impedances agree on every boundary share a run, so a room of
-  frequency-independent materials needs one run and one with several distinct bands needs one per band.
-  Each run's spectrum is kept only in its own bands, through the same octave weights the geometrical
+  absorption gives. Bands whose impedances agree on every boundary (box faces, plan walls and mesh
+  faces) share a run, so a room of frequency-independent materials needs one run and one with several
+  distinct bands needs one per band. Until October 2026 a mesh's faces were left out of that
+  comparison, so a room of any shape had a single run whose walls took the mean absorption of all its
+  bands; the halls in [RoomCAD against measured rooms](roomcad-validation.md) now take two or three
+  runs, and so a lower crossover within the budget. Each run's spectrum is kept only in its own bands, through the same octave weights the geometrical
   model uses, which sum to one.
 - **Decay matched to a diffuse field.** Published absorption coefficients are diffuse-field values, and
   the geometrical model uses them that way. In the solver a wall is a locally reacting impedance. By
@@ -424,8 +436,11 @@ fill the room, at least 10 per wavelength at the top of the crossover's transiti
   are not locally reacting.
 
   Each run therefore also records 24 probes, spread through the room by a Halton sequence and kept
-  0.3 m clear of every boundary. Their summed energy in each band gives the room's average T30.
-  Where that is longer than Eyring's estimate for the band, with air absorption and openings, the
+  0.3 m clear of every boundary. Their summed energy in each band gives the room's average T30. The
+  band is the octave a measurement gives T30 in (`OctaveBands.measurementWeight`): at 63 Hz it is
+  closed below 31 Hz, so that a room's sparse, long-ringing modes below that, which no measured band
+  holds, don't set the damping. With the band open below, they had made the seminar room's 63 Hz
+  octave decay 11% faster than Eyring's estimate. Where that is longer than Eyring's estimate for the band, with air absorption and openings, the
   band's response is damped by e^(−Δt) from the direct sound's arrival, so that it decays at Eyring's
   rate. Every mode in the band is damped alike, so the modes' frequencies, their spatial pattern and
   their differences in decay remain, and the response never decays more slowly than before. In boxes
@@ -479,6 +494,7 @@ Tests check the solver against theory:
   a figure of eight, it hears under 3%.
 - With absorption 0.2 in the 63 Hz band and 0.6 above, the first axial mode (43 Hz) and the third
   (129 Hz) each decay within 10% of the rate their own band's impedance gives.
+- A box built as a mesh groups its bands into runs as the box itself does, by its faces' materials.
 - The GPU and CPU solvers agree to within 10⁻¹⁰ of the energy, in a box and in an L-shaped plan with a
   door, for omni and cardioid receivers.
 - The rule itself is tested on its own. End to end, a delay after each GPU command buffer stands in for
@@ -685,20 +701,23 @@ in each of three rooms from the BRAS database. In the 145 m³ seminar room:
 In the 3,100 m³ chamber music hall, built from solids, with absorption fitted to this model:
 
 - **Clarity and definition.** C80, D50 and centre time are within about one JND from 500 Hz to 4 kHz.
-- **Reverberation.** The decay is 13–40% too long, because the simplified hall lacks the pillars,
+- **Reverberation.** The decay is 12–41% too long, because the simplified hall lacks the pillars,
   ornament and chairs that scatter sound in the real one.
 
 In the 8,650 m³ auditorium, with its fan-shaped plan, raked stalls and rising galleries, also built from
 solids:
 
-- **Reverberation.** With absorption fitted to this model by Eyring's formula, the decay is 9–21% too
-  long from 125 Hz to 4 kHz. Fitted by simulating the model, T30 matches, and EDT, C80, D50 and centre
-  time are within about 1.1 JND from 125 Hz to 4 kHz.
-- **Low frequencies.** At 63 Hz the wave solver gives the measured T30, but an early decay much slower
-  than measured.
+- **Reverberation.** With absorption fitted to this model by Eyring's formula, the decay is 9–20% too
+  long from 125 Hz to 8 kHz. Fitted by simulating the model, T30 matches, and EDT, C80, D50 and centre
+  time are within about 1.5 JND from 125 Hz to 8 kHz.
+- **Low frequencies.** At 63 Hz clarity and definition agree, but the early decay is slower than
+  measured: the real hall decays much faster from 63 to 125 Hz than below, which one absorption per
+  octave cannot follow.
 
 `RoomParameters` computes the ISO 3382-1 parameters it uses: EDT, T20, T30, C50, C80, D50 and
-centre time, with Lundeby's noise compensation for measured responses.
+centre time, with Lundeby's noise compensation for measured responses. It measures in octave bands
+closed at both ends (`OctaveBands.measurementWeight`): the bands responses are rendered with leave
+the lowest open down to 0 Hz and the highest up to the Nyquist frequency, so that they sum to one.
 
 ### Playback in Driftbox
 
@@ -802,9 +821,10 @@ The roadmap orders the work as follows:
 - wave-solver walls that also absorb at grazing incidence, such as extended-reaction or
   frequency-dependent complex impedances, checked against the measured room;
 - fitted zones that follow a raked floor or a wall, rather than boxes, and sourced densities for
-  common furnishings: in the auditorium, uniform boxes of chairs over the rake disturb the early
-  reflections more than the real chairs do;
-- an early decay at 63 Hz in the auditorium as fast as the measured one.
+  common furnishings; seating whose toll on grazing sound depends on frequency, as the seat dip does:
+  in the auditorium, uniform boxes of chairs take away more of the early reflections than the real
+  chairs do;
+- absorption in third octaves below about 250 Hz, which the auditorium's 63 Hz decay calls for.
 
 A synthetic late tail (M2 item 4) is no longer needed: rays carry every reflection beyond the image
 sources' order.

@@ -393,24 +393,25 @@ compares ten measured responses in each of a 145 m³ seminar room, a 3,100 m³ c
 - **Low-frequency decay.** At first, the wave solver's decay at 63–125 Hz was 18–32% too long. Its
   locally reacting walls take only half as much energy from modes that graze them as from modes that
   strike them. With each band now matched to the diffuse decay, the fitted materials give T30 within
-  about 10% at 63 Hz and 2% at 125 Hz.
+  6–9% at 63 and 125 Hz, and EDT, clarity and definition within about 1.6 JND.
 
 In the chamber music hall, built from solids, with absorption fitted to the simplified model:
 
 - **Clarity and definition.** C80, D50 and centre time are within about one JND from 500 Hz to 4 kHz.
 - **Reverberation.** The decay is 13–40% too long. The simplified hall lacks the pillars, ornament
   and chairs that scatter sound in the real one, and more scattering takes away about half the excess.
-- **Low frequencies.** At 63 Hz the wave solver gives the measured T30.
+- **Low frequencies.** At 63 Hz the wave solver gives T30 within 4%, and EDT 2.7 JND long.
 
 In the auditorium, built from solids with its fan-shaped plan, raked stalls and rising galleries:
 
 - **Reverberation.** With absorption fitted to the simplified model by Eyring's formula, the decay is
-  9–21% too long from 125 Hz to 4 kHz, and C80 and D50 are within one JND from 1 to 4 kHz.
+  9–20% too long from 125 Hz to 8 kHz, and C80 and D50 are within one JND from 1 to 4 kHz.
 - **Shape of the decay.** With absorption fitted by simulating the model, T30 matches, and EDT, C80,
-  D50 and centre time are within about 1.1 JND from 125 Hz to 4 kHz.
-- **Low frequencies.** At 63 Hz the wave solver gives the measured T30 but an early decay much slower
-  than measured (EDT 2.9 s against 1.8 s).
-- **Chairs.** As uniform fitted zones they lower the early reflections' correlation from 0.51 to 0.31.
+  D50 and centre time are within about 1.5 JND from 125 Hz to 8 kHz.
+- **Low frequencies.** At 63 Hz clarity and definition agree, but EDT is 2.33 s against 1.68 s: the
+  real hall decays much faster from 63 to 125 Hz than below, which absorption per octave cannot follow.
+- **Chairs.** As uniform fitted zones they lower the early reflections' correlation by about 0.1,
+  averaged over random seeds (0.41 to 0.28 with the bench's seed).
 
 Listening comparisons are not done.
 Item 6 is done: every export's metadata keeps the settings, random seed and crossover. It also states
