@@ -8,7 +8,8 @@ revision=$(cat Fixtures/SharedWaveBenchmark/core-revision.txt)
 mkdir -p "$output"
 python3 Scripts/test-tilted-pulse-pair.py
 scratch=$(mktemp -d "${TMPDIR:-/tmp}/roomcad-shared-wave-build.XXXXXX")
-trap 'task_status=$?; rm -rf "$scratch"; exit "$task_status"' EXIT
+task_completed=0
+trap 'task_status=$?; rm -rf "$scratch"; if test "$task_completed" != 1 && test "$task_status" = 0; then exit 1; fi; exit "$task_status"' EXIT
 source=${CONTINUUMKIT_BENCHMARK_SOURCE:-https://github.com/emmettl/ContinuumKit.git}
 git clone --quiet "$source" "$scratch/ContinuumKit"
 git -C "$scratch/ContinuumKit" checkout --quiet "$revision"
@@ -33,10 +34,10 @@ for selected in $suites; do
    python3 "$scratch/ContinuumKit/Scripts/benchmark-metadata.py" --root "$root" --repository https://github.com/emmettl/RoomCAD \
     --precision Float32 --dependency "continuumkit=$revision" --output "$directory/environment.json" Sources/AcousticCore/*.swift \
     Scripts/prepare-shared-wave-reference.py Scripts/check-shared-waves.sh Fixtures/SharedWaveBenchmark/Facades.swift
-   arguments=()
-   if test "$selected" = tilted-pulse; then arguments=(--representation "$representation"); fi
+   arguments=(--backend "$backend" --output "$directory" --metadata "$directory/environment.json")
+   if test "$selected" = tilted-pulse; then arguments+=(--representation "$representation"); fi
    swift run --package-path "$consumer" -c release -Xswiftc -enable-testing -Xswiftc -warnings-as-errors "$target" \
-    --backend "$backend" "${arguments[@]}" --output "$directory" --metadata "$directory/environment.json"
+    "${arguments[@]}"
    python3 "$scratch/ContinuumKit/Scripts/verify-$selected-output.py" "$directory"
    cp "$consumer/Package.resolved" "$directory/consumer-Package.resolved"
    cp "$consumer/shared-reference-provenance.json" "$directory/reference-provenance.json"
@@ -45,4 +46,5 @@ for selected in $suites; do
  if test "$selected" = tilted-pulse; then python3 Scripts/verify-tilted-pulse-pair.py "$output/shared/$selected" --model-prefix RoomCAD.shared; fi
 done
 
-python3 Scripts/verify-shared-wave-pair.py "$output/original" "$output/shared" --output "$output/shared-comparison.json"
+python3 Scripts/verify-shared-wave-pair.py "$output/original" "$output/shared" --output "$output/shared-comparison.json" --suites $suites
+task_completed=1

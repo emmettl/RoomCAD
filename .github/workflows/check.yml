@@ -281,6 +281,8 @@ jobs:
           persist-credentials: false
       - name: Verify actual geometry with original and shared CPU/Metal steppers
         run: bash Scripts/check-shared-waves.sh all "${{ runner.temp }}/shared-waves-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Independently require every complete original/shared pair
+        run: python3 Scripts/verify-shared-wave-pair.py "${{ runner.temp }}/shared-waves-${{ github.run_id }}-${{ github.run_attempt }}/original" "${{ runner.temp }}/shared-waves-${{ github.run_id }}-${{ github.run_attempt }}/shared" --output "${{ runner.temp }}/shared-waves-${{ github.run_id }}-${{ github.run_attempt }}/independent-comparison.json" --suites masked cylinder admittance absorbing-cylinder tilted-pulse
       - name: Retain complete source/shared fields, wall work and immutable reference provenance
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

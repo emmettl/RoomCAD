@@ -2,14 +2,20 @@
 """Require exact complete original/shared wave histories, geometry, errors and frozen reference identities."""
 import argparse,hashlib,json
 from pathlib import Path
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('original',type=Path);p.add_argument('shared',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('original',type=Path);p.add_argument('shared',type=Path);p.add_argument('--output',type=Path,required=True);p.add_argument('--suites',nargs='+',choices=['masked','cylinder','admittance','absorbing-cylinder','tilted-pulse'],required=True);a=p.parse_args()
 load=lambda path:json.loads(path.read_text())
 rows=[]
+counts={'masked':12,'cylinder':6,'admittance':12,'absorbing-cylinder':6,'tilted-pulse':6}
+expected={Path(suite)/backend:counts[suite] for suite in a.suites for backend in ['cpu','metal']}
+if 'tilted-pulse' in a.suites:
+ expected.update({Path('tilted-pulse')/'mesh'/backend:6 for backend in ['cpu','metal']})
+actual={path.parent.relative_to(a.shared) for path in a.shared.rglob('results.json')}
+assert actual==set(expected),('Missing or unexpected complete suite/backend reports',sorted(map(str,set(expected)-actual)),sorted(map(str,actual-set(expected))))
 for results in sorted(a.shared.rglob('results.json')):
  relative=results.parent.relative_to(a.shared)
  source=a.original/relative
  candidate=load(results);baseline=load(source/'results.json')
- assert len(candidate)==len(baseline)>0,relative
+ assert len(candidate)==len(baseline)==expected[relative],relative
  env=load(results.parent/'environment.json');oldenv=load(source/'environment.json')
  assert env['workingTreeDirty'] is False and oldenv['workingTreeDirty'] is False
  assert env['sourceHashes'] and all(env['sourceHashes'].get(path)==value for path,value in oldenv['sourceHashes'].items() if path.startswith('Sources/AcousticCore/')),relative
@@ -27,7 +33,7 @@ for results in sorted(a.shared.rglob('results.json')):
  if geometry.exists():assert load(geometry)==load(source/'geometry.json'),(relative,'geometry')
  checks=load(results.parent/'conformance.json')
  assert checks and all(row['status']=='passed' for row in checks),relative
-assert rows
+assert len(rows)==sum(expected.values())
 report={'schemaVersion':1,'status':'passed','scope':'all complete original/shared fields, clocks, layouts, wall traces, work and errors; unchanged original reference source','records':len(rows),'results':rows}
 a.output.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
 print('PASS exact complete original/shared histories and errors:',len(rows),'records; source geometry and original references retained')
