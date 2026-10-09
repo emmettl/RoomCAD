@@ -39,7 +39,8 @@ def geometry(audit,record,representation):
         closed+=1
     return closed
 
-def check(root):
+def check(root, model_prefix="RoomCAD"):
+    assert model_prefix in ("RoomCAD", "RoomCAD.shared")
     summaries=[];environments=[]
     for backend in ('cpu','metal'):
         paths={'plan':root/backend,'mesh':root/'mesh'/backend}
@@ -50,7 +51,7 @@ def check(root):
             assert len(records)==len(audit)==6 and len(reports)==2
             assert env['workingTreeDirty'] is False
             assert all(row['status']=='passed' for row in reports),'Spatial/time gap is not paired conformance'
-            model='RoomCAD.'+backend+'.'+('tilted-pulse' if representation=='plan' else 'tilted-mesh-pulse')
+            model=model_prefix+'.'+backend+'.'+('tilted-pulse' if representation=='plan' else 'tilted-mesh-pulse')
             for r,g in zip(records,audit):
                 assert r['status']=='supported' and r['model']==model and r['environment']==env
                 assert all(math.isfinite(x) for x in r['errors']['fieldL2'])
@@ -77,4 +78,4 @@ def check(root):
     return result
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('output',type=Path);a=p.parse_args();check(a.output)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('output',type=Path);p.add_argument('--model-prefix',choices=['RoomCAD','RoomCAD.shared'],default='RoomCAD');a=p.parse_args();check(a.output,a.model_prefix)

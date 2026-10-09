@@ -28,6 +28,8 @@ class DirectedPlanes(unittest.TestCase):
     def test_unresolved_query_rejected(self):
         self.audit['unresolvedCrossings']=[9]
         with self.assertRaises(AssertionError):geometry(self.audit,self.record,'mesh')
+    def test_unknown_implementation_rejected_before_reading_reports(self):
+        with self.assertRaises(AssertionError):module.check(Path('/missing'),model_prefix='unknown')
     def test_missing_identity_rejected(self):
         self.audit['selectedFaces']=self.audit['selectedFaces'][:-1]
         with self.assertRaises(AssertionError):geometry(self.audit,self.record,'mesh')

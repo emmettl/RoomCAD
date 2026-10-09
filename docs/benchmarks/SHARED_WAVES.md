@@ -1,0 +1,38 @@
+# Exact shared CPU/Metal benchmark binding — candidate
+
+Run `bash Scripts/check-shared-waves.sh all output` for masked boxes, rigid cylinder,
+curved admittance, absorbing cylinder and tilted plan/mesh pulses. The unchanged
+original producer runs beside shared consumers at a deliberately pinned Core revision.
+Actual RoomCAD geometry/material/normal preparation and original observation/scaling
+code remain in the benchmark adapter; evolution uses Core's actual CPU/Metal steppers.
+No application loop, released package pin, measured fixture or original adapter is moved.
+
+Each shared consumer copies every original suite's BenchmarkSupport file byte-for-byte
+from its immutable original Core revision into a temporary FrozenBenchmarkSupport
+module. Its original pure thermodynamics dependency must also be source-identical.
+This preserves every original oracle/validator body, even where newer Core versions
+added dissipative capabilities to common graph helpers. Full source hashes and both
+reference/implementation revisions are retained in every run. No frozen duplicate is
+committed in RoomCAD; Core remains the authoritative source of those references.
+
+The shared steppers receive actual prepared masks, six wall-term blocks, native
+initial fields, timestep/spacing and physical density. They return normalized ψ and
+positive-face velocities at complete-step clocks. Observation mirrors adapt these
+snapshots to the existing pressure/wall-trace readers. Mirrors perform copies and
+add cost; this is a numerical/source conformance gate, not a zero-copy or performance
+comparison. Mirror buffers are never used for evolution, and GPU work is actual Metal.
+
+Every original and shared run must pass the existing independent bounds. The additional
+pair guard requires exact whole numerical/schema records, including every retained
+native field, clock, layout, wall trace, global/patch work and error. All actual
+AcousticCore hashes must agree. The tilted audit keeps every directed plane/material
+identity, zero unresolved crossing and twelve exact plan/mesh pairs. Its only new
+option explicitly selects the shared model-name namespace; default original names
+and all numerical/geometry assertions stay unchanged.
+
+Completion requires clean committed producer metadata, fetched exact implementation
+pins, original frozen reference identities, complete original/shared reports and the
+physical mini run. Raw application evidence stays private in Edgerton; public Core
+may retain aggregate findings. This gate precedes release and production source-write,
+receiver, cancellation and lifetime integration; the optimized box CPU path and
+Edgerton's forced/damped 2D wave model remain separate contracts.

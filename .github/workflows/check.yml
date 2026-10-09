@@ -8,7 +8,7 @@ on:
       suite:
         description: Full application checks or bounded acoustic source conformance
         type: choice
-        options: [all, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout]
+        options: [all, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout, shared-waves]
         default: all
 
 permissions:
@@ -266,5 +266,26 @@ jobs:
         with:
           name: extruded-layout-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/extruded-layout-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+
+  shared-waves:
+    # Deliberate source/shared adoption gate; existing app/source jobs remain unchanged.
+    if: github.event_name == 'workflow_dispatch' && inputs.suite == 'shared-waves'
+    runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify actual geometry with original and shared CPU/Metal steppers
+        run: bash Scripts/check-shared-waves.sh all "${{ runner.temp }}/shared-waves-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Retain complete source/shared fields, wall work and immutable reference provenance
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: shared-waves-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/shared-waves-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: warn
           retention-days: 14
