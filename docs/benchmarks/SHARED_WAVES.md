@@ -1,11 +1,12 @@
-# Exact shared CPU/Metal benchmark binding — candidate
+# Exact shared CPU/Metal benchmark binding
 
 Run `bash Scripts/check-shared-waves.sh all output` for masked boxes, rigid cylinder,
 curved admittance, absorbing cylinder and tilted plan/mesh pulses. The unchanged
-original producer runs beside shared consumers at a deliberately pinned Core revision.
+original producer runs beside shared consumers at exact released version `0.1.0-alpha.6`.
+The expected tag commit is retained alongside the version in `Fixtures/SharedWaveBenchmark`.
 Actual RoomCAD geometry/material/normal preparation and original observation/scaling
 code remain in the benchmark adapter; evolution uses Core's actual CPU/Metal steppers.
-No application loop, released package pin, measured fixture or original adapter is moved.
+The application loop and its package pin, measured fixtures and original adapters remain unchanged.
 
 Each shared consumer copies every original suite's BenchmarkSupport file byte-for-byte
 from its immutable original Core revision into a temporary FrozenBenchmarkSupport
@@ -33,7 +34,7 @@ and all numerical/geometry assertions stay unchanged.
 Completion requires clean committed producer metadata, fetched exact implementation
 pins, original frozen reference identities, complete original/shared reports and the
 physical mini run. Raw application evidence stays private in Edgerton; public Core
-may retain aggregate findings. This gate precedes release and production source-write,
+may retain aggregate findings. This gate verifies the released steppers before production source-write,
 receiver, cancellation and lifetime integration; the optimized box CPU path and
 Edgerton's forced/damped 2D wave model remain separate contracts.
 
@@ -53,3 +54,12 @@ missing velocity, wrong reference pin, early cleanup status and partial report t
 The final addition after the tested producer contains only control tests/docs; model,
 observer, generator and numerical validation bodies match the verified candidate.
 Complete raw outputs and checked reconstruction are retained privately in Edgerton.
+
+## Exact released dependency
+
+Shared manifests now use SwiftPM `exact: version`; preparation checks the annotated
+tag resolves to the reviewed commit. Both producer and independent postcondition
+require every shared `Package.resolved` to contain that version and commit, and every
+original consumer to retain its frozen reference revision. Three negative controls
+reject a wrong version, wrong commit and revision-only resolution. The full actual
+CPU/Metal gate must pass for this committed producer before merging adoption.
