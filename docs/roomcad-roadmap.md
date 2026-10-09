@@ -440,7 +440,10 @@ code.
   inspector. Adding extrusions and intersections in the app remains to do.
 - **Item 2.** This has started: 90 absorption and 7 scattering presets come from the annex of
   Vorländer's *Auralization*, via pyroomacoustics. Bands outside the published range are extended
-  and labelled in each material's reference. Most surfaces still need scattering values. See
+  and labelled in each material's reference. The nine areas of seated audience take the theatre
+  audience scattering by category, and their reference says so. The other 81 surfaces still need
+  scattering values: BRAS's are estimated for its rooms, under CC BY-SA, and the published tables and
+  guidance found have no licence that allows bundling. See
   [RoomCAD app and documents](roomcad-app.md#material-presets). Objects too many or too small to
   model as surfaces, such as chairs, desks, pews and ornament, can be added as fitted zones, with
   their density and absorption stated (see

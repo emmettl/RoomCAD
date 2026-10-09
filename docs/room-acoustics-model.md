@@ -758,8 +758,8 @@ furnished room, decays between the Eyring and Sabine estimates. About 75% of its
   A floor plan's or mesh's image sources reach only modest orders, with rays carrying the rest.
 - **Meshes in the app.** A mesh comes from a preset or a measured scene. The app shows it and edits
   its materials, but it cannot edit its shape. Openings in a mesh are open faces, not rectangles.
-- **Scattering.** Published scattering values exist only for a few surfaces (seven presets). Others
-  are inputs, and the starter room's are illustrative. With little scattering, decay is too long and flutter between parallel surfaces is
+- **Scattering.** Published scattering values exist only for a few surfaces (seven presets, one of
+  which nine audience absorption presets take by category). Others are inputs, and the starter room's are illustrative. With little scattering, decay is too long and flutter between parallel surfaces is
   exaggerated (above).
 - **Diffuse part.** The scattered part is an energy envelope with random detail, not a wave solution.
   It carries no direction and no interference between scattered paths. Each bin's energy is shared

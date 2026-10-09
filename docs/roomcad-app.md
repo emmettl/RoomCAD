@@ -85,7 +85,8 @@ script before an archive is written.
   - a click selects a surface, zone, source or receiver, highlights it in orange, and names it in a
     caption: a surface's material, area, and absorption and scattering at 1 kHz;
   - with a surface selected, **Material** beside the caption gives it a published material's
-    absorption, keeping its scattering;
+    absorption, and its scattering where one is assigned (see
+    [Material presets](#material-presets)); otherwise it keeps the surface's scattering;
   - dragging the source or a receiver moves it across the room at its height, and with Option held,
     up and down. Positions snap to centimetres, and a move that would take a point outside the room,
     or within 5 cm of a surface, is ignored;
@@ -312,10 +313,33 @@ The data starts at 125 Hz, and some entries stop at 4 kHz or earlier. The 63 Hz 
 value, and missing high bands take the highest published one. The material's reference names the
 source and the extended bands.
 
-Few absorption entries have published scattering. Choosing a material therefore sets its name and
-absorption and keeps the surface's scattering; a scattering preset sets only the scattering. The
-generated table is `Sources/AcousticCore/MaterialPresetData.swift`, pinned to the source commit, and
-pyroomacoustics' licence is in `THIRD-PARTY-NOTICES.md`, which also ships in the app.
+The absorption table gives no scattering. Nine of its entries, the areas of seated audience, take the
+theatre audience scattering set by category: the four audience areas at 0.72 to 2 persons per m²,
+audience on wooden chairs and in upholstered chairs (two each), and areas with audience, orchestra or
+choir. Their reference names that set and says it was assigned by category. The orchestra on its
+podium and the empty seats take none, because the set describes neither.
+
+The other 81 entries have no scattering. No source found gives scattering for them under a licence
+that allows bundling:
+
+- the scattering sets above describe diffusers, seating and studio boxes, not walls, floors,
+  glazing, curtains or absorbers;
+- BRAS gives scattering for the surfaces of its rooms, but under CC BY-SA 4.0. Its own notes say
+  the values are mostly modelled or estimated for each room model and do not describe the materials;
+- the scattering coefficient table in Cox and D'Antonio's *Acoustic Absorbers and Diffusers*, and
+  the mid-frequency values for rough and smooth surfaces that ODEON uses (Christensen and Rindel,
+  2005; Zeng, Christensen and Rindel, 2006), are published without a licence that allows bundling.
+  ODEON's values are also one number per surface, not octave bands;
+- open measurement sets, such as Heimes et al.'s database of random-incidence scattering
+  (Zenodo, CC BY 4.0), cover test surfaces such as sine, square and saw-tooth profiles, not these
+  materials.
+
+Choosing one of the 81 therefore sets its name and absorption and keeps the surface's scattering.
+Choosing an audience area also sets the theatre audience scattering. A scattering preset sets only
+the scattering, and replaces any assigned one. The generated table is
+`Sources/AcousticCore/MaterialPresetData.swift`, pinned to the source commit, and pyroomacoustics'
+licence is in `THIRD-PARTY-NOTICES.md`, which also ships in the app. The category rules are in
+`Sources/AcousticCore/MaterialPresets.swift`.
 
 ## Document format
 
@@ -445,7 +469,7 @@ offscreen.
 - There is no late tail, and true-stereo (four-path) auditioning is not supported.
 - Playback has not been heard: the mixing is tested offline, but the audio engine and controls are
   unverified by ear and by eye.
-- Most material presets have no published scattering, so most room presets' scattering is
-  illustrative.
+- 81 of the 90 absorption presets have no published scattering, so most room presets' scattering
+  is illustrative.
 - Rooms are boxes or floor plans with vertical walls, and there is no 3D view.
 - Generation uses several cores per document, and documents generating at once share them.
