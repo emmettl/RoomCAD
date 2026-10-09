@@ -21,3 +21,5 @@ four fields, energy balance, zero blocked-face velocity, unchanged 100 Pa inacti
 sentinels and no leakage into the unexcited chamber. CI `masked` also runs with `all`.
 Complete fields and geometry are retained as CI artifacts, with durable evidence in
 private Edgerton. Curved/staircase geometry and absorbing masked walls remain open.
+
+The [rigid cylinder candidate](CYLINDER.md) adds a separate curved/staircase contract.
