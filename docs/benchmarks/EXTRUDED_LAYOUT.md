@@ -39,8 +39,12 @@ error); preserving the extrusion's established in-plane measure resolves that
 discretization change without altering any gate or reference. Four independent
 Swift controls cover thin plan/mesh parity, open-side air, storage-order invariance
 and a rotated thin slab with all six material impedances, independently scored
-using local-box slab exits. Full physical-Metal application and existing wave/work
-regressions are required for the committed candidate. Release pins remain unchanged.
+using local-box slab exits. Full physical-mini run [37938336795](https://github.com/emmettl/RoomCAD/actions/runs/37938336795)
+passes at `fc9052528706c688ad8b2c22040ed09e5ee7351e`: 167 Swift tests, eight release
+checks, actual Metal, release packaging/signature/snapshot and every existing
+CPU/Metal wave/reflection/work suite. All 36 layouts pass without fallback. The
+source tree includes upstream octave-band changes at `a1c0ae3`; this fix changes
+only the two mesh geometry/layout files relative to that base. Release pins remain unchanged.
 
 Nonconvex corners, degenerate imports and arbitrary openings are not certified by
 these extrusion cases. The remaining nearest-midpoint fallback is an explicit
