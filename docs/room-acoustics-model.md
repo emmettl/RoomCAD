@@ -756,8 +756,10 @@ furnished room, decays between the Eyring and Sabine estimates. About 75% of its
   zones, boxes of statistically scattering objects; their density must be estimated, and they scatter
   equally in every band and direction. Coupled spaces work only as one mesh.
   A floor plan's or mesh's image sources reach only modest orders, with rays carrying the rest.
-- **Meshes in the app.** A mesh comes from a preset or a measured scene. The app shows it and edits
-  its materials, but it cannot edit its shape. Openings in a mesh are open faces, not rectangles.
+- **Meshes in the app.** A mesh comes from a preset, a measured scene or an imported model. The app
+  edits its materials and pushes and pulls its planes. A hall built from pieces also adds, edits and
+  removes boxes, but extrusions and intersections are added only in code. Openings in a mesh are
+  open faces, not rectangles.
 - **Scattering.** Published scattering values exist only for a few surfaces (seven presets, one of
   which nine audience absorption presets take by category). Others are inputs, and the starter room's are illustrative. With little scattering, decay is too long and flutter between parallel surfaces is
   exaggerated (above).

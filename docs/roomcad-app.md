@@ -471,5 +471,6 @@ offscreen.
   unverified by ear and by eye.
 - 81 of the 90 absorption presets have no published scattering, so most room presets' scattering
   is illustrative.
-- Rooms are boxes or floor plans with vertical walls, and there is no 3D view.
+- A room of any shape comes from a preset, a model file, or boxes joined to and cut out of a hall's
+  pieces; extrusions and intersections cannot be added in the app.
 - Generation uses several cores per document, and documents generating at once share them.

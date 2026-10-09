@@ -278,7 +278,8 @@ final class RoomViewport: OrbitControlling {
         return shown?.surfaceMaterial(index)
     }
 
-    /// Gives the selected surface a published material's absorption, keeping its scattering.
+    /// Gives the selected surface a published material's absorption, and its scattering where one is
+    /// assigned to it; otherwise the surface keeps its scattering.
     func applyToSelected(_ preset: MaterialPreset) {
         guard case .surface(let index) = selected, let shown, let material = shown.surfaceMaterial(index)
         else {
@@ -349,7 +350,8 @@ struct RoomView3D: View {
                         .menuStyle(.borderlessButton)
                         .fixedSize()
                         .help(
-                            "Give this surface a material with published absorption, keeping its scattering")
+                            "Give this surface a material with published absorption, and scattering where one is assigned"
+                        )
                     }
                 }
                 .padding(6)
