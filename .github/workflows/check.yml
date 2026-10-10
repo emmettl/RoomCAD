@@ -435,14 +435,19 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Fetch immutable complete application capture
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: affine-capture-38077531976-1
+          path: ${{ runner.temp }}/affine-policy-${{ github.run_id }}-${{ github.run_attempt }}/capture
+          github-token: ${{ github.token }}
+          repository: emmettl/RoomCAD
+          run-id: 38077531976
       - name: Replay complete immutable actual affine histories and independent policies
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           output="${{ runner.temp }}/affine-policy-${{ github.run_id }}-${{ github.run_attempt }}"
           mkdir -p "$output"
-          gh run download 38077531976 --repo emmettl/RoomCAD --name affine-capture-38077531976-1 --dir "$output/capture"
           python3 Scripts/verify-affine-adoption-output.py "$output/capture" 2>&1 | tee "$output/policy.log"
           python3 Scripts/test-affine-adoption-gate.py "$output/capture" 2>&1 | tee "$output/corruptions.log"
           git rev-parse HEAD > "$output/verifier-revision.txt"
