@@ -8,7 +8,7 @@ on:
       suite:
         description: Full application checks or bounded acoustic source conformance
         type: choice
-        options: [all, application, affine-adoption, affine-capture, fft-adoption, fft-comparison, fft-reference, production-cpu, production-metal, thin-probes, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout, shared-waves]
+        options: [all, application, affine-adoption, affine-capture, affine-policy, fft-adoption, fft-comparison, fft-reference, production-cpu, production-metal, thin-probes, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout, shared-waves]
         default: all
 
 permissions:
@@ -420,5 +420,38 @@ jobs:
         with:
           name: affine-capture-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/affine-capture-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 14
+
+  affine-policy:
+    if: github.event_name == 'workflow_dispatch' && inputs.suite == 'affine-policy'
+    runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Replay complete immutable actual affine histories and independent policies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          output="${{ runner.temp }}/affine-policy-${{ github.run_id }}-${{ github.run_attempt }}"
+          mkdir -p "$output"
+          gh run download 38077531976 --repo emmettl/RoomCAD --name affine-capture-38077531976-1 --dir "$output/capture"
+          python3 Scripts/verify-affine-adoption-output.py "$output/capture" 2>&1 | tee "$output/policy.log"
+          python3 Scripts/test-affine-adoption-gate.py "$output/capture" 2>&1 | tee "$output/corruptions.log"
+          git rev-parse HEAD > "$output/verifier-revision.txt"
+          shasum -a 256 Scripts/verify-affine-adoption-output.py Scripts/test-affine-adoption-gate.py > "$output/verifier-sha256.txt"
+      - name: Retain complete fields policy references and corruption evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: affine-policy-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/affine-policy-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: error
           retention-days: 14
