@@ -1,0 +1,17 @@
+{
+  "applicationSourcePinsCasesUnchanged": true,
+  "assignmentGaps": 0,
+  "crossHostCompleteRecords": "identical",
+  "frozenCoreReference": "0d271e6a436f32869035c51035b0d9d2cab34824",
+  "initialConclusion": "failure: extrusion consumer missing SpectralTransforms; ten other jobs pass",
+  "initialFullMainRun": "https://github.com/emmettl/RoomCAD/actions/runs/38070744422",
+  "layoutsPerHost": 36,
+  "miniConclusion": "success",
+  "miniJob": 114279045772,
+  "miniWorkflow": "https://github.com/emmettl/RoomCAD/actions/runs/38074674602",
+  "producer": "1a2bdfb559950b1ed2cb4d61d80b50e986cfa0d9",
+  "provenanceTests": 4,
+  "schemaVersion": 1,
+  "scope": "verification-only FFT compile dependency for frozen extrusion layouts",
+  "unresolvedBoundaryFallbacks": 0
+}

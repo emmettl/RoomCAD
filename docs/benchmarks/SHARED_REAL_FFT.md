@@ -66,3 +66,14 @@ per backend/84 per host and every original pin/case/golden. The
 [physical mini workflow](https://github.com/emmettl/RoomCAD/actions/runs/38069818869)
 succeeds. [Exact scope](fft-reference-verification.json) retains identities;
 complete native reports and the initial compile failure remain archived.
+
+The subsequent full main run [38070744422](https://github.com/emmettl/RoomCAD/actions/runs/38070744422)
+passes the application and nine acoustic jobs but exposes the same missing FFT
+compile dependency in the frozen extrusion consumer. A separate verification-only
+repair binds the same protected control without changing production source/pins,
+reference cases or assertions. Producer `1a2bdfb559950b1ed2cb4d61d80b50e986cfa0d9`
+passes all 36 strict plan/mesh layouts on both physical Macs, with identical full
+records, zero assignment gaps and no unresolved boundary fallback. The
+[bounded mini run](https://github.com/emmettl/RoomCAD/actions/runs/38074674602) succeeds;
+[scope and identity](extrusion-fft-reference-verification.json) preserve the distinction
+between the failed full-main run and the repaired bounded geometry gate.
