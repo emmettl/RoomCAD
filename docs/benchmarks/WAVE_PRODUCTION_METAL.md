@@ -1,6 +1,9 @@
-# Optional production Metal comparison binding
+# Production Metal comparison and adoption
 
-Candidate: 10 October 2026. `WaveSolver.usingSharedMetal(context:)` selects a shared
+Current production uses the [verified shared Metal default](SHARED_METAL_DEFAULT.md)
+with exact alpha.12. The following checkpoints retain the comparison history.
+
+Initial candidate: 10 October 2026. `WaveSolver.usingSharedMetal(context:)` selects a shared
 GPU implementation explicitly; the original Metal backend remains the default. Root
 application and current production consumer pin exact published Core alpha.10, commit
 `da7cb5f5ac642edc57e8433c6150dceca6b9edd9`. The caller supplies one immutable

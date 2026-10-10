@@ -26,6 +26,24 @@ struct SharedMetalSimulationTests {
     }
     private func bits(_ v: [[Double]]) -> [[UInt64]] { v.map { $0.map(\.bitPattern) } }
 
+    @Test("Application default reuses shared Metal and original control remains available")
+    func defaultSelection() throws {
+        let s = solver()
+        let backend = try #require(s.metalBackend as? SharedMetalSimulation)
+        let other = try #require(solver().metalBackend as? SharedMetalSimulation)
+        #expect(backend.context === other.context)
+        #expect(s.usingOriginalMetal().metalBackend == nil)
+        var actual = s
+        actual.engine = .gpu
+        var original = actual.usingOriginalMetal()
+        original.engine = .gpu
+        let aValue = actual.run(source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
+        let bValue = original.run(source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
+        let a = try #require(aValue)
+        let b = try #require(bValue)
+        #expect(a.onGPU && b.onGPU && bits(a.signals) == bits(b.signals))
+    }
+
     @Test("All patterns retain complete original Metal output at command and terminal boundaries")
     func output() throws {
         let old = try #require(MetalWaveSolver.shared)
@@ -102,7 +120,7 @@ struct SharedMetalSimulationTests {
     @Test("Actual shared GPU abandonment restarts a complete fresh CPU response; short runs stay GPU")
     func restart() throws {
         let c = try context()
-        let original = solver()
+        let original = solver().usingOriginalMetal()
         #expect(original.metalBackend == nil)
         var s = original.usingSharedMetal(context: c)
         s.gpuDelay = 0.3

@@ -65,7 +65,7 @@ switching defaults. The existing masked CPU loop uses parallel slabs, while the
 released Core CPU stepper supports caller-selected serial/slab execution; numerical
 equivalence alone does not establish
 acceptable production throughput. The existing GPU solver reuses compiled pipelines,
-while Core currently prepares pipelines per stepper. Measure initialization and
+while released Core supports an explicit immutable compiled device context. Measure initialization and
 steady-state costs separately and address a demonstrated regression before default
 adoption. These are explicit readiness questions, not permission to change results,
 relax verification, or silently substitute backends.
@@ -81,13 +81,17 @@ gate. The [application default checkpoint](SHARED_MASKED_CPU_DEFAULT.md) records
 cross-host numerical continuity, raw timings and retained original-reference checks.
 The optimized unmasked box path remains a separate contract.
 
-The [optional Metal application binding](WAVE_PRODUCTION_METAL.md) now passes
-complete original/shared/default output, generator/save, all-axis thin, cancellation,
-concurrent ownership, nonterminal abandon/fresh CPU restart and mini application gates.
-Compiled Core pipelines can be reused through the released immutable device context.
-Representative live-host measurements retain modest to substantial steady-state
-overhead: Max ratios 1.21/1.42/1.45; mini 1.21/1.18/1.03 on three grids. The next
-bounded task identifies and reduces that cost without relaxing synchronization,
-source/receiver arithmetic, output ownership or policy. Production Metal retains the
-original default until its timing acceptance gate passes; numerical conformance does
-not establish empirical acoustic accuracy.
+The [Metal application binding](WAVE_PRODUCTION_METAL.md) now uses exact released
+alpha.12 and the [verified lazy shared Metal default](SHARED_METAL_DEFAULT.md).
+Complete original/explicit-shared/actual-default output, generator/save, all-axis
+thin, cancellation/concurrent ownership, abandoned GPU/fresh CPU restart and mini
+application gates pass. Immutable compiled context reuse preserves independent mutable
+run state. Both shared production defaults are accepted with complete prior output
+and retained live-host measurements.
+
+The next bounded task retires duplicated production numerical code while preserving
+immutable original-source reconstruction and benchmark provenance. Include the
+resource/availability checks that currently feed automatic-engine budgets, verify
+fallback and full application behavior, and keep optimized unmasked box CPU arithmetic
+as its separate contract. Neither this migration nor numerical conformance establishes
+empirical acoustic accuracy.
