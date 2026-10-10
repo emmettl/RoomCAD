@@ -1,0 +1,11 @@
+{
+  "originalBytes": 5867,
+  "originalGitBlob": "6764b9fe1caafde501e30dac3bd94d74b88dfe39",
+  "originalPath": "Sources/AcousticCore/RealFFT.swift",
+  "originalSHA256": "63da5cb9c3ead610051a2b43faf3c345d4168d7e6580abd25ea202c18877b617",
+  "revision": "2bc11ed6a033e8642de4018e8e9ae9cfb4e1151c",
+  "schemaVersion": 1,
+  "scope": "verification-only compile dependency for frozen pre-alpha17 wave benchmarks; never production",
+  "snapshotPath": "Fixtures/OriginalFFTReference/RealFFT.swift.gz",
+  "snapshotSHA256": "7838d9a8a32e1f8146ff4dbfa93e0cc21d9d0e516f25c9d787973d7e8bb101a8"
+}

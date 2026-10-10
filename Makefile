@@ -20,6 +20,8 @@ format:
 	swift format format --in-place --recursive Package.swift Sources Tests Scripts
 
 ci-test:
+	python3 Scripts/verify-original-fft-reference.py
+	python3 Scripts/test-original-fft-reference.py
 	python3 Scripts/verify-original-wave-reference.py
 	python3 Scripts/test-original-wave-reference.py
 	python3 Scripts/test-original-metal-reference.py

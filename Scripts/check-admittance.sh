@@ -19,7 +19,7 @@ for backend in cpu metal; do
   --repository https://github.com/emmettl/RoomCAD --precision Float32 --dependency "continuumkit=$revision" \
   --output "$output/$backend/environment.json" Sources/AcousticCore/*.swift Tests/AcousticCoreTests/OriginalMaskedCPU.swift Tests/AcousticCoreTests/OriginalMetalWaveSolver.swift Fixtures/OriginalWaveReference/metal-source.json Fixtures/OriginalWaveReference/MetalWaveSolver.swift.gz \
   Fixtures/OriginalWaveReference/masked-cpu-source.json Fixtures/OriginalWaveReference/WaveSolver.swift.gz \
-  Scripts/original_wave_reference.py \
+  Scripts/original_wave_reference.py Scripts/original_fft_reference.py Fixtures/OriginalFFTReference/source.json Fixtures/OriginalFFTReference/RealFFT.swift.gz \
   Scripts/prepare-admittance-reference.py Scripts/check-admittance.sh Scripts/verify-wall-area.py Fixtures/AdmittanceBenchmark/Sources/AdmittanceAdapter/Adapter.swift
  swift run --package-path "$scratch/consumer" -c release -Xswiftc -enable-testing -Xswiftc -warnings-as-errors AdmittanceAdapter \
   --backend "$backend" --output "$output/$backend" --metadata "$output/$backend/environment.json"
