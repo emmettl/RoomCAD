@@ -7,7 +7,15 @@ scratch=$(mktemp -d "${TMPDIR:-/tmp}/roomcad-extruded-layout-build.XXXXXX")
 trap 'task_status=$?; rm -rf "$scratch"; exit "$task_status"' EXIT
 mkdir -p "$output" "$scratch/consumer"
 cp -R "$root/Fixtures/ExtrudedLayoutBenchmark/." "$scratch/consumer/"
-cp -R "$root/Sources/AcousticCore" "$scratch/consumer/Sources/AcousticCore"
+# Frozen geometry fixture predates production wave APIs. Copy every original app file
+# verbatim, omitting only the separately verified optional shared simulation backend.
+python3 - "$root" "$scratch" <<'COPY_SOURCES'
+import shutil, sys
+from pathlib import Path
+root, scratch = map(Path, sys.argv[1:])
+shutil.copytree(root / 'Sources/AcousticCore', scratch / 'consumer/Sources/AcousticCore',
+                ignore=shutil.ignore_patterns('SharedWaveSimulation.swift'))
+COPY_SOURCES
 revision=$(cat "$root/Fixtures/ExtrudedLayoutBenchmark/core-revision.txt")
 source=${CONTINUUMKIT_BENCHMARK_SOURCE:-https://github.com/emmettl/ContinuumKit.git}
 git clone --no-checkout --quiet "$source" "$scratch/ContinuumKit"
