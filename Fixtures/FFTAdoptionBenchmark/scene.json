@@ -1,0 +1,104 @@
+{
+  "ceiling": "damp",
+  "corners": [
+    [
+      0,
+      0
+    ],
+    [
+      5,
+      0
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      0,
+      4
+    ]
+  ],
+  "description": "Two-driver numerical FFT adoption conformance; no measured calibration claim",
+  "driverCrossovers": [
+    600
+  ],
+  "floor": "damp",
+  "frequencies": [
+    63,
+    125,
+    250,
+    500,
+    1000,
+    2000,
+    4000,
+    8000
+  ],
+  "height": 3,
+  "materials": {
+    "numerical": {
+      "damp": {
+        "absorption": [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "scattering": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "receivers": {
+    "A": [
+      2,
+      2,
+      1.5
+    ],
+    "B": [
+      3,
+      2,
+      1.5
+    ]
+  },
+  "relativeHumidity": 50,
+  "sources": {
+    "S": {
+      "drivers": [
+        1.2,
+        1.7
+      ],
+      "position": [
+        1,
+        1,
+        0
+      ]
+    }
+  },
+  "temperatureCelsius": 20,
+  "walls": [
+    {
+      "damp": 1
+    },
+    {
+      "damp": 1
+    },
+    {
+      "damp": 1
+    },
+    {
+      "damp": 1
+    }
+  ]
+}

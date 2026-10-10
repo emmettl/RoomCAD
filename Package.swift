@@ -11,12 +11,13 @@ let package = Package(
         .executable(name: "RoomCAD", targets: ["RoomCAD"]),
         .executable(name: "acousticbench", targets: ["acousticbench"]),
     ],
-    dependencies: [.package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.12")],
+    dependencies: [.package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.17")],
     targets: [
         .target(
             name: "AcousticCore",
             dependencies: [
                 .product(name: "ImpulseResponseKit", package: "continuumkit"),
+                .product(name: "SpectralTransforms", package: "continuumkit"),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
                 .product(name: "LinearAcousticsMetal", package: "continuumkit"),
             ],

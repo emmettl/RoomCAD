@@ -7,6 +7,9 @@ CASES = {'rigid-box', 'rigid-plan', 'lossy-open-plan', 'masked-L', 'tilted-plan'
 STEPS = {0, 1, 2, 63, 64, 65, 127, 128, 129, 257}
 VERSION = '0.1.0-alpha.12'
 CORE = 'f464e04866903bfc7c9ce94c34d31125a776d270'
+# The alpha.17 migration keeps every pre-existing CAD/response/wave source byte.
+# Retain exact alpha.12 histories and reject every other version/revision pair.
+DEPENDENCIES = {VERSION: CORE, '0.1.0-alpha.17': 'e94d329c55495ca561306174d624eadf5c8e7da0'}
 
 def require(condition, message):
     if not condition: raise ValueError(message)
@@ -27,7 +30,8 @@ def verify(root):
     environment = json.loads((root / 'environment.json').read_text())
     require(environment['workingTreeDirty'] is False, 'dirty producer')
     require(len(environment['revision']) == 40 and all(c in '0123456789abcdef' for c in environment['revision']), 'producer revision')
-    require(environment['dependency'] == {'version': VERSION, 'revision': CORE}, 'exact dependency envelope')
+    dependency = environment['dependency']
+    require(dependency.get('version') in DEPENDENCIES and dependency == {'version': dependency['version'], 'revision': DEPENDENCIES[dependency['version']]}, 'exact dependency envelope')
     resolved = json.loads((root / 'consumer-Package.resolved').read_text())
     pins = [p for p in resolved['pins'] if p['identity'] == 'continuumkit']
     require(len(pins) == 1 and pins[0]['state'] == environment['dependency'], 'exact resolved dependency')
