@@ -1,0 +1,78 @@
+{
+  "candidate": "ccea958aa3551d79d025de6fff00f2b4d6735db7",
+  "casesPerDevice": 8,
+  "crossHostCompleteCases": "identical including inputs and bit histories",
+  "crossHostGenerator": "identical complete channels, input identities, non-timing diagnostics and saved WAV bytes",
+  "defaultReadiness": "not-ready: large-grid throughput gate remains open",
+  "dependency": {
+    "revision": "2aecacbc3da082382cb11639d67af0ea37583272",
+    "version": "0.1.0-alpha.8"
+  },
+  "limitations": [
+    "shared serial CPU throughput before default adoption",
+    "invalid directional minus-face probes on two-cell dimensions reject; no silent spatial policy change",
+    "Metal production loop binding and performance remain a separate tranche",
+    "numerical/source parity does not establish measured room accuracy"
+  ],
+  "mixedSamplesPerImplementationPerDevice": 36696,
+  "negativePostconditionControls": 9,
+  "numericalStatus": "passed",
+  "physicalMini": {
+    "actualMetalPackagingSigningSnapshot": "passed",
+    "applicationCandidate": "93612a8a3756715c5f5da3919bc837524145dcb7",
+    "applicationRun": "https://github.com/emmettl/RoomCAD/actions/runs/38016087224",
+    "focusedNewTests": 9,
+    "productionRun": "https://github.com/emmettl/RoomCAD/actions/runs/38016230327",
+    "pythonReleaseTests": 8,
+    "swiftTests": 176
+  },
+  "runsPerDevice": 72,
+  "runtimeBitMismatches": 0,
+  "schemaVersion": 1,
+  "scope": "explicit current application masked CPU binding; production default and optimized unmasked box remain original",
+  "timingScope": "optimized whole simulations after warmup; three balanced repetitions per grid; live-host wall timings do not certify isolation",
+  "timings": [
+    {
+      "candidate": "ccea958aa3551d79d025de6fff00f2b4d6735db7",
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hostRun": "M4 Max final",
+      "sharedToOriginalMedian": [
+        0.9103121630305124,
+        0.7089444515514397,
+        1.1333257942365615
+      ]
+    },
+    {
+      "candidate": "ccea958aa3551d79d025de6fff00f2b4d6735db7",
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hostRun": "M4 mini final",
+      "sharedToOriginalMedian": [
+        1.0460572452326644,
+        1.9357027275677394,
+        4.131872389256216
+      ]
+    },
+    {
+      "candidate": "93612a8a3756715c5f5da3919bc837524145dcb7",
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hostRun": "M4 Max earlier same production code",
+      "sharedToOriginalMedian": [
+        1.0893246974574482,
+        1.2685826324270453,
+        3.9224280348908325
+      ]
+    }
+  ]
+}

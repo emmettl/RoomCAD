@@ -68,3 +68,13 @@ while Core currently prepares pipelines per stepper. Measure initialization and
 steady-state costs separately and address a demonstrated regression before default
 adoption. These are explicit readiness questions, not permission to change results,
 relax verification, or silently substitute backends.
+
+## Current implementation checkpoint
+
+The [masked CPU application binding](WAVE_PRODUCTION_CPU.md) now passes complete
+same-backend outputs, cancellation/concurrency, full wave-enabled generator/save
+and mini app gates. It remains explicitly selected for comparison: the measured
+large-grid serial throughput gate is open. Address CPU execution cost before
+switching that default; the original unmasked box path remains a separate contract.
+The first Metal application binding follows, with its own pipeline reuse, command-
+completion, abandon/restart and actual-device timing gates.

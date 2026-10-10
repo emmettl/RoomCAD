@@ -3,7 +3,9 @@
 import argparse,shutil
 from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
-shutil.copytree(a.root/'Sources/AcousticCore',a.output/'Sources/AcousticCore')
+# These original source-free fixtures pin Core versions before production source/receiver APIs.
+# The optional shared app backend is verified separately; original update/layout source stays verbatim.
+shutil.copytree(a.root/'Sources/AcousticCore',a.output/'Sources/AcousticCore',ignore=shutil.ignore_patterns('SharedWaveSimulation.swift'))
 source=(a.root/'Sources/AcousticCore/WaveSolver.swift').read_text()
 start=source.index('    func simulateMasked(')
 coeff_start=source.index('        let kx = Float(dt / spacing.x)',start)
