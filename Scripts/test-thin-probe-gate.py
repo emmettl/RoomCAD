@@ -9,9 +9,14 @@ def edit(root,file,change):
 def corrupt(data):
     run=data['scenes'][0]['runs'][-1];run['shared'][0][-1]+=0.001
     run['sharedBits'][0][-1]=int.from_bytes(struct.pack('>d',run['shared'][0][-1]),'big')
+def corrupt_metal(data):
+    run=data['scenes'][0]['runs'][-1];run['sharedMetal'][0][-1]+=0.001
+    run['sharedMetalBits'][0][-1]=int.from_bytes(struct.pack('>d',run['sharedMetal'][0][-1]),'big')
 def main(root):
     v.verify(root)
     controls=[
+        ('thin-probes.json',corrupt_metal),
+        ('thin-probes.json',lambda d:d['scenes'][0]['runs'][0].pop('sharedMetal')),
         ('thin-probes.json',lambda d:d['scenes'].pop()),
         ('thin-probes.json',lambda d:d['scenes'][0]['runs'].pop()),
         ('thin-probes.json',lambda d:d['scenes'][0].update(probeCell=[0,1,1])),
@@ -26,6 +31,6 @@ def main(root):
             try:v.verify(copy)
             except (ValueError,KeyError,FileNotFoundError):pass
             else:raise AssertionError('altered/incomplete thin evidence accepted '+str(i))
-    print('PASS eight thin-probe report controls, including seven negative cases')
+    print('PASS',1+len(controls),'thin-probe report controls, including',len(controls),'negative cases')
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('root',type=Path);main(p.parse_args().root)

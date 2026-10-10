@@ -1,4 +1,5 @@
 import Foundation
+import LinearAcousticsMetal
 import Metal
 import simd
 
@@ -6,8 +7,8 @@ import simd
 
 struct Run: Encodable {
     let steps: Int
-    let cpu, shared, metal: [[Double]]
-    let cpuBits, sharedBits, metalBits: [[UInt64]]
+    let cpu, shared, metal, sharedMetal: [[Double]]
+    let cpuBits, sharedBits, metalBits, sharedMetalBits: [[UInt64]]
 }
 struct Scene: Encodable {
     let axis: Int, representation: String
@@ -40,6 +41,7 @@ enum Failure: Error { case badInput, missingBackend, mismatch }
         let output = URL(fileURLWithPath: CommandLine.arguments[flag + 1])
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         let gpu = try require(MetalWaveSolver.shared)
+        let sharedGPU = SharedMetalSimulation(context: try MetalWaveContext(device: gpu.device))
         var scenes: [Scene] = []
         for axis in 0..<3 {
             for representation in ["box", "plan", "mesh"] {
@@ -102,7 +104,10 @@ enum Failure: Error { case badInput, missingBackend, mismatch }
                             source: source, receivers: r, steps: steps, stop: { false }))
                     let metal = try require(
                         gpu.simulate(s, source: source, receivers: r, steps: steps, stop: { false }))
-                    guard bits(cpu) == bits(shared), cpu.allSatisfy({ $0.count == steps }),
+                    let sharedMetal = try require(
+                        sharedGPU.simulate(s, source: source, receivers: r, steps: steps, stop: { false }))
+                    guard bits(metal) == bits(sharedMetal), bits(cpu) == bits(shared),
+                        cpu.allSatisfy({ $0.count == steps }),
                         metal.allSatisfy({ $0.count == steps })
                     else { throw Failure.mismatch }
                     if steps == 2 {
@@ -110,6 +115,7 @@ enum Failure: Error { case badInput, missingBackend, mismatch }
                             for (actual, expected) in [
                                 (cpu[i][0], firstCPU[i]), (cpu[i][1], lastCPU[i]),
                                 (metal[i][0], firstMetal[i]), (metal[i][1], lastMetal[i]),
+                                (sharedMetal[i][0], firstMetal[i]), (sharedMetal[i][1], lastMetal[i]),
                             ] {
                                 guard abs(actual - expected) <= 1e-6 * max(abs(expected), 1e-15) else {
                                     throw Failure.mismatch
@@ -119,8 +125,10 @@ enum Failure: Error { case badInput, missingBackend, mismatch }
                     }
                     runs.append(
                         Run(
-                            steps: steps, cpu: cpu, shared: shared, metal: metal, cpuBits: bits(cpu),
-                            sharedBits: bits(shared), metalBits: bits(metal)))
+                            steps: steps, cpu: cpu, shared: shared, metal: metal, sharedMetal: sharedMetal,
+                            cpuBits: bits(cpu),
+                            sharedBits: bits(shared), metalBits: bits(metal),
+                            sharedMetalBits: bits(sharedMetal)))
                 }
                 scenes.append(
                     Scene(
