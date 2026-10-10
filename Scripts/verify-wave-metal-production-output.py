@@ -5,8 +5,8 @@ from pathlib import Path
 
 CASES = {'rigid-box', 'rigid-plan', 'lossy-open-plan', 'masked-L', 'tilted-plan', 'tilted-mesh', 'thin-plan', 'padded-inactive', 'padded-nearest'}
 STEPS = {0, 1, 2, 63, 64, 65, 127, 128, 129, 257}
-VERSION = '0.1.0-alpha.11'
-CORE = '72dae5da882774ef9739d27c06c4a06a9c8ea66d'
+VERSION = '0.1.0-alpha.12'
+CORE = 'f464e04866903bfc7c9ce94c34d31125a776d270'
 
 def require(condition, message):
     if not condition: raise ValueError(message)
