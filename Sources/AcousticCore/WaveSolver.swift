@@ -47,8 +47,6 @@ struct WaveSolver {
     var impedanceBands: [Int]?
     /// Where to run: the GPU when there is one, or the CPU.
     var engine = Engine.automatic
-    /// Explicit comparison selection until complete Metal lifetime/output/timing gates pass.
-    var metalBackend: (any MetalSimulation)?
     // Application product uses the released shared backend. Frozen original numerical
     // consumers omit this app build setting and retain the original loop/dependency.
     #if ROOMCAD_SHARED_WAVE_DEFAULT
@@ -56,6 +54,34 @@ struct WaveSolver {
     #else
         var maskedCPUBackend: (any MaskedCPUSimulation)?
     #endif
+
+    private var selectedMetalBackend: (any MetalSimulation)?
+    #if ROOMCAD_SHARED_WAVE_DEFAULT
+        private var usesSharedMetalDefault = true
+    #else
+        private var usesSharedMetalDefault = false
+    #endif
+
+    /// Resolve application GPU resources only when the GPU path or a comparison asks for them.
+    var metalBackend: (any MetalSimulation)? {
+        get {
+            #if ROOMCAD_SHARED_WAVE_DEFAULT
+                if usesSharedMetalDefault { return SharedMetalSimulation.shared }
+            #endif
+            return selectedMetalBackend
+        }
+        set {
+            selectedMetalBackend = newValue
+            usesSharedMetalDefault = false
+        }
+    }
+
+    /// Explicit original GPU control for retained-source comparisons.
+    func usingOriginalMetal() -> Self {
+        var result = self
+        result.metalBackend = nil
+        return result
+    }
 
     /// Explicit original control for source conformance; the optimized box path is unchanged.
     func usingOriginalMaskedCPU() -> Self {

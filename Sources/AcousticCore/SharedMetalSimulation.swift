@@ -1,10 +1,19 @@
 import Foundation
 import LinearAcoustics
 import LinearAcousticsMetal
+import Metal
 
 /// Immutable compiled pipelines can be reused; every call owns its stepper and output.
 struct SharedMetalSimulation: MetalSimulation {
     let context: MetalWaveContext
+
+    /// Application-owned hardware selection and immutable pipeline reuse.
+    static let shared: Self? = {
+        guard let device = MTLCreateSystemDefaultDevice(),
+            let context = try? MetalWaveContext(device: device)
+        else { return nil }
+        return Self(context: context)
+    }()
 
     func simulate(
         _ solver: WaveSolver, source: SIMD3<Double>,
@@ -69,7 +78,7 @@ struct SharedMetalSimulation: MetalSimulation {
 }
 
 extension WaveSolver {
-    /// Explicit comparison backend; default Metal selection remains the original implementation.
+    /// Explicit device-context selection for conformance and application comparisons.
     func usingSharedMetal(context: MetalWaveContext) -> Self {
         var result = self
         result.metalBackend = SharedMetalSimulation(context: context)

@@ -129,7 +129,7 @@ struct Generator: Encodable {
             result.engine = .gpu
             if backend == 0 { result.metalBackend = originalGPU }
             if backend == 1 { result = result.usingSharedMetal(context: context) }
-            // 2 deliberately retains the real application's original Metal default.
+            // 2 deliberately retains the real application's shared Metal default.
             return result
         }
         let size: SIMD3<Double> = [3, 2, 1.5]
@@ -173,7 +173,7 @@ struct Generator: Encodable {
                             size: [0.7, 0.9])
                     ] : [])
             s.engine = .gpu
-            try check(s.metalBackend == nil, "actual original Metal application default")
+            try check(s.metalBackend is SharedMetalSimulation, "actual shared Metal application default")
             let microphones = Microphone.Pattern.allCases.enumerated().map {
                 Microphone(
                     pattern: $0.element, azimuth: Double($0.offset) * 31 - 47,
