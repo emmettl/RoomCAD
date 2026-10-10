@@ -102,3 +102,34 @@ question to measure and address before default adoption.
 raw evidence is retained privately in Edgerton. Frozen reference pins, application
 numerical code, engine/cancellation/abandon/budget policy and fixture identities stay
 unchanged. No app binary release or empirical accuracy claim is made.
+
+## Published alpha.12 comparison
+
+Exact alpha.12 (`f464e04866903bfc7c9ce94c34d31125a776d270`) combines mixed
+receiver sampling in one guarded dispatch. Candidate
+`e7513bb27cb1e0d28dd716c92f474fcea8832297` passes full Max/M4 counterparts and
+[mini Metal](https://github.com/emmettl/RoomCAD/actions/runs/38030914455),
+[application](https://github.com/emmettl/RoomCAD/actions/runs/38031106577),
+[thin](https://github.com/emmettl/RoomCAD/actions/runs/38031240672) and
+[CPU](https://github.com/emmettl/RoomCAD/actions/runs/38031478380) gates.
+Every complete case, 90 Metal runs/45,144 samples per variant, 18,432 timed
+original/shared samples, generator/non-timing diagnostics and saved WAV/metadata
+remain exact across hosts and alpha.11. The 72-run CPU comparison and all four
+90-run thin streams remain exact too. All strict negatives pass. Full app checks
+pass 187 Swift tests, lint, eight Python release tests, build, packaging, deep
+signature verification and a visually inspected actual-Metal snapshot. The final
+evidence checkpoint changes documentation only.
+
+Max shared/original wall ratios are 1.081/1.065/1.122; mini ratios are
+1.085/1.056/0.964 on 3,888/29,610/331,800 cells. The former largest Max
+alpha.10 ratio was 1.446. Preserve all repetitions: these live-host results establish
+bounded practical cost on the tested grids, not universal optimality or isolated
+speedup. Model/source/ownership gates and measured cost now support a separate
+application-default selection task. Original GPU remains the default for this pin
+checkpoint; startup/resource fallback and actual-default generator/save/packaging
+checks precede its switch.
+
+[Aggregate alpha.12 proof](wave-production-alpha12-verification.json) is public;
+complete data and logs are retained privately in Edgerton. No application numerical
+source, frozen reference pin, engine/cancellation/abandon/budget policy or fixture
+identity is changed here. No app binary release or empirical accuracy claim.

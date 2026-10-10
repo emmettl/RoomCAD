@@ -1,0 +1,60 @@
+{
+  "candidate": "e7513bb27cb1e0d28dd716c92f474fcea8832297",
+  "completeCPURunsPerHost": 72,
+  "completeMetalRunsPerHost": 90,
+  "completeThinRunsPerHost": 90,
+  "coreRevision": "f464e04866903bfc7c9ce94c34d31125a776d270",
+  "cpuSamplesPerVariantPerHost": 36696,
+  "crossHostAndPriorAlpha11Numerics": "exact case/timed/generator/non-timing diagnostics/saved WAV/metadata and all four thin streams",
+  "metalSamplesPerVariantPerHost": 45144,
+  "negativeControls": {
+    "cpu": 10,
+    "metal": 15,
+    "thin": 9
+  },
+  "packagingSigningActualMetalSnapshot": "passed; visually inspected",
+  "physicalMini": {
+    "application": "https://github.com/emmettl/RoomCAD/actions/runs/38031106577",
+    "cpu": "https://github.com/emmettl/RoomCAD/actions/runs/38031478380",
+    "metal": "https://github.com/emmettl/RoomCAD/actions/runs/38030914455",
+    "thin": "https://github.com/emmettl/RoomCAD/actions/runs/38031240672"
+  },
+  "pythonReleaseTests": 8,
+  "remaining": "separate default selection with actual-default/numerical/ownership/fallback/packaging checks",
+  "schemaVersion": 1,
+  "scope": "exact dependency/current consumer pin only; app source/policies/frozen references/original GPU default unchanged; docs-only final checkpoint",
+  "status": "passed alpha12 comparison adoption; original GPU default retained",
+  "swiftTests": 187,
+  "thinSamplesPerBackendPerHost": 45144,
+  "timedSamplesPerOriginalSharedVariantPerHost": 18432,
+  "timingScope": "balanced whole-simulation repetitions on live hosts; retain all results, no isolation/universal performance claim",
+  "timings": [
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4 Max",
+      "sharedToOriginalMedian": [
+        1.0809033672131851,
+        1.064604551013107,
+        1.1220126159156893
+      ]
+    },
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4",
+      "sharedToOriginalMedian": [
+        1.085309850362954,
+        1.056443690789431,
+        0.9641536827326039
+      ]
+    }
+  ],
+  "version": "0.1.0-alpha.12"
+}
