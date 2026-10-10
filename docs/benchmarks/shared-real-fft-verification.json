@@ -1,0 +1,64 @@
+{
+  "acceptedComparisonSource": "6c176e6d6dc40faaa1da49cdb1804c3f4bfbe305",
+  "applicationChecks": {
+    "actualMetal": true,
+    "bothSnapshotsInspected": true,
+    "deepStrictSignature": true,
+    "headlessSnapshot": true,
+    "maxSource": "1315c4f0470ce4ae6e443f34356c02171ec0e18e",
+    "miniSource": "c447239fef1ac0a9e5a49bd4142176e2add61ca8",
+    "optimizedPackaging": true,
+    "sourceProof": "Package/Package.resolved/Sources/Tests bytes identical to accepted comparison source",
+    "testsPerHost": 192
+  },
+  "applicationPR": "https://github.com/emmettl/RoomCAD/pull/31",
+  "baseline": "2bc11ed6a033e8642de4018e8e9ae9cfb4e1151c",
+  "dependency": {
+    "revision": "e94d329c55495ca561306174d624eadf5c8e7da0",
+    "version": "0.1.0-alpha.17"
+  },
+  "failuresPreserved": [
+    "initial fixture below existing minimum 1000 rays",
+    "three-coordinate scene source where driver convention requires two plan coordinates"
+  ],
+  "miniCorrectedComparison": {
+    "conclusion": "success",
+    "job": 114259654107,
+    "run": "https://github.com/emmettl/RoomCAD/actions/runs/38068004663"
+  },
+  "miniInitialWorkflow": {
+    "FFTjob": "failure: invalid authored source coordinates; unchanged application validation",
+    "applicationCPUmetalThinJobs": "success",
+    "conclusion": "failure",
+    "run": "https://github.com/emmettl/RoomCAD/actions/runs/38067568500"
+  },
+  "nativeComparison": {
+    "bytesPerVariant": 51455392,
+    "casesPerVariant": 84,
+    "corruptionControlsRejected": 10,
+    "equality": "all four original/shared Mac variants and earlier valid 199cb0d phase are byte-identical",
+    "nativeValuesPerVariant": 12778605,
+    "sha256": "92704311205c8fd92c189c5bbb644ce5d5469b07e2fba51d699083b5856e9349"
+  },
+  "productionCPU": {
+    "bothHosts": "pass",
+    "gateNegativeCases": 10,
+    "mixedSamples": 36696,
+    "source": "c447239fef1ac0a9e5a49bd4142176e2add61ca8"
+  },
+  "productionMetal": {
+    "bothHosts": "pass",
+    "gateNegativeCases": 15,
+    "mixedSamples": 45144,
+    "source": "c447239fef1ac0a9e5a49bd4142176e2add61ca8"
+  },
+  "schemaVersion": 1,
+  "scope": "shared primitive adoption and complete numerical/source conformance; full BRAS empirical validation remains separate",
+  "thinProbes": {
+    "bothHosts": "pass",
+    "completeRuns": 90,
+    "negativeCases": 9,
+    "samplesPerBackend": 45144,
+    "source": "c447239fef1ac0a9e5a49bd4142176e2add61ca8"
+  }
+}
