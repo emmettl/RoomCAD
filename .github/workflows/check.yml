@@ -8,7 +8,7 @@ on:
       suite:
         description: Full application checks or bounded acoustic source conformance
         type: choice
-        options: [all, application, fft-adoption, fft-comparison, fft-reference, production-cpu, production-metal, thin-probes, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout, shared-waves]
+        options: [all, application, affine-adoption, fft-adoption, fft-comparison, fft-reference, production-cpu, production-metal, thin-probes, acoustics, boundaries, rigid-3d, oblique, masked, cylinder, admittance, absorbing-cylinder, tilted-pulse, extruded-layout, shared-waves]
         default: all
 
 permissions:
@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   check:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'application' || inputs.suite == 'fft-adoption'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'application' || inputs.suite == 'fft-adoption'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 30
     steps:
@@ -42,7 +42,7 @@ jobs:
           retention-days: 14
 
   acoustics:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'acoustics'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'acoustics'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -65,7 +65,7 @@ jobs:
           retention-days: 14
 
   boundaries:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'boundaries'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'boundaries'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -88,7 +88,7 @@ jobs:
           retention-days: 14
 
   rigid-3d:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'rigid-3d'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'rigid-3d'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -111,7 +111,7 @@ jobs:
           retention-days: 14
 
   oblique:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'oblique'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'oblique'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -134,7 +134,7 @@ jobs:
           retention-days: 14
 
   masked:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'masked'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'masked'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -157,7 +157,7 @@ jobs:
           retention-days: 14
 
   cylinder:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'cylinder'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'cylinder'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -180,7 +180,7 @@ jobs:
           retention-days: 14
 
   admittance:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'admittance'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'admittance'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -203,7 +203,7 @@ jobs:
           retention-days: 14
 
   absorbing-cylinder:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'absorbing-cylinder'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'absorbing-cylinder'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 20
     steps:
@@ -226,7 +226,7 @@ jobs:
           retention-days: 14
 
   tilted-pulse:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'tilted-pulse'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'tilted-pulse'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 30
     steps:
@@ -252,7 +252,7 @@ jobs:
           retention-days: 14
 
   extruded-layout:
-    if: github.event_name != 'workflow_dispatch' || inputs.suite == 'all' || inputs.suite == 'extruded-layout'
+    if: github.event_name != 'workflow_dispatch' || (inputs.suite == 'all' || inputs.suite == 'affine-adoption') || inputs.suite == 'extruded-layout'
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 15
     steps:
@@ -294,7 +294,7 @@ jobs:
           retention-days: 14
 
   production-cpu:
-    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'production-cpu' || inputs.suite == 'fft-adoption')
+    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'production-cpu' || inputs.suite == 'fft-adoption' || inputs.suite == 'affine-adoption')
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 30
     steps:
@@ -316,7 +316,7 @@ jobs:
           retention-days: 14
 
   thin-probes:
-    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'thin-probes' || inputs.suite == 'fft-adoption')
+    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'thin-probes' || inputs.suite == 'fft-adoption' || inputs.suite == 'affine-adoption')
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 20
     steps:
@@ -338,7 +338,7 @@ jobs:
           retention-days: 14
 
   production-metal:
-    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'production-metal' || inputs.suite == 'fft-adoption')
+    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'production-metal' || inputs.suite == 'fft-adoption' || inputs.suite == 'affine-adoption')
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 25
     steps:
@@ -360,7 +360,7 @@ jobs:
           retention-days: 14
 
   fft-adoption:
-    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'fft-adoption' || inputs.suite == 'fft-comparison')
+    if: github.event_name == 'workflow_dispatch' && (inputs.suite == 'fft-adoption' || inputs.suite == 'fft-comparison' || inputs.suite == 'affine-adoption')
     runs-on: [self-hosted, macOS, ARM64, metal, roomcad]
     timeout-minutes: 30
     steps:
