@@ -59,3 +59,35 @@ Core types; original fixture runs retain original evolution/layout code. This ke
 frozen numerical references and original source-free gates available without changing
 pins or validators. Full application checks and the physical mini's actual-Metal
 packaged snapshot remain required for this app change.
+
+## Verified executable binding checkpoint
+
+Final producer `ccea958aa3551d79d025de6fff00f2b4d6735db7` passes the
+[mini production gate](https://github.com/emmettl/RoomCAD/actions/runs/38016230327)
+and complete M4 Max counterpart: 72 complete runs and 36,696 mixed samples per
+implementation/device, with zero runtime bit mismatches. Every case/input/value/bit
+history is identical across hosts. Full wave-enabled generator channels, fixed input
+identities, non-timing diagnostics and saved WAV bytes are also identical.
+The producer and independent postcondition pass, including nine adversarial controls.
+
+The [full mini application gate](https://github.com/emmettl/RoomCAD/actions/runs/38016087224)
+passes 176 Swift tests, all nine new binding tests, lint, eight release-script checks,
+build, release packaging, deep signature verification and the actual-Metal snapshot.
+Its candidate is `93612a8a3756715c5f5da3919bc837524145dcb7`; the subsequent
+change pins only newly introduced benchmark scene identities. Production/test code,
+manifest, CI and verification scripts match through the final numerical candidate.
+The final documentation checkpoint makes no executable change.
+
+The mini's shared/original median wall-time ratios are 1.046, 1.936 and 4.132 on
+3,888/29,610/331,800 cells. An earlier committed Max run with the same production
+code recorded 1.089/1.269/3.922; the final Max repeat recorded 0.910/0.709/1.133
+while other CPU work was active. The repeat slowed the original parallel loop too;
+retain all measurements rather than selecting an apparent improvement. These are
+live-host wall timings, not isolation or performance acceptance. Large-grid CPU
+throughput is therefore the next required optimization/measurement gate before a
+default switch. No automatic engine or budget policy was changed.
+
+[Aggregate identities and findings](wave-production-cpu-verification.json) are public;
+complete raw final and earlier outputs, consumer manifests, fixed input identities,
+logs, environment metadata, source identities and the packaged snapshot are retained
+privately in Edgerton. The existing acoustic/response fixtures remain unchanged.
