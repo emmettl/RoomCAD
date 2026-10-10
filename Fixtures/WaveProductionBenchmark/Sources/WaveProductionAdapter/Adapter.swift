@@ -66,6 +66,9 @@ struct Generator: Encodable {
         return value
     }
     static func bits(_ values: [[Double]]) -> [[UInt64]] { values.map { $0.map(\.bitPattern) } }
+    static func identity(_ slot: Int) -> UUID {
+        UUID(uuidString: String(format: "10000000-0000-4000-8000-%012d", slot))!
+    }
     static func vector(_ v: SIMD3<Double>) -> [Double] { [v.x, v.y, v.z] }
     static func dimensions(_ s: WaveSolver) -> [Int] { [s.cells.x, s.cells.y, s.cells.z] }
     static func write<T: Encodable>(_ value: T, _ name: String, _ output: URL) throws {
@@ -122,13 +125,14 @@ struct Generator: Encodable {
             ("padded-nearest", masked, [2.9, 1.9, 0.8]),
         ]
         var cases: [Case] = []
-        for (id, room, source) in specs {
+        for (scene, (id, room, source)) in specs.enumerated() {
             var s = WaveSolver(
                 room: room, sampleRate: 48_000, topFrequency: 180, atmosphere: .standard,
                 openings: id == "lossy-open-plan"
                     ? [
                         Opening(
-                            name: "Door", surface: .west, wall: 3, centre: [0.65, 0.65], size: [0.7, 0.9])
+                            id: identity(2000), name: "Door", surface: .west, wall: 3, centre: [0.65, 0.65],
+                            size: [0.7, 0.9])
                     ] : [])
             s.engine = .cpu
             let microphones =
@@ -168,7 +172,8 @@ struct Generator: Encodable {
                     sampleRate: s.sampleRate, topFrequency: s.topFrequency, source: vector(source),
                     receivers: r.enumerated().map {
                         RoomPoint(
-                            name: "R\($0.offset)", position: $0.element.position,
+                            id: identity(1000 + scene * 10 + $0.offset), name: "R\($0.offset)",
+                            position: $0.element.position,
                             microphone: $0.element.microphone)
                     }, dimensions: dimensions(s), spacing: vector(s.spacing), timeStep: s.timeStep,
                     inside: layout.inside, faces: layout.faces, sourceCells: layout.sourceCells,
@@ -230,11 +235,11 @@ struct Generator: Encodable {
         }
         try write(Report(candidate: candidate, cases: cases, timings: timings), "cpu-production.json", output)
         let settings = RoomResponseSettings(
-            room: masked, source: RoomPoint(name: "S", position: [0.7, 0.5, 0.8]),
+            room: masked, source: RoomPoint(id: identity(3000), name: "S", position: [0.7, 0.5, 0.8]),
             receivers: [
-                RoomPoint(name: "Omni", position: [1.1, 0.6, 0.8]),
+                RoomPoint(id: identity(3001), name: "Omni", position: [1.1, 0.6, 0.8]),
                 RoomPoint(
-                    name: "Directional", position: [1.9, 0.6, 0.8],
+                    id: identity(3002), name: "Directional", position: [1.9, 0.6, 0.8],
                     microphone: Microphone(pattern: .cardioid, azimuth: 137, elevation: 23)),
             ], duration: 0.05, maximumReflectionOrder: 1, lowFrequencyModel: true, crossoverFrequency: 80)
         let a = try RoomResponseGenerator.generate(
