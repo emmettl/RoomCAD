@@ -2,7 +2,7 @@
 
 Candidate: 10 October 2026. `WaveSolver.usingSharedMaskedCPU()` selects an internal
 comparison backend for the actual plan/mesh simulation path. It uses the exact
-released ContinuumKit alpha.8 dependency. The original production default and
+released ContinuumKit alpha.9 dependency; the alpha.8 baseline remains recorded below. The original production default and
 optimized unmasked box CPU path remain in use until throughput acceptance passes.
 This is the first executable binding in the [production outline](WAVE_PRODUCTION_INTEGRATION.md).
 
@@ -91,3 +91,33 @@ default switch. No automatic engine or budget policy was changed.
 complete raw final and earlier outputs, consumer manifests, fixed input identities,
 logs, environment metadata, source identities and the packaged snapshot are retained
 privately in Edgerton. The existing acoustic/response fixtures remain unchanged.
+
+## Exact alpha.9 execution checkpoint
+
+Producer `f71403ff34b787f58346dde6cd8ec459cdd107e8` pins released alpha.9 and
+uses the original app policy: serial below 4,096 cells, min(z,16) synchronous slabs
+otherwise. [Mini production comparison](https://github.com/emmettl/RoomCAD/actions/runs/38019908289)
+and M4 Max counterpart pass all 72 runs/36,696 samples per implementation/host.
+Complete case inputs/outputs and the wave-enabled generator's channels, non-timing
+diagnostics and saved WAV bytes match both Macs and the earlier alpha.8 checkpoint.
+The strict postcondition and nine negative controls remain unchanged apart from the
+required actual version/commit.
+
+[Mini full application check](https://github.com/emmettl/RoomCAD/actions/runs/38019909989)
+passes 177 Swift tests, ten binding tests (including real large-grid parallel work),
+lint, eight release-script checks, build, release packaging, signature verification
+and actual-Metal snapshot. The later evidence checkpoint changes documentation only.
+
+Shared/original median wall ratios at 3,888/29,610/331,800 cells are
+0.958/1.020/1.094 on Max and 1.067/1.216/1.087 on mini. The mini largest-grid ratio
+falls from 4.132 at alpha.8 to 1.087 while complete output stays unchanged. Retain
+all repetitions; live-host timing is not isolation. The remaining measured cost
+includes Core's complete-field certification absent from the original app loop.
+[Aggregate evidence](wave-production-alpha9-verification.json) records identities;
+raw crossed/generator/manifest/environment/log/snapshot evidence remains private.
+
+The next bounded application gate is directional sampling on two-cell dimensions:
+Core currently rejects the original clamp's invalid minus-face address. Review that
+geometry-owned probe rule, verify every relevant original/shared CPU/Metal path,
+then repeat complete app gates before changing the masked CPU default. The optimized
+unmasked box and Metal production migration remain separate contracts.
