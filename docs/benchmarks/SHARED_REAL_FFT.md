@@ -46,3 +46,16 @@ succeeds. Initial ray-count and source-coordinate setup failures, partial export
 and source phases remain in the complete private evidence archive.
 [Verification identities](shared-real-fft-verification.json) preserve actual
 producer/job scopes. Existing numerical bounds and measured fixtures are unchanged.
+
+## Legacy reference compile boundary
+
+After application adoption, masked/cylinder/admittance/absorbing-cylinder/tilted-pulse
+reference consumers still pin their original pre-alpha.17 Core revisions. Copying
+the current FFT shim into those verification modules cannot resolve its newer
+product. Their preparation now reconstructs only the protected original FFT compile
+control, alongside existing protected wave controls. Actual application source and
+alpha.17 pins remain unchanged. Original numerical cases, golden identities and
+frozen Core pins are preserved; current FFT application conformance is separate.
+The original missing-module build diagnostic is retained. The copier rejects
+production destinations, and ongoing provenance checks verify immutable Git/blob/
+SHA identities. See [the control](../../Fixtures/OriginalFFTReference/README.md).
