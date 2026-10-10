@@ -1,10 +1,10 @@
 # Current application masked CPU binding
 
-Candidate: 10 October 2026. `WaveSolver.usingSharedMaskedCPU()` selects an internal
-comparison backend for the actual plan/mesh simulation path. It uses the exact
-released ContinuumKit alpha.9 dependency; the alpha.8 baseline remains recorded below. The original production default and
-optimized unmasked box CPU path remain in use until throughput acceptance passes.
-This is the first executable binding in the [production outline](WAVE_PRODUCTION_INTEGRATION.md).
+Checkpoint: 10 October 2026. The application now selects the shared masked CPU
+backend by default, using exact released ContinuumKit alpha.9. Explicit original and
+shared controls remain available for conformance; the optimized unmasked box path
+retains its existing contract. See the [default adoption evidence](SHARED_MASKED_CPU_DEFAULT.md).
+The alpha.8 and alpha.9 comparison history remains recorded below.
 
 The adapter consumes the actual `gridLayout`, six wall blocks, pulse and receiver
 rules. It retains unique active zero source writes and all nonzero writes in their
@@ -20,7 +20,8 @@ with the original final-half-step velocity. Pattern mixing and sound-speed scali
 remain in the app, with no extra density factor or full-field copy per production step.
 Failures discard partial output and return nil. Empty calls preserve the original
 no-cancellation behavior; pressure-only thin grids omit unused velocity reads.
-Invalid directional minus-face addresses reject safely; they are not silently moved.
+The app-owned two-cell directional rule is now independently verified on all axes;
+malformed addresses still reject safely before field access.
 
 An internal generator configuration seam drives the same complete public generator
 body with an explicitly selected CPU backend. The public route uses identity
