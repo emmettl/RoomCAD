@@ -21,7 +21,7 @@ for representation in plan mesh; do
   mkdir -p "$directory"
   python3 "$scratch/ContinuumKit/Scripts/benchmark-metadata.py" --root "$root" \
    --repository https://github.com/emmettl/RoomCAD --precision Float32 --dependency "continuumkit=$revision" \
-   --output "$directory/environment.json" Sources/AcousticCore/*.swift Tests/AcousticCoreTests/OriginalMaskedCPU.swift \
+   --output "$directory/environment.json" Sources/AcousticCore/*.swift Tests/AcousticCoreTests/OriginalMaskedCPU.swift Tests/AcousticCoreTests/OriginalMetalWaveSolver.swift Fixtures/OriginalWaveReference/metal-source.json Fixtures/OriginalWaveReference/MetalWaveSolver.swift.gz \
   Fixtures/OriginalWaveReference/masked-cpu-source.json Fixtures/OriginalWaveReference/WaveSolver.swift.gz \
   Scripts/original_wave_reference.py \
    Scripts/prepare-tilted-pulse-reference.py Scripts/check-tilted-pulse.sh Scripts/verify-tilted-pulse-pair.py Scripts/test-tilted-pulse-pair.py Fixtures/TiltedPulseBenchmark/Sources/TiltedPulseAdapter/Adapter.swift

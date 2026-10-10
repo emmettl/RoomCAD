@@ -637,10 +637,14 @@ struct WavePlan {
     static let cpuBudget = 4e9
 
     /// Nil if even the lowest useful crossover is too much work.
-    init?(settings: RoomResponseSettings, schroeder: Double?, fftLength: Int, budgetScale: Double = 1) {
+    init?(
+        settings: RoomResponseSettings, schroeder: Double?, fftLength: Int, budgetScale: Double = 1,
+        solverFactory: ((Double) -> WaveSolver)? = nil
+    ) {
         let span = Double(fftLength) / Double(settings.sampleRate)
         func solver(_ crossover: Double) -> WaveSolver {
-            WaveSolver(
+            if let solverFactory { return solverFactory(crossover) }
+            return WaveSolver(
                 room: settings.room, sampleRate: settings.sampleRate,
                 topFrequency: crossover * 2.squareRoot(),
                 atmosphere: settings.atmosphere, openings: settings.openings)
