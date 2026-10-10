@@ -26,7 +26,7 @@ struct SharedWaveSimulationTests {
         var solver = WaveSolver(
             room: room, sampleRate: 48_000, topFrequency: 180, atmosphere: .standard)
         solver.engine = .cpu
-        return solver
+        return solver.usingOriginalMaskedCPU()
     }
     @Test("Large application grids use the original slab policy and retain full microphone output")
     func parallelApplication() throws {
@@ -34,13 +34,28 @@ struct SharedWaveSimulationTests {
         room.plan = .rectangle([6, 4], material: .uniform(0.2, name: "Wall"))
         let s = WaveSolver(room: room, sampleRate: 48_000, topFrequency: 200, atmosphere: .standard)
         #expect(s.cells.x * s.cells.y * s.cells.z >= 4_096 && s.cells.z > 1)
-        let oldResult = s.simulate(
+        let oldResult = s.usingOriginalMaskedCPU().simulate(
             source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
         let newResult = s.usingSharedMaskedCPU().simulate(
             source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
         let old = try #require(oldResult)
         let new = try #require(newResult)
         #expect(bits(old) == bits(new))
+    }
+
+    @Test("Application default selects shared masked CPU and explicit original control stays available")
+    func defaultSelection() throws {
+        let legacy = solver()
+        let current = WaveSolver(
+            room: legacy.room, sampleRate: legacy.sampleRate,
+            topFrequency: legacy.topFrequency, atmosphere: legacy.atmosphere)
+        #expect(current.maskedCPUBackend is SharedMaskedCPUSimulation)
+        #expect(current.usingOriginalMaskedCPU().maskedCPUBackend == nil)
+        let aResult = current.usingOriginalMaskedCPU().simulate(
+            source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
+        let bResult = current.simulate(
+            source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
+        #expect(bits(try #require(aResult)) == bits(try #require(bResult)))
     }
 
     private func bits(_ signals: [[Double]]) -> [[UInt64]] { signals.map { $0.map(\.bitPattern) } }
@@ -187,7 +202,7 @@ struct SharedWaveSimulationTests {
         let a = try RoomResponseGenerator.generate(
             settings,
             configureWaveSolver: { solver in
-                var copy = solver
+                var copy = solver.usingOriginalMaskedCPU()
                 copy.engine = .cpu
                 return copy
             })
@@ -244,7 +259,8 @@ struct SharedWaveSimulationTests {
         let s = WaveSolver(room: room, sampleRate: 48_000, topFrequency: 180, atmosphere: .standard)
         #expect(s.cells.z == 2)
         let r = [(position: SIMD3<Double>(1.1, 0.7, 0.05), microphone: Microphone.omni)]
-        let aResult = s.simulate(source: [0.7, 0.5, 0.05], receivers: r, steps: 129, stop: { false })
+        let aResult = s.usingOriginalMaskedCPU().simulate(
+            source: [0.7, 0.5, 0.05], receivers: r, steps: 129, stop: { false })
         let a = try #require(aResult)
         let bResult =
             s.usingSharedMaskedCPU().simulate(
@@ -255,7 +271,7 @@ struct SharedWaveSimulationTests {
             source: [0.7, 0.5, 0.05], receivers: [], steps: 129, stop: { false })
         #expect(empty == [])
         let directional = [(position: r[0].position, microphone: Microphone(pattern: .cardioid))]
-        let original = s.simulate(
+        let original = s.usingOriginalMaskedCPU().simulate(
             source: [0.7, 0.5, 0.05], receivers: directional, steps: 129, stop: { false })
         let shared = s.usingSharedMaskedCPU().simulate(
             source: [0.7, 0.5, 0.05], receivers: directional, steps: 129, stop: { false })

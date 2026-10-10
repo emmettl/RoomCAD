@@ -16,12 +16,12 @@ def bits(value, width):
     return int.from_bytes(struct.pack('>d' if width == 64 else '>f', value), 'big')
 
 def compare_channels(record, receivers, frames, width):
-    for name in ('original', 'shared'):
+    for name in ('original', 'shared', 'applicationDefault'):
         values, encoded = record[name], record[name + 'Bits']
         require(len(values) == len(encoded) == receivers, 'channel count')
         require(all(len(v) == len(b) == frames for v, b in zip(values, encoded)), 'complete channel history')
         require(all(bits(v, width) == b for channel, raw in zip(values, encoded) for v, b in zip(channel, raw)), 'sample/bit representation')
-    require(record['originalBits'] == record['sharedBits'], 'whole output bit mismatch')
+    require(record['originalBits'] == record['sharedBits'] == record['applicationDefaultBits'], 'whole output bit mismatch')
 
 def verify(root):
     environment = json.loads((root / 'environment.json').read_text())
@@ -87,16 +87,18 @@ def verify(root):
     compare_channels(generator, 2, frames, 32)
     original = dict(generator['originalDiagnostics']); shared = dict(generator['sharedDiagnostics'])
     for key in ('generationSeconds', 'waveSeconds'): original.pop(key, None); shared.pop(key, None)
-    require(original == shared and original['waveRuns'] > 0 and original['waveGPURuns'] == 0, 'complete generator diagnostics/actual CPU wave runs')
+    default = dict(generator['applicationDefaultDiagnostics'])
+    for key in ('generationSeconds', 'waveSeconds'): default.pop(key, None)
+    require(original == shared == default and original['waveRuns'] > 0 and original['waveGPURuns'] == 0, 'complete generator diagnostics/actual CPU wave runs')
     metadata_reports = []
-    for name in ('original', 'shared'):
+    for name in ('original', 'shared', 'application-default'):
         require((root / (name + '.wav')).stat().st_size > frames * 2 * 4, 'complete saved WAV')
         metadata = json.loads((root / (name + '-metadata.json')).read_text())
         require(metadata['generatorDetails']['settings'] == generator['settings'], 'saved settings identity')
         for key in ('generationSeconds', 'waveSeconds'): metadata['generatorDetails']['diagnostics'].pop(key, None)
         metadata_reports.append(metadata)
-    require(metadata_reports[0] == metadata_reports[1], 'complete non-timing saved metadata')
-    require((root / 'original.wav').read_bytes() == (root / 'shared.wav').read_bytes(), 'complete saved WAV byte parity')
+    require(metadata_reports[0] == metadata_reports[1] == metadata_reports[2], 'complete non-timing saved metadata')
+    require((root / 'original.wav').read_bytes() == (root / 'shared.wav').read_bytes() == (root / 'application-default.wav').read_bytes(), 'complete saved WAV byte parity')
     return {'schemaVersion': 1, 'status': 'passed', 'candidate': environment['revision'], 'backend': 'cpu', 'completeCases': len(CASES), 'completeRuns': len(CASES) * len(STEPS), 'mixedSamplesPerImplementation': total, 'runtimeBitMismatches': 0, 'fullGeneratorFramesPerChannel': frames, 'nonTimingDiagnostics': 'exact', 'performance': 'measured; not an acceptance threshold', 'timingRatios': [t['sharedToOriginalMedian'] for t in timings]}
 
 if __name__ == '__main__':
