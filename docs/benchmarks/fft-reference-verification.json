@@ -1,0 +1,26 @@
+{
+  "applicationSourcePinsCasesUnchanged": true,
+  "bothPhysicalHosts": "all five CPU/Metal suites pass",
+  "initialFailure": "SpectralTransforms missing from copied AcousticCore under original pre-alpha17 Core pins",
+  "miniConclusion": "success",
+  "miniJob": 114264773371,
+  "miniWorkflow": "https://github.com/emmettl/RoomCAD/actions/runs/38069818869",
+  "originalFFT": {
+    "blob": "6764b9fe1caafde501e30dac3bd94d74b88dfe39",
+    "revision": "2bc11ed6a033e8642de4018e8e9ae9cfb4e1151c",
+    "sha256": "63da5cb9c3ead610051a2b43faf3c345d4168d7e6580abd25ea202c18877b617"
+  },
+  "producer": "6ca9378b4b094f16e33de01f69cab4f81c1f750c",
+  "provenanceTests": 4,
+  "recordsPerBackend": 42,
+  "recordsPerHost": 84,
+  "schemaVersion": 1,
+  "scope": "verification-only compile dependency; protected original FFT never restored to production; original physical/unsupported labels preserved",
+  "temporaryReferenceSuites": {
+    "absorbing-cylinder": 6,
+    "admittance": 12,
+    "cylinder": 6,
+    "masked": 12,
+    "tilted-pulse": 6
+  }
+}

@@ -59,3 +59,10 @@ frozen Core pins are preserved; current FFT application conformance is separate.
 The original missing-module build diagnostic is retained. The copier rejects
 production destinations, and ongoing provenance checks verify immutable Git/blob/
 SHA identities. See [the control](../../Fixtures/OriginalFFTReference/README.md).
+
+The reference compatibility candidate `6ca9378` passes four provenance tests
+and all five affected CPU/Metal suites on both physical Macs, preserving 42 records
+per backend/84 per host and every original pin/case/golden. The
+[physical mini workflow](https://github.com/emmettl/RoomCAD/actions/runs/38069818869)
+succeeds. [Exact scope](fft-reference-verification.json) retains identities;
+complete native reports and the initial compile failure remain archived.
