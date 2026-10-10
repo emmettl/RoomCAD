@@ -29,3 +29,8 @@ code remain separate tasks. The packaged application gate requires shared backen
 symbols and rejects any original masked CPU implementation symbol. This migration
 changes ownership/location, not an acoustic law or a measured fixture. MIT attribution
 is retained by the repository licence; no new application binary release is implied.
+
+The [original GPU implementation is now retired](../../docs/benchmarks/RETIRED_ORIGINAL_METAL.md), with protected verification-only
+reconstruction and selected-backend availability/planning. Missing shared context now
+selects CPU directly; the old inline-GPU preparation fallback is retired. Both-host
+output, full application and packaged exclusion gates pass; no new Core tag is needed.
