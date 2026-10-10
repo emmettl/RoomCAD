@@ -1,0 +1,17 @@
+{
+  "license": "MIT",
+  "originalBytes": 38888,
+  "originalGitBlob": "8df5d8bf876ba2779d17b95f2771b46397fc59d4",
+  "originalPath": "Sources/AcousticCore/WaveSolver.swift",
+  "originalSHA256": "a25ccb9338247ef335df4a85a5a95985b73555c7b164c85d81fb1d68af6435ea",
+  "referencePath": "Tests/AcousticCoreTests/OriginalMaskedCPU.swift",
+  "referenceSHA256": "5d4cb89ca39268cf0db0c23d2c21e24f8a13981892613dae1526002dc36cc24e",
+  "repository": "https://github.com/emmettl/RoomCAD",
+  "revision": "c47fdc889ef294571fa5683963e5892afe5e38ab",
+  "schemaVersion": 1,
+  "scope": "verification-only original masked CPU evolution/source/sampling; current geometry and thin probe policy retained; excluded from production targets",
+  "selector": "extension WaveSolver {\n    /// The same scheme for a room with a floor plan or a mesh:",
+  "snapshotPath": "Fixtures/OriginalWaveReference/WaveSolver.swift.gz",
+  "snapshotSHA256": "056ef414b4ab2370c284676cf2d539b652e047c2f0a68e9194a3e4832791d974",
+  "verbatimExtensionSHA256": "544baa094e5c1d1c164f882c6186573834bcf5eff14307ae0dd3d917bbc1f1d6"
+}

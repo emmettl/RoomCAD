@@ -1,0 +1,52 @@
+{
+  "applicationAndThinProducer": "0bba31f3f072b9ec3a6e47610778dffde9c0aad5",
+  "completeCPURunsPerHost": 72,
+  "completeThinRunsPerHost": 90,
+  "coreRevision": "f464e04866903bfc7c9ce94c34d31125a776d270",
+  "coreVersion": "0.1.0-alpha.12",
+  "cpuSamplesPerVariantPerHost": 36696,
+  "crossHostAndPriorOutputs": "exact complete CPU cases, generator/non-timing diagnostics/saved WAV/metadata, all four thin streams",
+  "negativeControls": {
+    "productionCPU": 10,
+    "thin": 9
+  },
+  "numericalProducer": "6ffaa355eb738ca35aa2b333edf0545f28632447",
+  "originalManifestCompatibility": "12 complete CPU and 12 actual Metal masked histories/input/reference/error contracts exact; five generated original numerical wrappers byte-identical; 36 extruded layouts pass original assignment/zero-fallback gates",
+  "originalSnapshotRevision": "c47fdc889ef294571fa5683963e5892afe5e38ab",
+  "packagedBinary": "shared CPU/Metal symbols present; original masked implementation absent on both hosts",
+  "packagingSigningSnapshot": "passed; actual mini image visually inspected",
+  "physicalMini": {
+    "application": "https://github.com/emmettl/RoomCAD/actions/runs/38034965526",
+    "productionCPU": "https://github.com/emmettl/RoomCAD/actions/runs/38034779982",
+    "thin": "https://github.com/emmettl/RoomCAD/actions/runs/38035060932"
+  },
+  "producerDifference": "only symbol tool resolution through xcrun; all numerical source/tests/fixtures/manifests/benchmark producers unchanged",
+  "pythonReleaseTests": 8,
+  "referenceCorruptionControls": 7,
+  "remaining": "separate original GPU retirement and resource/availability/fallback audit; optimized box CPU retains distinct arithmetic contract",
+  "schemaVersion": 1,
+  "scope": "production masked CPU duplicate removed; one canonical verification-only original and full immutable snapshot retained; no model/fixture/tag/app binary release change",
+  "status": "passed original masked CPU retirement",
+  "swiftTests": 188,
+  "thinSamplesPerBackendPerHost": 45144,
+  "timings": [
+    {
+      "hardware": "Apple M4 Max",
+      "scope": "balanced warmed live-host comparisons; reference now compiled in verification target; retain all repetitions, no isolated speedup claim",
+      "sharedToOriginalMedian": [
+        0.9927128563071931,
+        1.0519614318472827,
+        1.116668338984544
+      ]
+    },
+    {
+      "hardware": "Apple M4",
+      "scope": "balanced warmed live-host comparisons; reference now compiled in verification target; retain all repetitions, no isolated speedup claim",
+      "sharedToOriginalMedian": [
+        1.1065503261840426,
+        1.0786348560400312,
+        1.1679040369484632
+      ]
+    }
+  ]
+}

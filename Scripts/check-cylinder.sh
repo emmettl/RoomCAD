@@ -17,7 +17,9 @@ for backend in cpu metal; do
  mkdir -p "$output/$backend"
  python3 "$scratch/ContinuumKit/Scripts/benchmark-metadata.py" --root "$root" \
   --repository https://github.com/emmettl/RoomCAD --precision Float32 --dependency "continuumkit=$revision" \
-  --output "$output/$backend/environment.json" Sources/AcousticCore/*.swift \
+  --output "$output/$backend/environment.json" Sources/AcousticCore/*.swift Tests/AcousticCoreTests/OriginalMaskedCPU.swift \
+  Fixtures/OriginalWaveReference/masked-cpu-source.json Fixtures/OriginalWaveReference/WaveSolver.swift.gz \
+  Scripts/original_wave_reference.py \
   Scripts/prepare-cylinder-reference.py Scripts/check-cylinder.sh Fixtures/CylinderBenchmark/Sources/CylinderAdapter/Adapter.swift
  swift run --package-path "$scratch/consumer" -c release -Xswiftc -enable-testing -Xswiftc -warnings-as-errors CylinderAdapter \
   --backend "$backend" --output "$output/$backend" --metadata "$output/$backend/environment.json"
