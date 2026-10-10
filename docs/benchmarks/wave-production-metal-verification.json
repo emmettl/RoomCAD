@@ -1,0 +1,85 @@
+{
+  "appCandidate": "ae54cf65f7454521fa321db26011ecf125fc7a6d",
+  "appSourceContinuity": "source/tests/manifests/packaging/check scripts unchanged between app and benchmark candidate; later checkpoint changes docs only",
+  "candidate": "a2a932f03c4f8880e29188bedf5bfc859954af4b",
+  "completeMetalRunsPerHost": 90,
+  "completeTimedSamplesPerOriginalSharedVariantPerHost": 18432,
+  "coreRevision": "da7cb5f5ac642edc57e8433c6150dceca6b9edd9",
+  "cpuContinuity": "all 72 runs/36696 samples per variant, full generator/metadata/WAVs exact across hosts and prior alpha.9 default checkpoint",
+  "cpuNegativeControls": 10,
+  "crossHostCompleteNumerics": "identical cases/input/layout/source/receiver/value/bit histories, all repeated timed output histories, generator/non-timing diagnostics and saved WAV/metadata",
+  "metalMixedSamplesPerVariantPerHost": 45144,
+  "metalNegativeControls": 15,
+  "newFocusedTests": 5,
+  "originalReferences": "local frozen-manifest masked CPU and actual Metal passed complete reports, 12 records per backend; original equations/dependency unchanged",
+  "packagingSignatureActualMetalSnapshot": "passed; snapshot visually inspected",
+  "physicalMini": {
+    "application": "https://github.com/emmettl/RoomCAD/actions/runs/38025289108",
+    "cpuContinuity": "https://github.com/emmettl/RoomCAD/actions/runs/38025844993",
+    "metalProduction": "https://github.com/emmettl/RoomCAD/actions/runs/38025643450",
+    "thinProbes": "https://github.com/emmettl/RoomCAD/actions/runs/38025757119"
+  },
+  "pythonReleaseTests": 8,
+  "remaining": "measured Metal overhead investigation/optimization before default adoption; retain existing engine/budget policies",
+  "schemaVersion": 1,
+  "scope": "optional real application Metal binding, ownership/cancellation/nonterminal abandon/fresh CPU restart, exact numerical/source continuity; no empirical accuracy or app binary release claim",
+  "status": "passed comparison binding; original Metal default retained",
+  "swiftTests": 187,
+  "thinBackends": [
+    "original CPU",
+    "shared CPU",
+    "original Metal",
+    "shared Metal"
+  ],
+  "thinCompleteRunsPerHost": 90,
+  "thinCrossHostAndPriorNumerics": "exact including unchanged prior CPU/original Metal outputs and independent two-step/all-axis oracle",
+  "thinNegativeControls": 9,
+  "thinSamplesPerBackendPerHost": 45144,
+  "timingScope": "three balanced warmed whole simulations on live hosts; separate compilation/setup, no isolation or speedup claim",
+  "timings": [
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "compilation": {
+        "device": "Apple M4 Max",
+        "originalSeconds": 0.000267167,
+        "registryID": 4294968412,
+        "sharedSeconds": 0.008211459
+      },
+      "hardware": "Apple M4 Max",
+      "sharedToOriginalMedian": [
+        1.206443239831855,
+        1.422827107100566,
+        1.446433736475456
+      ]
+    },
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "compilation": {
+        "device": "Apple M4",
+        "originalSeconds": 0.000246375,
+        "registryID": 4294968266,
+        "sharedSeconds": 0.007900375
+      },
+      "hardware": "Apple M4",
+      "sharedToOriginalMedian": [
+        1.207396538571676,
+        1.178725411259866,
+        1.0343961550593919
+      ]
+    }
+  ],
+  "variants": [
+    "original",
+    "explicit shared",
+    "actual application default original"
+  ],
+  "version": "0.1.0-alpha.10"
+}
