@@ -8,6 +8,7 @@ exec > >(tee "$output/check.log") 2>&1
 
 git rev-parse HEAD
 swift --version
+python3 Scripts/verify-original-fitting-reference.py --require-git
 python3 Scripts/verify-original-fft-reference.py --require-git
 python3 Scripts/verify-original-wave-reference.py --require-git
 swift Scripts/check-metal.swift

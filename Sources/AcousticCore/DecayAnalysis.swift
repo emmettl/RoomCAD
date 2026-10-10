@@ -1,4 +1,5 @@
 import Foundation
+import Numerics
 
 /// Energy decay of a sampled response by Schroeder backward integration (ISO 3382-1).
 public enum DecayAnalysis {
@@ -40,19 +41,12 @@ public enum DecayAnalysis {
         guard let first = curve.firstIndex(where: { $0 <= upper }),
             let last = curve.firstIndex(where: { $0 <= lower }), last > first + 1
         else { return nil }
-        let n = Double(last - first + 1)
-        var sx = 0.0
-        var sy = 0.0
-        var sxx = 0.0
-        var sxy = 0.0
-        for i in first...last {
-            let t = Double(i) / Double(sampleRate)
-            sx += t
-            sy += curve[i]
-            sxx += t * t
-            sxy += t * curve[i]
-        }
-        let slope = (n * sxy - sx * sy) / (n * sxx - sx * sx)
+        guard sampleRate > 0,
+            let fit = try? AffineLeastSquares.fit(
+                x: (first...last).map { Double($0) / Double(sampleRate) },
+                y: Array(curve[first...last]))
+        else { return nil }
+        let slope = fit.slope
         return slope < 0 ? -60 / slope : nil
     }
 }

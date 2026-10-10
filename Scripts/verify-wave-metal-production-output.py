@@ -7,9 +7,9 @@ CASES = {'rigid-box', 'rigid-plan', 'lossy-open-plan', 'masked-L', 'tilted-plan'
 STEPS = {0, 1, 2, 63, 64, 65, 127, 128, 129, 257}
 VERSION = '0.1.0-alpha.12'
 CORE = 'f464e04866903bfc7c9ce94c34d31125a776d270'
-# The alpha.17 migration keeps every pre-existing CAD/response/wave source byte.
+# Alpha.18 preserves the released CAD/response/wave products byte-for-byte.
 # Retain exact alpha.12 histories and reject every other version/revision pair.
-DEPENDENCIES = {VERSION: CORE, '0.1.0-alpha.17': 'e94d329c55495ca561306174d624eadf5c8e7da0'}
+DEPENDENCIES = {VERSION: CORE, '0.1.0-alpha.17': 'e94d329c55495ca561306174d624eadf5c8e7da0', '0.1.0-alpha.18': '0e0929f4a0806940ed2fc5be5f81d1a82034cc8c'}
 
 def require(condition, message):
     if not condition: raise ValueError(message)

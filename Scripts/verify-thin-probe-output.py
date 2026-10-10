@@ -13,7 +13,7 @@ def bits(value):
 def verify(root):
     env=json.loads((root/'environment.json').read_text());require(env['workingTreeDirty'] is False,'dirty producer')
     report=json.loads((root/'thin-probes.json').read_text());require(report['candidate']==env['revision'] and report['device'],'producer/device scope')
-    pins=json.loads((root/'consumer-Package.resolved').read_text())['pins'];require(len(pins)==1 and pins[0]['identity']=='continuumkit' and pins[0]['state'] in [{'version':'0.1.0-alpha.12','revision':'f464e04866903bfc7c9ce94c34d31125a776d270'},{'version':'0.1.0-alpha.17','revision':'e94d329c55495ca561306174d624eadf5c8e7da0'}],'exact dependency')
+    pins=json.loads((root/'consumer-Package.resolved').read_text())['pins'];require(len(pins)==1 and pins[0]['identity']=='continuumkit' and pins[0]['state'] in [{'version':'0.1.0-alpha.12','revision':'f464e04866903bfc7c9ce94c34d31125a776d270'},{'version':'0.1.0-alpha.17','revision':'e94d329c55495ca561306174d624eadf5c8e7da0'},{'version':'0.1.0-alpha.18','revision':'0e0929f4a0806940ed2fc5be5f81d1a82034cc8c'}],'exact dependency')
     scenes=report['scenes'];require(len(scenes)==9 and {(s['axis'],s['representation']) for s in scenes}=={(a,r) for a in range(3) for r in ('box','plan','mesh')},'complete scene tree')
     total=0
     for scene in scenes:

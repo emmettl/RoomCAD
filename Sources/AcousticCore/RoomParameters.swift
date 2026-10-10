@@ -1,4 +1,5 @@
 import Foundation
+import Numerics
 
 /// Room-acoustic parameters of an impulse response in one octave band, after ISO 3382-1.
 ///
@@ -71,7 +72,7 @@ public struct RoomParameters: Codable, Equatable, Sendable {
             guard let first = decibels.firstIndex(where: { $0 <= upper }),
                 let last = decibels.firstIndex(where: { $0 <= lower }), last > first + 1
             else { return nil }
-            let slope = slopePerSecond(decibels, first...last, sampleRate: rate)
+            guard let slope = slopePerSecond(decibels, first...last, sampleRate: rate) else { return nil }
             return slope < 0 ? -60 / slope : nil
         }
         func early(_ milliseconds: Double) -> Double {
@@ -120,47 +121,55 @@ public struct RoomParameters: Codable, Equatable, Sendable {
         guard top - floor > 20 else { return nil }
         var crossing = blocks - 1
         var slope = 0.0
-        var intercept = 0.0
+        var finalFit: AffineLeastSquares.Result?
         for _ in 0..<5 {
             guard let first = levels.firstIndex(where: { $0 <= top - 5 }) else { return nil }
             let last = (smoothed[(first + 1)...].firstIndex { $0 < floor + 10 } ?? blocks) - 1
             guard last > first + 2 else { return nil }
-            let fit = line(Array(levels[first...last]), offset: first)
+            guard let fit = line(Array(levels[first...last]), offset: first), fit.slope < 0,
+                let coordinate = try? fit.coordinate(at: floor),
+                let cut = Int(
+                    exactly: min(max(coordinate, Double(last)), Double(blocks - 1)).rounded(.towardZero)),
+                let nextStart = noiseFloorStart(crossing: cut, slope: fit.slope, blocks: blocks)
+            else { return nil }
             slope = fit.slope
-            intercept = fit.intercept
-            guard slope < 0 else { return nil }
-            crossing = min(max(Int((floor - intercept) / slope), last), blocks - 1)
-            floor = noise(from: crossing + Int(5 / -slope) + 1)
+            finalFit = fit
+            crossing = cut
+            floor = noise(from: nextStart)
         }
         // Mean energy per sample on the fitted line at the crossing, decaying with time constant τ.
         let index = crossing * block
-        let level = intercept + slope * Double(crossing)
+        guard let level = try? finalFit?.value(at: Double(crossing)) else { return nil }
         let perSample = pow(10, level / 10)
         let tau = 10 / (log(10) * -slope) * Double(block)
         return (index, perSample * tau)
     }
 
-    private static func line(_ values: [Double], offset: Int) -> (slope: Double, intercept: Double) {
-        let n = Double(values.count)
-        var sx = 0.0
-        var sy = 0.0
-        var sxx = 0.0
-        var sxy = 0.0
-        for (i, y) in values.enumerated() {
-            let x = Double(i + offset)
-            sx += x
-            sy += y
-            sxx += x * x
-            sxy += x * y
-        }
-        let slope = (n * sxy - sx * sy) / (n * sxx - sx * sx)
-        return (slope, (sy - slope * sx) / n)
+    /// Clamp the noise-estimation start before integer conversion. A nearly flat
+    /// negative line can place the five-decibel interval beyond Int's range, while
+    /// the application's last-tenth noise window remains well defined.
+    static func noiseFloorStart(crossing: Int, slope: Double, blocks: Int) -> Int? {
+        guard blocks > 20, crossing >= 0, crossing < blocks, slope.isFinite, slope < 0 else { return nil }
+        let maximumStart = blocks - blocks / 10
+        let remaining = max(maximumStart - crossing - 1, 0)
+        let interval = 5 / -slope
+        if interval >= Double(remaining) { return maximumStart }
+        guard let extra = Int(exactly: interval.rounded(.towardZero)) else { return nil }
+        return crossing + extra + 1
+    }
+
+    private static func line(_ values: [Double], offset: Int) -> AffineLeastSquares.Result? {
+        let coordinates = values.indices.map { Double($0 + offset) }
+        return try? AffineLeastSquares.fit(x: coordinates, y: values)
     }
 
     private static func slopePerSecond(_ curve: [Double], _ range: ClosedRange<Int>, sampleRate: Double)
-        -> Double
+        -> Double?
     {
-        let fit = line(Array(curve[range]), offset: range.lowerBound)
-        return fit.slope * sampleRate
+        guard sampleRate.isFinite, sampleRate > 0,
+            let fit = line(Array(curve[range]), offset: range.lowerBound)
+        else { return nil }
+        let slope = fit.slope * sampleRate
+        return slope.isFinite ? slope : nil
     }
 }
