@@ -147,7 +147,7 @@ import simd
                         .init(id: metadataChannels[0].receiverID, name: "A", position: SIMD3(2, 2, 1.5)),
                         .init(id: metadataChannels[1].receiverID, name: "B", position: SIMD3(3, 2, 1.5)),
                     ], airAbsorption: true, sampleRate: rate, duration: 0.04, maximumReflectionOrder: 3,
-                    lowFrequencyCutoff: cutoff, diffuseRays: 64, randomSeed: 71, lowFrequencyModel: false)
+                    lowFrequencyCutoff: cutoff, diffuseRays: 1000, randomSeed: 71, lowFrequencyModel: false)
                 let result = try RoomResponseGenerator.generate(settings)
                 records.append([
                     "id": "generator/\(rate)/\(Int(cutoff))", "kind": "generator", "rate": rate,
@@ -165,7 +165,7 @@ import simd
             ) { settings in
                 settings.sampleRate = rate
                 settings.maximumReflectionOrder = 3
-                settings.diffuseRays = 64
+                settings.diffuseRays = 1000
                 settings.randomSeed = 71
                 settings.lowFrequencyCutoff = 0
             }
