@@ -15,7 +15,10 @@ let package = Package(
     targets: [
         .target(
             name: "AcousticCore",
-            dependencies: [.product(name: "ImpulseResponseKit", package: "continuumkit")]),
+            dependencies: [
+                .product(name: "ImpulseResponseKit", package: "continuumkit"),
+                .product(name: "LinearAcoustics", package: "continuumkit"),
+            ]),
         .target(
             name: "RoomDocument",
             dependencies: [

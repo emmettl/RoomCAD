@@ -1,6 +1,16 @@
 import Foundation
 import simd
 
+/// Application-owned optional masked backend; each simulation owns all mutable state.
+/// Keeping this protocol free of Core types also preserves the original benchmark bindings.
+protocol MaskedCPUSimulation: Sendable {
+    func simulate(
+        _ solver: WaveSolver, source: SIMD3<Double>,
+        receivers: [(position: SIMD3<Double>, microphone: Microphone)], steps: Int,
+        stop: @Sendable () -> Bool
+    ) -> [[Double]]?
+}
+
 /// Low-frequency room response by finite differences in the time domain (FDTD).
 ///
 /// Linear acoustics with pressure at cell centres and particle velocity on cell faces, advanced by
@@ -27,6 +37,8 @@ struct WaveSolver {
     var impedanceBands: [Int]?
     /// Where to run: the GPU when there is one, or the CPU.
     var engine = Engine.automatic
+    /// Explicit comparison backend until complete output/lifetime/timing gates pass.
+    var maskedCPUBackend: (any MaskedCPUSimulation)?
     /// Whether `responses` damps each band so the room's modes decay, averaged over the room, at the
     /// diffuse rate their absorption gives (see `responses`); off only to test the bare boundary model.
     var matchesDiffuseDecay = true
@@ -140,6 +152,10 @@ struct WaveSolver {
         stop: @Sendable () -> Bool
     ) -> [[Double]]? {
         if room.plan != nil || room.mesh != nil {
+            if let maskedCPUBackend {
+                return maskedCPUBackend.simulate(
+                    self, source: source, receivers: receivers, steps: steps, stop: stop)
+            }
             return simulateMasked(source: source, receivers: receivers, steps: steps, stop: stop)
         }
         let nx = cells.x

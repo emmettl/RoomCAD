@@ -330,6 +330,17 @@ public enum RoomResponseGenerator {
         _ settings: RoomResponseSettings, cancellation: CancellationFlag = CancellationFlag(),
         quality: GenerationQuality = .full, progress: GenerationProgress? = nil
     ) throws -> RoomResponse {
+        try generate(
+            settings, cancellation: cancellation, quality: quality, progress: progress,
+            configureWaveSolver: { $0 })
+    }
+
+    /// Internal complete-generator comparison seam; the public path retains identity configuration.
+    static func generate(
+        _ settings: RoomResponseSettings, cancellation: CancellationFlag = CancellationFlag(),
+        quality: GenerationQuality = .full, progress: GenerationProgress? = nil,
+        configureWaveSolver: (WaveSolver) -> WaveSolver
+    ) throws -> RoomResponse {
         try settings.validate()
         let start = Date()
         // Worker threads cannot see the task, so the calling thread passes its cancellation on.
@@ -488,7 +499,8 @@ public enum RoomResponseGenerator {
                 let crossover = plan.crossover
                 let cutoff = settings.lowFrequencyCutoff
                 progress?.begin(.waveSolver)
-                let low = plan.solver.responses(
+                let configuredSolver = configureWaveSolver(plan.solver)
+                let low = configuredSolver.responses(
                     source: settings.source.position,
                     receivers: settings.receivers.map { ($0.position, $0.microphone ?? .omni) },
                     frames: frames,
