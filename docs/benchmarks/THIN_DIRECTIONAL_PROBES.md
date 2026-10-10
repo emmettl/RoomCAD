@@ -42,3 +42,17 @@ required. Existing measured response fixtures are unchanged.
 This is the geometry-owned gate needed before default masked CPU adoption. Default
 migration and retirement of retained original loop/reference code are separate changes;
 Metal production integration still has its own ownership, pipeline and abandonment gates.
+
+## Verified checkpoint
+
+Producer `4511fc232ff70a8f9f3bde5577caa8e0416a16d3` passes the
+[mini thin gate](https://github.com/emmettl/RoomCAD/actions/runs/38021923430)
+and M4 Max counterpart: all nine scenes/90 complete runs/45,144 samples per
+backend/host, with identical complete crossed scene inputs/outputs and CPU/shared
+bits. Both independent guards and seven negative controls pass.
+The [full mini app check](https://github.com/emmettl/RoomCAD/actions/runs/38021925002)
+passes 181 Swift tests, all 14 sampling/binding tests, lint, eight release-script
+checks, build, release packaging, signature verification and actual-Metal snapshot.
+The later checkpoint changes docs only. [Aggregate proof](thin-directional-probes-verification.json)
+records identities; complete raw inputs/streams/bits, exact dependency/clean metadata,
+logs and visually inspected packaged snapshot are retained privately.
