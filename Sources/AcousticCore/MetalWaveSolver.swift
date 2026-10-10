@@ -419,9 +419,8 @@ extension WaveSolver {
             receiverCells: receiverWeights.flatMap { $0.map(\.0) },
             receiverWeights: receiverWeights.flatMap { $0.map(\.1) },
             velocityCells: receivers.map { receiver in
-                let g = receiver.position / spacing
-                return min(max(Int(g.x), 1), nx - 2) + nx
-                    * (min(max(Int(g.y), 1), ny - 2) + ny * min(max(Int(g.z), 1), nz - 2))
+                let cell = velocityProbeCell(receiver.position)
+                return cell.x + nx * (cell.y + ny * cell.z)
             },
             axes: receivers.flatMap {
                 [Float($0.microphone.axis.x), Float($0.microphone.axis.y), Float($0.microphone.axis.z)]
