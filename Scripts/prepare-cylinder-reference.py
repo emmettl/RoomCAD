@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Copy actual AcousticCore verbatim for geometry/Metal access; bind verbatim simulateMasked numerical blocks."""
+"""Copy actual AcousticCore verbatim for geometry/Metal access; bind verified immutable masked CPU numerical blocks."""
 import argparse,shutil
+from original_wave_reference import original_masked_source, copy_original_masked_reference
 from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
 # These original source-free fixtures pin Core versions before production source/receiver APIs.
 # The optional shared app backend is verified separately; original update/layout source stays verbatim.
 shutil.copytree(a.root/'Sources/AcousticCore',a.output/'Sources/AcousticCore',ignore=shutil.ignore_patterns('SharedWaveSimulation.swift', 'SharedMetalSimulation.swift'))
-source=(a.root/'Sources/AcousticCore/WaveSolver.swift').read_text()
+copy_original_masked_reference(a.root, a.output/'Sources/AcousticCore')
+source=original_masked_source(a.root)
 start=source.index('    func simulateMasked(')
 coeff_start=source.index('        let kx = Float(dt / spacing.x)',start)
 loop=source.index('        for n in 0..<steps {',coeff_start)

@@ -50,7 +50,7 @@ struct SharedWaveSimulationTests {
             room: legacy.room, sampleRate: legacy.sampleRate,
             topFrequency: legacy.topFrequency, atmosphere: legacy.atmosphere)
         #expect(current.maskedCPUBackend is SharedMaskedCPUSimulation)
-        #expect(current.usingOriginalMaskedCPU().maskedCPUBackend == nil)
+        #expect(current.usingOriginalMaskedCPU().maskedCPUBackend is OriginalMaskedCPUSimulation)
         let aResult = current.usingOriginalMaskedCPU().simulate(
             source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
         let bResult = current.simulate(
