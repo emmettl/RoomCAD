@@ -95,3 +95,8 @@ resource/availability checks that currently feed automatic-engine budgets, verif
 fallback and full application behavior, and keep optimized unmasked box CPU arithmetic
 as its separate contract. Neither this migration nor numerical conformance establishes
 empirical acoustic accuracy.
+
+The [production masked CPU duplicate is now retired](RETIRED_MASKED_CPU.md), with
+canonical verification-only original source and immutable reconstruction. Both-host
+complete output/packaged exclusion and frozen original compatibility gates pass.
+The next bounded retirement covers original GPU code and availability/resource checks.
