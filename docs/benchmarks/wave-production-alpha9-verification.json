@@ -1,0 +1,49 @@
+{
+  "applicationRun": "https://github.com/emmettl/RoomCAD/actions/runs/38019909989",
+  "candidate": "f71403ff34b787f58346dde6cd8ec459cdd107e8",
+  "completeRunsPerHost": 72,
+  "coreRevision": "0170d394e9cfa40c3034f9dd8cf29d3f8dcb92d1",
+  "crossHostAndAlpha8CompleteNumerics": "identical including cases/generator/non-timing diagnostics/WAV bytes",
+  "executionPolicy": "serial below 4096 cells; min(z,16) synchronous slabs otherwise",
+  "focusedBindingTests": 10,
+  "mixedSamplesPerImplementationPerHost": 36696,
+  "negativeControls": 9,
+  "packagingSigningActualMetalSnapshot": "passed",
+  "productionRun": "https://github.com/emmettl/RoomCAD/actions/runs/38019908289",
+  "pythonReleaseTests": 8,
+  "runtimeBitMismatches": 0,
+  "schemaVersion": 1,
+  "scope": "exact-tag optimized CPU comparison binding; existing production default remains original pending directional thin-grid policy",
+  "status": "passed",
+  "swiftTests": 177,
+  "timingScope": "three balanced warmed whole-simulation repetitions on live hosts; no isolation claim",
+  "timings": [
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4 Max",
+      "sharedToOriginalMedian": [
+        0.9576861744917791,
+        1.0204764148706145,
+        1.0942903099094357
+      ]
+    },
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4",
+      "sharedToOriginalMedian": [
+        1.0665021325258326,
+        1.2155831443096337,
+        1.087496265767345
+      ]
+    }
+  ],
+  "version": "0.1.0-alpha.9"
+}

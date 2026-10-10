@@ -78,3 +78,9 @@ large-grid serial throughput gate is open. Address CPU execution cost before
 switching that default; the original unmasked box path remains a separate contract.
 The first Metal application binding follows, with its own pipeline reuse, command-
 completion, abandon/restart and actual-device timing gates.
+
+The [exact alpha.9 comparison](wave-production-alpha9-verification.json) now uses the
+original app slab threshold and reduces the mini's largest-grid ratio to about 1.09,
+with all complete alpha.8 outputs preserved and 177 app tests passing. The remaining
+directional two-cell probe rule needs an explicit app geometry fix before default
+adoption. Metal production ownership/pipeline/abandonment follows its own gates.
