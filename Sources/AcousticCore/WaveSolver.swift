@@ -37,8 +37,20 @@ struct WaveSolver {
     var impedanceBands: [Int]?
     /// Where to run: the GPU when there is one, or the CPU.
     var engine = Engine.automatic
-    /// Explicit comparison backend until complete output/lifetime/timing gates pass.
-    var maskedCPUBackend: (any MaskedCPUSimulation)?
+    // Application product uses the released shared backend. Frozen original numerical
+    // consumers omit this app build setting and retain the original loop/dependency.
+    #if ROOMCAD_SHARED_WAVE_DEFAULT
+        var maskedCPUBackend: (any MaskedCPUSimulation)? = SharedMaskedCPUSimulation()
+    #else
+        var maskedCPUBackend: (any MaskedCPUSimulation)?
+    #endif
+
+    /// Explicit original control for source conformance; the optimized box path is unchanged.
+    func usingOriginalMaskedCPU() -> Self {
+        var result = self
+        result.maskedCPUBackend = nil
+        return result
+    }
     /// Whether `responses` damps each band so the room's modes decay, averaged over the room, at the
     /// diffuse rate their absorption gives (see `responses`); off only to test the bare boundary model.
     var matchesDiffuseDecay = true

@@ -62,7 +62,8 @@ a separate gate when a change alters acoustic assumptions or recorded responses.
 
 Record representative grid preparation and repeated-run timing on both Macs before
 switching defaults. The existing masked CPU loop uses parallel slabs, while the
-released Core CPU stepper is serial; numerical equivalence alone does not establish
+released Core CPU stepper supports caller-selected serial/slab execution; numerical
+equivalence alone does not establish
 acceptable production throughput. The existing GPU solver reuses compiled pipelines,
 while Core currently prepares pipelines per stepper. Measure initialization and
 steady-state costs separately and address a demonstrated regression before default
@@ -72,15 +73,15 @@ relax verification, or silently substitute backends.
 ## Current implementation checkpoint
 
 The [masked CPU application binding](WAVE_PRODUCTION_CPU.md) now passes complete
-same-backend outputs, cancellation/concurrency, full wave-enabled generator/save
-and mini app gates. It remains explicitly selected for comparison: the measured
-large-grid serial throughput gate is open. Address CPU execution cost before
-switching that default; the original unmasked box path remains a separate contract.
-The first Metal application binding follows, with its own pipeline reuse, command-
-completion, abandon/restart and actual-device timing gates.
+original/explicit-shared/actual-default outputs, cancellation/concurrency, full
+wave-enabled generator/save and mini application gates. Exact alpha.9 execution
+retains the original serial/slab policy. The independently verified all-axis
+[two-cell directional rule](THIN_DIRECTIONAL_PROBES.md) closes the remaining address
+gate. The [application default checkpoint](SHARED_MASKED_CPU_DEFAULT.md) records full
+cross-host numerical continuity, raw timings and retained original-reference checks.
+The optimized unmasked box path remains a separate contract.
 
-The [exact alpha.9 comparison](wave-production-alpha9-verification.json) now uses the
-original app slab threshold and reduces the mini's largest-grid ratio to about 1.09,
-with all complete alpha.8 outputs preserved and 177 app tests passing. The remaining
-directional two-cell probe rule needs an explicit app geometry fix before default
-adoption. Metal production ownership/pipeline/abandonment follows its own gates.
+The next bounded task is the first Metal application binding, with compiled pipeline
+reuse, command-completion ownership, abandon/restart and actual-device timing gates.
+Current production Metal continues to use the original path. Neither shared default
+adoption nor numerical conformance establishes measured acoustic accuracy.

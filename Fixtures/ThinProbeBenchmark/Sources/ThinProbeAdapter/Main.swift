@@ -95,7 +95,8 @@ enum Failure: Error { case badInput, missingBackend, mismatch }
                 var runs: [Run] = []
                 for steps in [0, 1, 2, 63, 64, 65, 127, 128, 129, 257] {
                     let cpu = try require(
-                        s.simulate(source: source, receivers: r, steps: steps, stop: { false }))
+                        s.usingOriginalMaskedCPU().simulate(
+                            source: source, receivers: r, steps: steps, stop: { false }))
                     let shared = try require(
                         s.usingSharedMaskedCPU().simulate(
                             source: source, receivers: r, steps: steps, stop: { false }))

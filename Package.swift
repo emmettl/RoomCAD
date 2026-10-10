@@ -18,7 +18,9 @@ let package = Package(
             dependencies: [
                 .product(name: "ImpulseResponseKit", package: "continuumkit"),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
-            ]),
+            ],
+            // Original reference consumers copy this source into their frozen manifests.
+            swiftSettings: [.define("ROOMCAD_SHARED_WAVE_DEFAULT")]),
         .target(
             name: "RoomDocument",
             dependencies: [

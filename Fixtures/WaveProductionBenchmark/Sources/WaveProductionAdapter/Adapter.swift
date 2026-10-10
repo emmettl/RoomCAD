@@ -7,8 +7,8 @@ import simd
 enum AuditError: Error { case failed(String) }
 struct Run: Encodable {
     let steps: Int
-    let original, shared: [[Double]]
-    let originalBits, sharedBits: [[UInt64]]
+    let original, shared, applicationDefault: [[Double]]
+    let originalBits, sharedBits, applicationDefaultBits: [[UInt64]]
 }
 struct Case: Encodable {
     let id: String
@@ -52,9 +52,9 @@ struct Report: Encodable {
 }
 struct Generator: Encodable {
     let settings: RoomResponseSettings
-    let original, shared: [[Float]]
-    let originalBits, sharedBits: [[UInt32]]
-    let originalDiagnostics, sharedDiagnostics: RoomResponseDiagnostics
+    let original, shared, applicationDefault: [[Float]]
+    let originalBits, sharedBits, applicationDefaultBits: [[UInt32]]
+    let originalDiagnostics, sharedDiagnostics, applicationDefaultDiagnostics: RoomResponseDiagnostics
 }
 
 @main struct Audit {
@@ -135,6 +135,7 @@ struct Generator: Encodable {
                             size: [0.7, 0.9])
                     ] : [])
             s.engine = .cpu
+            try check(s.maskedCPUBackend is SharedMaskedCPUSimulation, "actual application default")
             let microphones =
                 id == "thin-plan"
                 ? [Microphone.omni, .omni]
@@ -155,16 +156,22 @@ struct Generator: Encodable {
             var runs: [Run] = []
             for steps in [0, 1, 63, 64, 65, 127, 128, 129, 257] {
                 let original = try require(
-                    s.simulate(source: source, receivers: r, steps: steps, stop: { false }), id)
+                    s.usingOriginalMaskedCPU().simulate(
+                        source: source, receivers: r, steps: steps, stop: { false }), id)
                 let shared = try require(
                     s.usingSharedMaskedCPU().simulate(
                         source: source, receivers: r, steps: steps, stop: { false }), id)
-                try check(bits(original) == bits(shared), id + " bit parity")
+                let actualDefault = try require(
+                    s.simulate(source: source, receivers: r, steps: steps, stop: { false }), id)
+                try check(
+                    bits(original) == bits(shared) && bits(original) == bits(actualDefault),
+                    id + " bit parity")
                 try check(shared.count == r.count && shared.allSatisfy { $0.count == steps }, id + " shape")
                 runs.append(
                     Run(
-                        steps: steps, original: original, shared: shared, originalBits: bits(original),
-                        sharedBits: bits(shared)))
+                        steps: steps, original: original, shared: shared, applicationDefault: actualDefault,
+                        originalBits: bits(original), sharedBits: bits(shared),
+                        applicationDefaultBits: bits(actualDefault)))
             }
             cases.append(
                 Case(
@@ -207,7 +214,7 @@ struct Generator: Encodable {
             let initialized = try CPUWaveStepper(grid: prepared.grid, initialFields: prepared.zeroFields)
             let initializationTime = seconds(start)
             try check(initialized.pressureStepIndex == 0, "initialization")
-            _ = try total(s, source, r, 64)
+            _ = try total(s.usingOriginalMaskedCPU(), source, r, 64)
             _ = try total(s.usingSharedMaskedCPU(), source, r, 64)
             var originalTimes: [Double] = []
             var sharedTimes: [Double] = []
@@ -215,11 +222,11 @@ struct Generator: Encodable {
                 let a: (Double, [[Double]])
                 let b: (Double, [[Double]])
                 if repetition % 2 == 0 {
-                    a = try total(s, source, r, 1024)
+                    a = try total(s.usingOriginalMaskedCPU(), source, r, 1024)
                     b = try total(s.usingSharedMaskedCPU(), source, r, 1024)
                 } else {
                     b = try total(s.usingSharedMaskedCPU(), source, r, 1024)
-                    a = try total(s, source, r, 1024)
+                    a = try total(s.usingOriginalMaskedCPU(), source, r, 1024)
                 }
                 try check(bits(a.1) == bits(b.1), "timing run complete parity")
                 originalTimes.append(a.0)
@@ -245,7 +252,7 @@ struct Generator: Encodable {
         let a = try RoomResponseGenerator.generate(
             settings,
             configureWaveSolver: {
-                var s = $0
+                var s = $0.usingOriginalMaskedCPU()
                 s.engine = .cpu
                 return s
             })
@@ -256,9 +263,19 @@ struct Generator: Encodable {
                 s.engine = .cpu
                 return s
             })
+        let actualDefault = try RoomResponseGenerator.generate(
+            settings,
+            configureWaveSolver: {
+                var s = $0
+                s.engine = .cpu
+                return s
+            })
         let ab = a.response.channels.map { $0.map(\.bitPattern) }
         let bb = b.response.channels.map { $0.map(\.bitPattern) }
-        try check(ab == bb && a.settings == b.settings, "complete generator")
+        let defaultBits = actualDefault.response.channels.map { $0.map(\.bitPattern) }
+        try check(
+            ab == bb && ab == defaultBits && a.settings == b.settings && a.settings == actualDefault.settings,
+            "complete generator")
         var da = a.diagnostics
         var db = b.diagnostics
         da.generationSeconds = 0
@@ -268,12 +285,18 @@ struct Generator: Encodable {
         try check(
             da == db && (da.waveRuns ?? 0) > 0 && da.waveGPURuns == 0,
             "complete non-timing diagnostics and actual CPU wave runs")
+        var dd = actualDefault.diagnostics
+        dd.generationSeconds = 0
+        dd.waveSeconds = 0
+        try check(da == dd, "actual default complete diagnostics")
         try write(
             Generator(
                 settings: settings, original: a.response.channels, shared: b.response.channels,
-                originalBits: ab, sharedBits: bb, originalDiagnostics: a.diagnostics,
-                sharedDiagnostics: b.diagnostics), "generator.json", output)
-        for (name, response) in [("original", a), ("shared", b)] {
+                applicationDefault: actualDefault.response.channels,
+                originalBits: ab, sharedBits: bb, applicationDefaultBits: defaultBits,
+                originalDiagnostics: a.diagnostics, sharedDiagnostics: b.diagnostics,
+                applicationDefaultDiagnostics: actualDefault.diagnostics), "generator.json", output)
+        for (name, response) in [("original", a), ("shared", b), ("application-default", actualDefault)] {
             let data = try response.encoded()
             try data.wav.write(to: output.appendingPathComponent(name + ".wav"))
             try data.metadata.write(to: output.appendingPathComponent(name + "-metadata.json"))

@@ -183,7 +183,8 @@ struct ThinDirectionalProbeTests {
             let internalFace = Float(dt / h) * initialP
             let pressure = Float(c * c * dt / h) * internalFace
             let expected = 0.5 * Double(pressure) - 0.5 * c * (Double(internalFace) / 2)
-            let cpuResult = s.simulate(source: source, receivers: r, steps: 2, stop: { false })
+            let cpuResult = s.usingOriginalMaskedCPU().simulate(
+                source: source, receivers: r, steps: 2, stop: { false })
             let cpu = try #require(cpuResult)[0]
             // The first pressure is zero, but its centred velocity includes step 2's half-step.
             let firstExpected = -0.5 * c * (Double(internalFace) / 4)

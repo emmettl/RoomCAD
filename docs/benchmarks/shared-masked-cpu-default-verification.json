@@ -1,0 +1,61 @@
+{
+  "applicationRun": "https://github.com/emmettl/RoomCAD/actions/runs/38023574660",
+  "candidate": "8737eb90e3b8c0f25f61d42002a7454cdb9d7487",
+  "completeRunsPerHost": 72,
+  "coreRevision": "0170d394e9cfa40c3034f9dd8cf29d3f8dcb92d1",
+  "crossHostCompleteNumerics": "identical including all cases/generator/non-timing diagnostics/WAV bytes",
+  "default": "shared masked CPU; application manifest only",
+  "focusedTests": 15,
+  "mixedSamplesPerVariantPerHost": 36696,
+  "negativeControls": 10,
+  "originalMaskedReferences": "local CPU and actual Metal passed using frozen original manifest",
+  "packagingSigningActualMetalSnapshot": "passed; snapshot visually inspected",
+  "priorAlpha9Continuity": "identical outputs; prior thin pressure-only unused velocity address deliberately corrected by separate thin-grid fix",
+  "producerEnvelopeNote": "raw sourceHashes may also contain ignored .build checkout paths; all 39 tracked paths match exact tested commit on both hosts",
+  "productionRun": "https://github.com/emmettl/RoomCAD/actions/runs/38023310728",
+  "pythonReleaseTests": 8,
+  "remaining": "Metal pipeline reuse, production ownership/abandon/restart and actual-device timing",
+  "schemaVersion": 1,
+  "scope": "numerical conformance and default CPU integration; no empirical accuracy or binary release claim",
+  "status": "passed",
+  "swiftTests": 182,
+  "thinCompleteRuns": 90,
+  "thinRun": "https://github.com/emmettl/RoomCAD/actions/runs/38022765847",
+  "thinSamplesPerBackend": 45144,
+  "timingScope": "balanced warmed whole-simulation repetitions on live hosts; not an isolation claim",
+  "timings": [
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4 Max",
+      "sharedToOriginalMedian": [
+        0.9342873503742799,
+        1.0599088624248274,
+        1.2780549971139785
+      ]
+    },
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4",
+      "sharedToOriginalMedian": [
+        1.0797600430307683,
+        1.1057709509412184,
+        1.1332443015788956
+      ]
+    }
+  ],
+  "trackedProducerHashesVerified": 39,
+  "variants": [
+    "original",
+    "explicit shared",
+    "actual application default"
+  ],
+  "version": "0.1.0-alpha.9"
+}

@@ -18,6 +18,11 @@ def short_channel(data):
     run = data['cases'][0]['runs'][-1]
     run['shared'][0].pop(); run['sharedBits'][0].pop()
 
+def corrupt_default(data):
+    run = data['cases'][0]['runs'][-1]
+    run['applicationDefault'][0][-1] += 0.0001
+    run['applicationDefaultBits'][0][-1] = int.from_bytes(struct.pack('>d', run['applicationDefault'][0][-1]), 'big')
+
 def main(root):
     verifier.verify(root)
     controls = [
@@ -25,6 +30,7 @@ def main(root):
         ('missing terminal history', 'cpu-production.json', lambda d: d['cases'][0]['runs'].pop()),
         ('short channel and matching bits', 'cpu-production.json', short_channel),
         ('corrupted value and matching bits', 'cpu-production.json', corrupt_sample),
+        ('corrupted actual default and matching bits', 'cpu-production.json', corrupt_default),
         ('wrong pressure clock', 'cpu-production.json', lambda d: d['cases'][0].update(timeStep=d['cases'][0]['timeStep'] * 2)),
         ('wrong dependency version', 'consumer-Package.resolved', lambda d: d['pins'][0]['state'].update(version='0.1.0-alpha.7')),
         ('missing faces', 'cpu-production.json', lambda d: d['cases'][0]['faces'].pop()),
