@@ -34,9 +34,11 @@ prediction. Original inaccurate/nonfinite coefficients remain findings. These
 predictions audit the returned line; actual noise-query operations are separately
 recorded by source-bound trace hooks.
 
-This is capture and a fit-only audit, not full adoption acceptance. Independent
-window/noise/tail/parameter/calibration policy checks, source/native completeness
-and deliberate coherent corruptions, both physical Macs' complete records and
-all app/reference/packaging gates remain required before merging the draft.
+The separate full policy/source/corruption gate now passes on both physical Macs.
+It checks every selected window/noise/tail/parameter/calibration operation, complete
+source/native coverage and 25 categories of coherent corruptions. Both physical
+Macs' full captures, app/package checks and affected frozen/current reference
+suites pass; complete portable archive replay is retained. See
+[accepted scope](../../docs/benchmarks/SHARED_AFFINE_FIT.md).
 The initial 38-case automatic-wave preliminary phase remains separately retained;
 the 39-case version explicitly requires actual CPU and Metal wave execution.
