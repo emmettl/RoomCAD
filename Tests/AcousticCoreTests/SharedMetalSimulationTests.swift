@@ -32,7 +32,7 @@ struct SharedMetalSimulationTests {
         let backend = try #require(s.metalBackend as? SharedMetalSimulation)
         let other = try #require(solver().metalBackend as? SharedMetalSimulation)
         #expect(backend.context === other.context)
-        #expect(s.usingOriginalMetal().metalBackend == nil)
+        #expect(s.usingOriginalMetal().metalBackend is MetalWaveSolver)
         var actual = s
         actual.engine = .gpu
         var original = actual.usingOriginalMetal()
@@ -121,7 +121,7 @@ struct SharedMetalSimulationTests {
     func restart() throws {
         let c = try context()
         let original = solver().usingOriginalMetal()
-        #expect(original.metalBackend == nil)
+        #expect(original.metalBackend is MetalWaveSolver)
         var s = original.usingSharedMetal(context: c)
         s.gpuDelay = 0.3
         let resultValue =

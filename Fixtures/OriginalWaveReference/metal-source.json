@@ -1,0 +1,15 @@
+{
+  "license": "MIT",
+  "originalGitBlob": "fd605f0b1c4f63fa7f2573205a83688b3d721366",
+  "originalPath": "Sources/AcousticCore/MetalWaveSolver.swift",
+  "originalSHA256": "17068366d130170c0367d638c3aad9f3965dfef9626d49b18e66f59106a90041",
+  "referencePath": "Tests/AcousticCoreTests/OriginalMetalWaveSolver.swift",
+  "referenceSHA256": "a63d889d19a9aa13ca1070e683a12ba7b844fd8cd519c63d80177f6559f4cdcb",
+  "repository": "https://github.com/emmettl/RoomCAD",
+  "revision": "c47fdc889ef294571fa5683963e5892afe5e38ab",
+  "schemaVersion": 1,
+  "snapshotPath": "Fixtures/OriginalWaveReference/MetalWaveSolver.swift.gz",
+  "snapshotSHA256": "29ee49db20678b7b0f83d8033f1662a494412a6d39dd4e5f5dc8eeef43c45b48",
+  "verbatimClassSHA256": "0b5938d896e68c2550775b3dd9988519a32a7b8893fb812014ef8e6ef3e82464",
+  "verbatimLayoutSHA256": "863117bbacf0167fb30ba9478f56d79a02c09f9070c2916bf7e25720470da14e"
+}

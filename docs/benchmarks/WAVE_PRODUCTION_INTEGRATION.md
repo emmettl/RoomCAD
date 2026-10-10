@@ -100,3 +100,8 @@ The [production masked CPU duplicate is now retired](RETIRED_MASKED_CPU.md), wit
 canonical verification-only original source and immutable reconstruction. Both-host
 complete output/packaged exclusion and frozen original compatibility gates pass.
 The next bounded retirement covers original GPU code and availability/resource checks.
+
+The [original GPU implementation is now retired](RETIRED_ORIGINAL_METAL.md), with protected verification-only
+reconstruction and selected-backend availability/planning. Missing shared context now
+selects CPU directly; the old inline-GPU preparation fallback is retired. Both-host
+output, full application and packaged exclusion gates pass; no new Core tag is needed.

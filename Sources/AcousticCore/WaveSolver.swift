@@ -68,19 +68,16 @@ struct WaveSolver {
             #if ROOMCAD_SHARED_WAVE_DEFAULT
                 if usesSharedMetalDefault { return SharedMetalSimulation.shared }
             #endif
-            return selectedMetalBackend
+            #if ROOMCAD_SHARED_WAVE_DEFAULT
+                return selectedMetalBackend
+            #else
+                return selectedMetalBackend ?? MetalWaveSolver.shared
+            #endif
         }
         set {
             selectedMetalBackend = newValue
             usesSharedMetalDefault = false
         }
-    }
-
-    /// Explicit original GPU control for retained-source comparisons.
-    func usingOriginalMetal() -> Self {
-        var result = self
-        result.metalBackend = nil
-        return result
     }
 
     /// Whether `responses` damps each band so the room's modes decay, averaged over the room, at the
@@ -558,7 +555,7 @@ extension WaveSolver {
         source: SIMD3<Double>, receivers: [(position: SIMD3<Double>, microphone: Microphone)], steps: Int,
         stop: @Sendable () -> Bool
     ) -> (signals: [[Double]], onGPU: Bool)? {
-        if engine != .cpu, let gpu: any MetalSimulation = metalBackend ?? MetalWaveSolver.shared {
+        if engine != .cpu, let gpu = metalBackend {
             var cpuSeconds: Double?
             let result = gpu.simulate(self, source: source, receivers: receivers, steps: steps, stop: stop) {
                 done, elapsed in
@@ -579,6 +576,9 @@ extension WaveSolver {
     /// Seconds a GPU run goes before its pace is judged.
     static let gpuTrial = 0.25
 
+    /// Application cancellation/abandonment policy; independent of the reference implementation.
+    static let gpuStepsPerBuffer = 128
+
     /// Whether a GPU run that has done `done` of `steps` steps in `elapsed` seconds should give way to the
     /// CPU: once it has run for `gpuTrial`, if what remains would take over a second and more than 1.5
     /// times as long as `cpuSeconds()`, the whole run on the CPU, which is only asked for then.
@@ -598,8 +598,8 @@ extension WaveSolver {
         return Date().timeIntervalSince(start) / Double(trial) * Double(steps)
     }
 
-    /// Whether `run` will use the GPU.
-    var usesGPU: Bool { engine != .cpu && MetalWaveSolver.shared != nil }
+    /// Whether the selected GPU backend is available for an attempt. Runtime failure restarts on CPU.
+    var usesGPU: Bool { engine != .cpu && metalBackend != nil }
 
     /// The octave bands below the crossover's top, grouped by the impedances their absorption gives every
     /// boundary.

@@ -22,6 +22,7 @@ format:
 ci-test:
 	python3 Scripts/verify-original-wave-reference.py
 	python3 Scripts/test-original-wave-reference.py
+	python3 Scripts/test-original-metal-reference.py
 	python3 Scripts/test-release.py
 
 check: lint test ci-test build

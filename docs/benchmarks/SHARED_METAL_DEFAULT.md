@@ -66,3 +66,8 @@ retained privately in Edgerton. Retirement follows separately: preserve immutabl
 original-source reconstruction and numerical oracles, audit resource/availability
 checks that feed engine budgets, then remove duplicated production loops with full
 application/fallback checks. The optimized unmasked box CPU contract remains distinct.
+
+The [original GPU implementation is now retired](RETIRED_ORIGINAL_METAL.md), with protected verification-only
+reconstruction and selected-backend availability/planning. Missing shared context now
+selects CPU directly; the old inline-GPU preparation fallback is retired. Both-host
+output, full application and packaged exclusion gates pass; no new Core tag is needed.

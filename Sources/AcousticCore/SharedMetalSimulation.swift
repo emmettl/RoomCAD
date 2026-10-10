@@ -57,7 +57,7 @@ struct SharedMetalSimulation: MetalSimulation {
             var start = 0
             while start < steps {
                 if stop() { return nil }
-                let end = min(start + MetalWaveSolver.stepsPerBuffer, steps)
+                let end = min(start + WaveSolver.gpuStepsPerBuffer, steps)
                 let amplitudes = (start..<end).map {
                     Float(solver.pulse((Double($0) + 0.5) * solver.timeStep))
                 }

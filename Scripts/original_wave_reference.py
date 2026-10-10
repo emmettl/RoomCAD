@@ -50,3 +50,41 @@ def copy_original_masked_reference(root: Path, destination: Path) -> None:
     text = original_masked_source(root)
     text = text.replace('@testable import AcousticCore\n', '')
     (destination / 'OriginalMaskedCPU.swift').write_text(text)
+    metal = original_metal_source(root, reference=True)
+    (destination / 'OriginalMetalWaveSolver.swift').write_text(metal.replace('@testable import AcousticCore\n', ''))
+
+
+def original_metal_source(root: Path, require_git: bool = False, reference: bool = False) -> str:
+    manifest = json.loads((root / 'Fixtures/OriginalWaveReference/metal-source.json').read_text())
+    if manifest['revision'] != REVISION or manifest['originalPath'] != 'Sources/AcousticCore/MetalWaveSolver.swift':
+        raise ValueError('Original Metal identity changed')
+    compressed = (root / manifest['snapshotPath']).read_bytes()
+    if hashlib.sha256(compressed).hexdigest() != manifest['snapshotSHA256']:
+        raise ValueError('Original Metal snapshot changed')
+    original = gzip.decompress(compressed)
+    blob = hashlib.sha1(b'blob ' + str(len(original)).encode() + b'\0' + original).hexdigest()
+    if blob != manifest['originalGitBlob'] or hashlib.sha256(original).hexdigest() != manifest['originalSHA256']:
+        raise ValueError('Original Metal Git blob changed')
+    git = subprocess.run(['git', 'show', REVISION + ':' + manifest['originalPath']], cwd=root, capture_output=True)
+    if git.returncode == 0:
+        if git.stdout != original: raise ValueError('Original Metal snapshot differs from Git source')
+    elif require_git:
+        raise ValueError('Original Metal Git source unavailable')
+    canonical = (root / manifest['referencePath']).read_bytes()
+    if hashlib.sha256(canonical).hexdigest() != manifest['referenceSHA256']:
+        raise ValueError('Original Metal reference payload changed')
+    text = canonical.decode()
+    expected = original.decode()
+    start = expected.index('/// The wave solver')
+    end = expected.index('\nextension WaveSolver {')
+    actual = text[text.index('/// The wave solver'):text.index('\n// Verification-only original selection;')]
+    if actual != expected[start:end] or hashlib.sha256(actual.encode()).hexdigest() != manifest['verbatimClassSHA256']:
+        raise ValueError('Original Metal implementation differs from immutable source')
+    layout = (root / 'Sources/AcousticCore/WaveGridLayout.swift').read_text()
+    if layout[layout.index('extension WaveSolver {'):] != expected[end + 1:]:
+        raise ValueError('Moved grid layout differs from original source')
+    for package, target in [('WaveMetalProductionBenchmark', 'WaveMetalProductionAdapter'), ('ThinProbeBenchmark', 'ThinProbeAdapter')]:
+        link = root / 'Fixtures' / package / 'Sources' / target / 'OriginalMetalWaveSolver.swift'
+        if not link.is_symlink() or link.resolve() != (root / manifest['referencePath']).resolve():
+            raise ValueError('Benchmark does not reuse canonical original Metal source')
+    return text if reference else expected

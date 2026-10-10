@@ -1,0 +1,77 @@
+{
+  "availabilityPolicy": "planner/run query same selected backend; unavailable shared context selects CPU and CPU budget/crossover; original inline-GPU preparation fallback intentionally retired; runtime failure/cancellation/nonterminal abandon preserve fresh CPU restart",
+  "candidate": "f97d6721d3b9018234891d6eb732d47d477049d7",
+  "completeCPURunsPerHost": 72,
+  "completeMetalRunsPerHost": 90,
+  "completeThinRunsPerHost": 90,
+  "coreRevision": "f464e04866903bfc7c9ce94c34d31125a776d270",
+  "cpuSamplesPerVariantPerHost": 36696,
+  "focusedDeviceAndPolicyTests": 10,
+  "frozenOriginals": "twelve CPU and twelve actual Metal masked fields/input/reference/error contracts exact; five generated CPU and two Metal/Grid bindings byte-identical; 36 extrusion layouts pass assignment/zero-fallback",
+  "layout": "verbatim moved app-owned grid layout independently checked against immutable original Git blob",
+  "metalSamplesPerVariantPerHost": 45144,
+  "negativeControls": {
+    "cpu": 10,
+    "metal": 15,
+    "thin": 9
+  },
+  "packagedBinary": "shared CPU/Metal implementations present, original CPU/Metal implementations absent; actual mini image visually inspected",
+  "physicalMini": {
+    "application": "https://github.com/emmettl/RoomCAD/actions/runs/38037164804",
+    "cpu": "https://github.com/emmettl/RoomCAD/actions/runs/38037638231",
+    "metal": "https://github.com/emmettl/RoomCAD/actions/runs/38037297002",
+    "thin": "https://github.com/emmettl/RoomCAD/actions/runs/38037519871"
+  },
+  "priorAndCrossHostOutputs": "exact complete case/timed Metal, CPU cases, full generator/non-timing diagnostics/saved WAV/metadata, and all four thin streams",
+  "pythonReleaseTests": 8,
+  "referenceCorruptionControls": 14,
+  "schemaVersion": 1,
+  "scope": "original GPU class/kernels compiled only by verification consumers; no equation/Core API/tag/fixture/application binary release change; final checkpoint docs only",
+  "status": "passed original GPU retirement and availability audit",
+  "swiftTests": 192,
+  "thinSamplesPerBackendPerHost": 45144,
+  "timedSamplesPerOriginalSharedVariantPerHost": 18432,
+  "timings": [
+    {
+      "backend": "metal",
+      "hardware": "Apple M4 Max",
+      "scope": "balanced warmed whole-run measurements on live hosts; reference now verification-only, no isolated or universal speedup claim",
+      "sharedToOriginalMedian": [
+        1.08138153242796,
+        1.0912795138902007,
+        1.1418353554494243
+      ]
+    },
+    {
+      "backend": "cpu",
+      "hardware": "Apple M4 Max",
+      "scope": "balanced warmed whole-run measurements on live hosts; reference now verification-only, no isolated or universal speedup claim",
+      "sharedToOriginalMedian": [
+        0.9877232766922434,
+        1.0302460270934137,
+        1.0759933237384176
+      ]
+    },
+    {
+      "backend": "metal",
+      "hardware": "Apple M4",
+      "scope": "balanced warmed whole-run measurements on live hosts; reference now verification-only, no isolated or universal speedup claim",
+      "sharedToOriginalMedian": [
+        1.099579050418368,
+        1.0904740255078844,
+        1.0786554239935005
+      ]
+    },
+    {
+      "backend": "cpu",
+      "hardware": "Apple M4",
+      "scope": "balanced warmed whole-run measurements on live hosts; reference now verification-only, no isolated or universal speedup claim",
+      "sharedToOriginalMedian": [
+        1.0867173801975933,
+        1.0435231107850331,
+        1.1373550806321202
+      ]
+    }
+  ],
+  "version": "0.1.0-alpha.12"
+}
