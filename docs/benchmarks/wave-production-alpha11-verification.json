@@ -1,0 +1,60 @@
+{
+  "candidate": "170a90636dacd07d4606ba0a039b0649642b080a",
+  "completeCPUComparisonRunsPerHost": 72,
+  "completeMetalRunsPerHost": 90,
+  "completeThinRunsPerHost": 90,
+  "coreRevision": "72dae5da882774ef9739d27c06c4a06a9c8ea66d",
+  "cpuSamplesPerVariantPerHost": 36696,
+  "crossHostAndAlpha10CompleteNumerics": "exact cases/timed histories/generator/non-timing diagnostics/WAV bytes and metadata on Metal and CPU; all four thin backends exact",
+  "metalSamplesPerVariantPerHost": 45144,
+  "negativeControls": {
+    "cpu": 10,
+    "metal": 15,
+    "thin": 9
+  },
+  "packagingSignatureActualMetalSnapshot": "passed; visually inspected",
+  "physicalMini": {
+    "application": "https://github.com/emmettl/RoomCAD/actions/runs/38028660917",
+    "cpu": "https://github.com/emmettl/RoomCAD/actions/runs/38029066655",
+    "metal": "https://github.com/emmettl/RoomCAD/actions/runs/38028549680",
+    "thin": "https://github.com/emmettl/RoomCAD/actions/runs/38028908747"
+  },
+  "pythonReleaseTests": 8,
+  "remaining": "demonstrated mixed sampling dispatch cost is the next bounded investigation before GPU default adoption",
+  "schemaVersion": 1,
+  "scope": "dependency/current consumer pin only; frozen references, original GPU default, app source/policies unchanged; final checkpoint documentation only",
+  "status": "passed exact-tag comparison adoption; original GPU default retained",
+  "swiftTests": 187,
+  "thinSamplesPerBackendPerHost": 45144,
+  "timedSamplesPerOriginalSharedVariantPerHost": 18432,
+  "timingScope": "balanced whole-simulation repetitions on live hosts; retain every result, no isolation/universal performance claim",
+  "timings": [
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4 Max",
+      "sharedToOriginalMedian": [
+        1.1778191930860393,
+        1.208014489575721,
+        1.1615797111685573
+      ]
+    },
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4",
+      "sharedToOriginalMedian": [
+        1.2940227738203662,
+        1.342808170010097,
+        1.0291441803378245
+      ]
+    }
+  ],
+  "version": "0.1.0-alpha.11"
+}

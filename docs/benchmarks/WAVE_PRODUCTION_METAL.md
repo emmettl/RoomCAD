@@ -71,3 +71,34 @@ requires its own optimization/measurement task before a default switch.
 raw reports, timings, dependency/source provenance and lossless logs are preserved
 privately in Edgerton. The original Metal default and engine/budget policies remain
 active. No app binary release or empirical accuracy claim accompanies this binding.
+
+## Published alpha.11 comparison
+
+The application now pins exact released alpha.11, commit
+`72dae5da882774ef9739d27c06c4a06a9c8ea66d`, using capacity-bounded larger-grid
+field groups. Candidate `170a90636dacd07d4606ba0a039b0649642b080a` passes
+[mini Metal](https://github.com/emmettl/RoomCAD/actions/runs/38028549680),
+[full application](https://github.com/emmettl/RoomCAD/actions/runs/38028660917),
+[thin](https://github.com/emmettl/RoomCAD/actions/runs/38028908747) and
+[CPU continuity](https://github.com/emmettl/RoomCAD/actions/runs/38029066655) gates
+and Max counterparts. All 90 complete Metal runs/45,144 samples per variant, every
+18,432 timed original/shared sample, generator/non-timing diagnostics and saved
+WAV/metadata remain exact across hosts and against alpha.10. The 72-run CPU output/
+generator/save and all four 90-run thin streams also retain exact prior numerics.
+All strict negative controls pass. Full app checks pass 187 Swift tests, lint, eight
+Python release tests, build, packaging, deep signature verification and a visually
+inspected actual-Metal snapshot. Final checkpoint changes docs only.
+
+Max shared/original median ratios are 1.178/1.208/1.162; mini ratios are
+1.294/1.343/1.029 on 3,888/29,610/331,800 cells. Larger Max ratios improve
+from the retained alpha.10 1.423/1.446; the mini large grid remains about 1.03.
+Smaller live-host measurements remain variable, including worse mini small/medium
+ratios; preserve every repetition and avoid selecting only apparent improvements.
+No isolated speedup or universal optimality is claimed. The original GPU default
+remains active. Mixed source-observation command dispatch cost is the next bounded
+question to measure and address before default adoption.
+
+[Aggregate alpha.11 proof](wave-production-alpha11-verification.json) is public; full
+raw evidence is retained privately in Edgerton. Frozen reference pins, application
+numerical code, engine/cancellation/abandon/budget policy and fixture identities stay
+unchanged. No app binary release or empirical accuracy claim is made.
