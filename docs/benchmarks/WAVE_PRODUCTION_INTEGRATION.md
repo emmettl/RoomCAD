@@ -1,7 +1,7 @@
 # Production wave-loop integration
 
 Checkpoint: 10 October 2026. The application dependency is prepared at exact
-ContinuumKit `0.1.0-alpha.8`, commit `2aecacbc3da082382cb11639d67af0ea37583272`.
+ContinuumKit `0.1.0-alpha.10`, commit `da7cb5f5ac642edc57e8433c6150dceca6b9edd9`.
 The [source-free benchmark binding](SHARED_WAVES.md) and Core's independently
 verified forcing/observation APIs provide the starting point. Updating this pin
 does not replace a production loop. Measured room fixtures remain application-owned.
@@ -81,7 +81,13 @@ gate. The [application default checkpoint](SHARED_MASKED_CPU_DEFAULT.md) records
 cross-host numerical continuity, raw timings and retained original-reference checks.
 The optimized unmasked box path remains a separate contract.
 
-The next bounded task is the first Metal application binding, with compiled pipeline
-reuse, command-completion ownership, abandon/restart and actual-device timing gates.
-Current production Metal continues to use the original path. Neither shared default
-adoption nor numerical conformance establishes measured acoustic accuracy.
+The [optional Metal application binding](WAVE_PRODUCTION_METAL.md) now passes
+complete original/shared/default output, generator/save, all-axis thin, cancellation,
+concurrent ownership, nonterminal abandon/fresh CPU restart and mini application gates.
+Compiled Core pipelines can be reused through the released immutable device context.
+Representative live-host measurements retain modest to substantial steady-state
+overhead: Max ratios 1.21/1.42/1.45; mini 1.21/1.18/1.03 on three grids. The next
+bounded task identifies and reduces that cost without relaxing synchronization,
+source/receiver arithmetic, output ownership or policy. Production Metal retains the
+original default until its timing acceptance gate passes; numerical conformance does
+not establish empirical acoustic accuracy.

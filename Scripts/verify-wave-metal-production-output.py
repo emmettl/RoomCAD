@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Require complete current-app masked CPU parity and separately labelled timing evidence."""
+"""Require complete current-app actual Metal parity and separately labelled timing evidence."""
 import argparse, json, math, struct
 from pathlib import Path
 
-CASES = {'rigid-plan', 'lossy-open-plan', 'masked-L', 'tilted-plan', 'tilted-mesh', 'thin-plan', 'padded-inactive', 'padded-nearest'}
-STEPS = {0, 1, 63, 64, 65, 127, 128, 129, 257}
+CASES = {'rigid-box', 'rigid-plan', 'lossy-open-plan', 'masked-L', 'tilted-plan', 'tilted-mesh', 'thin-plan', 'padded-inactive', 'padded-nearest'}
+STEPS = {0, 1, 2, 63, 64, 65, 127, 128, 129, 257}
 VERSION = '0.1.0-alpha.10'
 CORE = 'da7cb5f5ac642edc57e8433c6150dceca6b9edd9'
 
@@ -31,9 +31,13 @@ def verify(root):
     resolved = json.loads((root / 'consumer-Package.resolved').read_text())
     pins = [p for p in resolved['pins'] if p['identity'] == 'continuumkit']
     require(len(pins) == 1 and pins[0]['state'] == environment['dependency'], 'exact resolved dependency')
-    report = json.loads((root / 'cpu-production.json').read_text())
-    require(report['schemaVersion'] == 1 and report['backend'] == 'cpu' and report['candidate'] == environment['revision'], 'report scope/revision')
+    report = json.loads((root / 'metal-production.json').read_text())
+    require(report['schemaVersion'] == 1 and report['backend'] == 'metal' and report['candidate'] == environment['revision'], 'report scope/revision')
     require(len(report['cases']) == len(CASES) and {c['id'] for c in report['cases']} == CASES, 'complete case tree')
+    compilation = report['compilation']
+    require(compilation['device'] and compilation['registryID'] > 0, 'actual device scope')
+    require(compilation['device'] == environment['device'] and compilation['registryID'] == environment['deviceRegistryID'], 'explicit device envelope')
+    require(all(math.isfinite(compilation[k]) and compilation[k] > 0 for k in ('originalSeconds', 'sharedSeconds')), 'separate compilation measurements')
     total = 0
     for case in report['cases']:
         dims = case['dimensions']
@@ -49,7 +53,7 @@ def verify(root):
         decimation = 1
         while 2 * decimation / case['sampleRate'] <= limit: decimation *= 2
         require(case['timeStep'] == decimation / case['sampleRate'], 'actual solver pressure clock')
-        require(receivers == (2 if case['id'] == 'thin-plan' else 6), 'microphone coverage')
+        require(receivers == 6, 'microphone coverage')
         require(len(case['inside']) == count and set(case['inside']) <= {0, 1} and 1 in case['inside'], 'complete mask')
         require(len(case['faces']) == 6 * count and all(math.isfinite(v) for v in case['faces']), 'complete face coefficients')
         require(len(case['spacing']) == 3 and all(v > 0 and math.isfinite(v) for v in case['spacing']), 'spacing')
@@ -57,6 +61,8 @@ def verify(root):
         require(len(case['sourceCells']) == len(case['sourceWeights']) == 8, 'source layout')
         require(len(case['receiverCells']) == len(case['receiverWeights']) == 8 * receivers, 'receiver layout')
         require(len(case['velocityCells']) == receivers and len(case['axes']) == 3 * receivers, 'velocity layout')
+        require(all(0 <= c < count and c % dims[0] > 0 and c // dims[0] % dims[1] > 0 and c // (dims[0]*dims[1]) > 0 for c in case['velocityCells']), 'valid native minus-face addresses')
+        require(all(math.isfinite(v) for v in case['axes']), 'finite Float axes')
         require(all(0 <= c < count for c in case['sourceCells'] + case['receiverCells']), 'mapped cell addresses')
         destinations = case['preparedSourceCells']; weights = case['preparedSourceWeights']
         require(len(destinations) == len(weights) and len(set(destinations)) == len(destinations), 'unique prepared source')
@@ -70,7 +76,7 @@ def verify(root):
             compare_channels(run, receivers, run['steps'], 64)
             total += receivers * run['steps']
         require(any(v != 0 for row in case['runs'][-1]['original'] for v in row), 'nontrivial forcing')
-    require(total == 36696, 'complete mixed sample count')
+    require(total == 45144, 'complete mixed sample count')
     timings = report['timings']
     require(len(timings) == 3 and {t['topFrequency'] for t in timings} == {100, 200, 450}, 'timing grid tree')
     for timing in timings:
@@ -79,6 +85,13 @@ def verify(root):
         for key in ('layoutSeconds', 'sharedPreparationSeconds', 'sharedInitializationSeconds'):
             require(timing[key] > 0 and math.isfinite(timing[key]), 'preparation timing')
         require(all(t > 0 and math.isfinite(t) for t in timing['originalSeconds'] + timing['sharedSeconds']), 'run timing')
+        require(len(timing['runs']) == 3 and [r['repetition'] for r in timing['runs']] == [0, 1, 2], 'complete timing repetitions')
+        for run in timing['runs']:
+            for name in ('original', 'shared'):
+                require(len(run[name]) == len(run[name+'Bits']) == 2, 'timed receiver count')
+                require(all(len(v) == len(b) == 1024 for v,b in zip(run[name],run[name+'Bits'])), 'complete timed history')
+                require(all(bits(v,64) == b for row,raw in zip(run[name],run[name+'Bits']) for v,b in zip(row,raw)), 'timing sample/bit representation')
+            require(run['originalBits'] == run['sharedBits'], 'complete timed numerical parity')
         ratio = sorted(timing['sharedSeconds'])[1] / sorted(timing['originalSeconds'])[1]
         require(math.isclose(ratio, timing['sharedToOriginalMedian'], rel_tol=1e-14), 'timing ratio')
     generator = json.loads((root / 'generator.json').read_text())
@@ -89,7 +102,7 @@ def verify(root):
     for key in ('generationSeconds', 'waveSeconds'): original.pop(key, None); shared.pop(key, None)
     default = dict(generator['applicationDefaultDiagnostics'])
     for key in ('generationSeconds', 'waveSeconds'): default.pop(key, None)
-    require(original == shared == default and original['waveRuns'] > 0 and original['waveGPURuns'] == 0, 'complete generator diagnostics/actual CPU wave runs')
+    require(original == shared == default and original['waveRuns'] > 0 and original['waveGPURuns'] == original['waveRuns'], 'complete generator diagnostics/actual Metal wave runs')
     metadata_reports = []
     for name in ('original', 'shared', 'application-default'):
         require((root / (name + '.wav')).stat().st_size > frames * 2 * 4, 'complete saved WAV')
@@ -99,10 +112,10 @@ def verify(root):
         metadata_reports.append(metadata)
     require(metadata_reports[0] == metadata_reports[1] == metadata_reports[2], 'complete non-timing saved metadata')
     require((root / 'original.wav').read_bytes() == (root / 'shared.wav').read_bytes() == (root / 'application-default.wav').read_bytes(), 'complete saved WAV byte parity')
-    return {'schemaVersion': 1, 'status': 'passed', 'candidate': environment['revision'], 'backend': 'cpu', 'completeCases': len(CASES), 'completeRuns': len(CASES) * len(STEPS), 'mixedSamplesPerImplementation': total, 'runtimeBitMismatches': 0, 'fullGeneratorFramesPerChannel': frames, 'nonTimingDiagnostics': 'exact', 'performance': 'measured; not an acceptance threshold', 'timingRatios': [t['sharedToOriginalMedian'] for t in timings]}
+    return {'schemaVersion': 1, 'status': 'passed', 'candidate': environment['revision'], 'backend': 'metal', 'completeCases': len(CASES), 'completeRuns': len(CASES) * len(STEPS), 'mixedSamplesPerImplementation': total, 'runtimeBitMismatches': 0, 'fullGeneratorFramesPerChannel': frames, 'nonTimingDiagnostics': 'exact', 'performance': 'measured; not an acceptance threshold', 'timingRatios': [t['sharedToOriginalMedian'] for t in timings]}
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__); p.add_argument('root', type=Path); args = p.parse_args()
     result = verify(args.root)
     (args.root / 'production-verification.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
-    print('PASS complete CPU production output and generator reports:', result['mixedSamplesPerImplementation'], 'mixed samples; timing ratios', result['timingRatios'])
+    print('PASS complete Metal production output and generator reports:', result['mixedSamplesPerImplementation'], 'mixed samples; timing ratios', result['timingRatios'])

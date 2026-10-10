@@ -14,7 +14,7 @@ import shutil, sys
 from pathlib import Path
 root, scratch = map(Path, sys.argv[1:])
 shutil.copytree(root / 'Sources/AcousticCore', scratch / 'consumer/Sources/AcousticCore',
-                ignore=shutil.ignore_patterns('SharedWaveSimulation.swift'))
+                ignore=shutil.ignore_patterns('SharedWaveSimulation.swift', 'SharedMetalSimulation.swift'))
 COPY_SOURCES
 revision=$(cat "$root/Fixtures/ExtrudedLayoutBenchmark/core-revision.txt")
 source=${CONTINUUMKIT_BENCHMARK_SOURCE:-https://github.com/emmettl/ContinuumKit.git}

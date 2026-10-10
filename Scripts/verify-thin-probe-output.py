@@ -13,7 +13,7 @@ def bits(value):
 def verify(root):
     env=json.loads((root/'environment.json').read_text());require(env['workingTreeDirty'] is False,'dirty producer')
     report=json.loads((root/'thin-probes.json').read_text());require(report['candidate']==env['revision'] and report['device'],'producer/device scope')
-    pins=json.loads((root/'consumer-Package.resolved').read_text())['pins'];require(len(pins)==1 and pins[0]['identity']=='continuumkit' and pins[0]['state']=={'version':'0.1.0-alpha.9','revision':'0170d394e9cfa40c3034f9dd8cf29d3f8dcb92d1'},'exact dependency')
+    pins=json.loads((root/'consumer-Package.resolved').read_text())['pins'];require(len(pins)==1 and pins[0]['identity']=='continuumkit' and pins[0]['state']=={'version':'0.1.0-alpha.10','revision':'da7cb5f5ac642edc57e8433c6150dceca6b9edd9'},'exact dependency')
     scenes=report['scenes'];require(len(scenes)==9 and {(s['axis'],s['representation']) for s in scenes}=={(a,r) for a in range(3) for r in ('box','plan','mesh')},'complete scene tree')
     total=0
     for scene in scenes:
@@ -26,11 +26,12 @@ def verify(root):
         require(len(scene['sourceCells'])==len(scene['sourceWeights'])==8,'complete source mapping')
         require(len(scene['runs'])==10 and {r['steps'] for r in scene['runs']}==STEPS,'complete boundary histories')
         for run in scene['runs']:
-            for backend in ('cpu','shared','metal'):
+            for backend in ('cpu','shared','metal','sharedMetal'):
                 values=run[backend];encoded=run[backend+'Bits'];require(len(values)==len(encoded)==6,'all microphone patterns')
                 require(all(len(v)==len(b)==run['steps'] for v,b in zip(values,encoded)),'complete streams')
                 require(all(bits(v)==b for row,raw in zip(values,encoded) for v,b in zip(row,raw)),'complete bit representation')
             require(run['cpuBits']==run['sharedBits'],'same CPU arithmetic')
+            require(run['metalBits']==run['sharedMetalBits'],'same Metal arithmetic')
             total+=6*run['steps']
         c=scene['speed'];dt=scene['timeStep'];h=scene['spacing'][axis];volume=math.prod(scene['spacing'])
         require(volume==scene['volume'] and dt>0,'physical input scope')
@@ -40,7 +41,7 @@ def verify(root):
         initial_masked=f32(f32(q)*f32(c*c*dt/volume))
         cpu_initial=initial_box if scene['representation']=='box' else initial_masked
         two=next(r for r in scene['runs'] if r['steps']==2)
-        for backend,initial in [('cpu',cpu_initial),('shared',cpu_initial),('metal',initial_masked)]:
+        for backend,initial in [('cpu',cpu_initial),('shared',cpu_initial),('metal',initial_masked),('sharedMetal',initial_masked)]:
             face=f32(f32(dt/h)*initial);pressure=f32(f32(c*c*dt/h)*face)
             for receiver,a in enumerate(SHARES):
                 # V1=0, V2=face/2. First sample uses (V1+V2)/2; terminal uses V2.
@@ -48,9 +49,9 @@ def verify(root):
                 for actual,wanted in zip(two[backend][receiver],expected):
                     require(abs(actual-wanted)<=1e-6*max(abs(wanted),1e-15),'independent two-step pressure/velocity clock oracle')
         one=next(r for r in scene['runs'] if r['steps']==1)
-        require(all(v[0]==0 for backend in ('cpu','shared','metal') for v in one[backend]),'single-step final half-time oracle')
+        require(all(v[0]==0 for backend in ('cpu','shared','metal','sharedMetal') for v in one[backend]),'single-step final half-time oracle')
     require(total==45144,'complete sample count')
-    return {'schemaVersion':1,'status':'passed','candidate':env['revision'],'scenes':9,'completeRuns':90,'samplesPerBackend':total,'cpuBitMismatches':0,'actualMetal':'required; no fallback','oracle':'independent two-step pulse/field/time alignment on every axis/representation/pattern','scope':'safe sampling policy/numerical conformance; no physical room accuracy claim'}
+    return {'schemaVersion':1,'status':'passed','candidate':env['revision'],'scenes':9,'completeRuns':90,'samplesPerBackend':total,'cpuBitMismatches':0,'metalBitMismatches':0,'actualMetal':'required; no fallback','oracle':'independent two-step pulse/field/time alignment on every axis/representation/pattern','scope':'safe sampling policy/numerical conformance; no physical room accuracy claim'}
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('root',type=Path);a=p.parse_args();r=verify(a.root)
     (a.root/'verification.json').write_text(json.dumps(r,indent=2,sort_keys=True)+'\n');print('PASS nine minimal-grid scenes, 90 complete CPU/shared/actual-Metal runs;',r['samplesPerBackend'],'samples per backend and independent timing oracle')

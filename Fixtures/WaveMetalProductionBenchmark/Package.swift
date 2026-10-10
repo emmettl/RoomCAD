@@ -5,16 +5,17 @@ import PackageDescription
 let application = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
     .deletingLastPathComponent().deletingLastPathComponent()
 let package = Package(
-    name: "RoomCADWaveProductionBenchmark", platforms: [.macOS(.v15)],
+    name: "RoomCADWaveMetalProductionBenchmark", platforms: [.macOS(.v15)],
     dependencies: [
         .package(path: application.path),
         .package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.10"),
     ],
     targets: [
         .executableTarget(
-            name: "WaveProductionAdapter",
+            name: "WaveMetalProductionAdapter",
             dependencies: [
                 .product(name: "AcousticCore", package: application.lastPathComponent),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
+                .product(name: "LinearAcousticsMetal", package: "continuumkit"),
             ])
     ], swiftLanguageModes: [.v6])

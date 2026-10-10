@@ -11,6 +11,16 @@ protocol MaskedCPUSimulation: Sendable {
     ) -> [[Double]]?
 }
 
+/// Optional application GPU backend; cancellation and abandonment policy stay caller-owned.
+protocol MetalSimulation: Sendable {
+    func simulate(
+        _ solver: WaveSolver, source: SIMD3<Double>,
+        receivers: [(position: SIMD3<Double>, microphone: Microphone)], steps: Int,
+        stop: @Sendable () -> Bool,
+        abandon: (_ done: Int, _ elapsed: TimeInterval) -> Bool
+    ) -> [[Double]]?
+}
+
 /// Low-frequency room response by finite differences in the time domain (FDTD).
 ///
 /// Linear acoustics with pressure at cell centres and particle velocity on cell faces, advanced by
@@ -37,6 +47,8 @@ struct WaveSolver {
     var impedanceBands: [Int]?
     /// Where to run: the GPU when there is one, or the CPU.
     var engine = Engine.automatic
+    /// Explicit comparison selection until complete Metal lifetime/output/timing gates pass.
+    var metalBackend: (any MetalSimulation)?
     // Application product uses the released shared backend. Frozen original numerical
     // consumers omit this app build setting and retain the original loop/dependency.
     #if ROOMCAD_SHARED_WAVE_DEFAULT
@@ -523,7 +535,7 @@ extension WaveSolver {
         source: SIMD3<Double>, receivers: [(position: SIMD3<Double>, microphone: Microphone)], steps: Int,
         stop: @Sendable () -> Bool
     ) -> (signals: [[Double]], onGPU: Bool)? {
-        if engine != .cpu, let gpu = MetalWaveSolver.shared {
+        if engine != .cpu, let gpu: any MetalSimulation = metalBackend ?? MetalWaveSolver.shared {
             var cpuSeconds: Double?
             let result = gpu.simulate(self, source: source, receivers: receivers, steps: steps, stop: stop) {
                 done, elapsed in

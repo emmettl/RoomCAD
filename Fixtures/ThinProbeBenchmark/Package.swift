@@ -6,9 +6,15 @@ let application = URL(fileURLWithPath: #filePath).deletingLastPathComponent().de
     .deletingLastPathComponent()
 let package = Package(
     name: "RoomCADThinProbeBenchmark", platforms: [.macOS(.v15)],
-    dependencies: [.package(path: application.path)],
+    dependencies: [
+        .package(path: application.path),
+        .package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.10"),
+    ],
     targets: [
         .executableTarget(
             name: "ThinProbeAdapter",
-            dependencies: [.product(name: "AcousticCore", package: application.lastPathComponent)])
+            dependencies: [
+                .product(name: "AcousticCore", package: application.lastPathComponent),
+                .product(name: "LinearAcousticsMetal", package: "continuumkit"),
+            ])
     ], swiftLanguageModes: [.v6])
