@@ -1,0 +1,58 @@
+{
+  "candidate": "7b0a487c1504fdf36df40c34f037ce86c865b34f",
+  "completeMetalRunsPerHost": 90,
+  "completeThinRunsPerHost": 90,
+  "coreRevision": "f464e04866903bfc7c9ce94c34d31125a776d270",
+  "crossHostAndPriorAlpha12Numerics": "exact complete case/timed/generator/non-timing diagnostics/saved WAV/metadata and four-backend thin streams",
+  "focusedActualDeviceTests": 6,
+  "metalSamplesPerVariantPerHost": 45144,
+  "negativeControls": {
+    "metal": 15,
+    "thin": 9
+  },
+  "originalManifestCompatibility": "12 original CPU and 12 actual Metal complete histories, input/reference/error contracts exact against retained original checkpoint; frozen Core pin unchanged",
+  "packagingSigningActualMetalSnapshot": "passed; visually inspected",
+  "physicalMini": {
+    "application": "https://github.com/emmettl/RoomCAD/actions/runs/38031811398",
+    "metal": "https://github.com/emmettl/RoomCAD/actions/runs/38032516663",
+    "thin": "https://github.com/emmettl/RoomCAD/actions/runs/38032721754"
+  },
+  "pythonReleaseTests": 8,
+  "remaining": "separate provenance-preserving retirement of duplicated production numerical code and resource/availability checks; optimized box CPU is a distinct arithmetic contract",
+  "schemaVersion": 1,
+  "scope": "lazy application-owned default context selection; independent mutable state per run; original/CPU fallback, engine/crossover/budgets and fresh restart preserved; final checkpoint docs only",
+  "status": "passed shared Metal application default adoption",
+  "swiftTests": 188,
+  "thinSamplesPerBackendPerHost": 45144,
+  "timedSamplesPerOriginalSharedVariantPerHost": 18432,
+  "timingScope": "balanced whole-simulation repetitions on live hosts; all results retained; no isolated or universal performance claim",
+  "timings": [
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4 Max",
+      "sharedToOriginalMedian": [
+        1.1151896006609752,
+        1.131420903287385,
+        1.1032817317313064
+      ]
+    },
+    {
+      "cellCounts": [
+        3888,
+        29610,
+        331800
+      ],
+      "hardware": "Apple M4",
+      "sharedToOriginalMedian": [
+        1.0887325059721493,
+        1.0995400613919688,
+        1.041969790231229
+      ]
+    }
+  ],
+  "version": "0.1.0-alpha.12"
+}
