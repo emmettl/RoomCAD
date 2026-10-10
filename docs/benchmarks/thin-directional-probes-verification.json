@@ -1,0 +1,27 @@
+{
+  "candidate": "4511fc232ff70a8f9f3bde5577caa8e0416a16d3",
+  "completeRunsPerHost": 90,
+  "cpuSharedBitMismatches": 0,
+  "crossedCompleteInputsAndOutputs": "identical",
+  "crossedDevices": [
+    "Apple M4 Max",
+    "Apple M4"
+  ],
+  "negativeControls": 7,
+  "oracle": "independent native-face and two-step pulse/pressure/lookahead/terminal recurrence across all axes/representations/patterns",
+  "physicalMini": {
+    "actualMetalSamplingAndPackagedSnapshot": "passed",
+    "appRun": "https://github.com/emmettl/RoomCAD/actions/runs/38021925002",
+    "focusedSamplingAndBindingTests": 14,
+    "newIndependentThinTests": 4,
+    "pythonReleaseTests": 8,
+    "swiftTests": 181,
+    "thinRun": "https://github.com/emmettl/RoomCAD/actions/runs/38021923430"
+  },
+  "remaining": "default masked CPU adoption and Metal production ownership/pipeline/abandonment integration",
+  "samplesPerBackendPerHost": 45144,
+  "scenesPerHost": 9,
+  "schemaVersion": 1,
+  "scope": "defined app-owned two-cell directional probe rule; standard selections/source/update/mixing unchanged; no empirical accuracy claim",
+  "status": "passed"
+}

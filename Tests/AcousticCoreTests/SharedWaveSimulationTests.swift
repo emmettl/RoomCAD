@@ -254,9 +254,11 @@ struct SharedWaveSimulationTests {
         let empty = s.usingSharedMaskedCPU().simulate(
             source: [0.7, 0.5, 0.05], receivers: [], steps: 129, stop: { false })
         #expect(empty == [])
-        let invalid = [(position: r[0].position, microphone: Microphone(pattern: .cardioid))]
-        let rejected = s.usingSharedMaskedCPU().simulate(
-            source: [0.7, 0.5, 0.05], receivers: invalid, steps: 1, stop: { false })
-        #expect(rejected == nil)
+        let directional = [(position: r[0].position, microphone: Microphone(pattern: .cardioid))]
+        let original = s.simulate(
+            source: [0.7, 0.5, 0.05], receivers: directional, steps: 129, stop: { false })
+        let shared = s.usingSharedMaskedCPU().simulate(
+            source: [0.7, 0.5, 0.05], receivers: directional, steps: 129, stop: { false })
+        #expect(bits(try #require(original)) == bits(try #require(shared)))
     }
 }

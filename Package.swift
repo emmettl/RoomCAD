@@ -48,7 +48,11 @@ let package = Package(
             ]),
         .testTarget(
             name: "AcousticCoreTests",
-            dependencies: ["AcousticCore", .product(name: "ImpulseResponseKit", package: "continuumkit")]),
+            dependencies: [
+                "AcousticCore", .product(name: "ImpulseResponseKit", package: "continuumkit"),
+                .product(name: "LinearAcoustics", package: "continuumkit"),
+                .product(name: "LinearAcousticsMetal", package: "continuumkit"),
+            ]),
         .testTarget(
             name: "RoomDocumentTests",
             dependencies: [

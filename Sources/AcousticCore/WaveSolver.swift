@@ -144,6 +144,17 @@ struct WaveSolver {
         return -x * exp(-x * x)
     }
 
+    /// Cell-centred velocity uses the two native faces on every axis. Retain the existing
+    /// interior clamp; on a two-cell axis use cell 1 and its closed positive boundary face.
+    /// Every negative face then lies in the same valid row/plane of the native buffers.
+    func velocityProbeCell(_ position: SIMD3<Double>) -> SIMD3<Int> {
+        let g = position / spacing
+        return SIMD3(
+            min(max(Int(g.x), 1), max(cells.x - 2, 1)),
+            min(max(Int(g.y), 1), max(cells.y - 2, 1)),
+            min(max(Int(g.z), 1), max(cells.z - 2, 1)))
+    }
+
     /// Simulates `steps` steps and returns, per receiver, the microphone output after each step:
     /// `a p - (1 - a) ρc (u · axis)`, with pressure at `(n + 1) dt` and velocity averaged to that time.
     /// Returns nil if `stop` asks it to.
@@ -216,11 +227,7 @@ struct WaveSolver {
         let sourceWeights = weights(source)
         let receiverWeights = receivers.map { weights($0.position) }
         // Velocity components are interpolated from the faces around a receiver's nearest cell.
-        let receiverCells = receivers.map { receiver -> SIMD3<Int> in
-            let g = receiver.position / spacing
-            return SIMD3(
-                min(max(Int(g.x), 1), nx - 2), min(max(Int(g.y), 1), ny - 2), min(max(Int(g.z), 1), nz - 2))
-        }
+        let receiverCells = receivers.map { velocityProbeCell($0.position) }
 
         var pressure = Array(repeating: [Double](repeating: 0, count: steps), count: receivers.count)
         var velocity = Array(repeating: [Double](repeating: 0, count: steps + 1), count: receivers.count)
@@ -609,11 +616,7 @@ extension WaveSolver {
                     layout.receiverCells[(8 * r)..<(8 * r + 8)], layout.receiverWeights[(8 * r)..<(8 * r + 8)]
                 ))
         }
-        let receiverCells = receivers.map { receiver -> SIMD3<Int> in
-            let g = receiver.position / spacing
-            return SIMD3(
-                min(max(Int(g.x), 1), nx - 2), min(max(Int(g.y), 1), ny - 2), min(max(Int(g.z), 1), nz - 2))
-        }
+        let receiverCells = receivers.map { velocityProbeCell($0.position) }
         var pressure = Array(repeating: [Double](repeating: 0, count: steps), count: receivers.count)
         var velocity = Array(repeating: [Double](repeating: 0, count: steps + 1), count: receivers.count)
         let slabs = count < 4_096 ? 1 : min(nz, 16)
