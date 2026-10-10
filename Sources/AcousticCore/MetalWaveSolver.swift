@@ -4,7 +4,7 @@ import simd
 
 /// The wave solver's scheme on the GPU: the same staggered grid, walls and sampling as the CPU solver,
 /// for boxes and floor plans alike, with each cell's boundary faces precomputed.
-final class MetalWaveSolver: @unchecked Sendable {
+final class MetalWaveSolver: MetalSimulation, @unchecked Sendable {
     let device: MTLDevice
     private let queue: MTLCommandQueue
     private let velocity: MTLComputePipelineState

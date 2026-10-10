@@ -8,7 +8,7 @@ let package = Package(
     name: "RoomCADWaveProductionBenchmark", platforms: [.macOS(.v15)],
     dependencies: [
         .package(path: application.path),
-        .package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.9"),
+        .package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.10"),
     ],
     targets: [
         .executableTarget(

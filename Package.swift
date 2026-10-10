@@ -11,13 +11,14 @@ let package = Package(
         .executable(name: "RoomCAD", targets: ["RoomCAD"]),
         .executable(name: "acousticbench", targets: ["acousticbench"]),
     ],
-    dependencies: [.package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.9")],
+    dependencies: [.package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.10")],
     targets: [
         .target(
             name: "AcousticCore",
             dependencies: [
                 .product(name: "ImpulseResponseKit", package: "continuumkit"),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
+                .product(name: "LinearAcousticsMetal", package: "continuumkit"),
             ],
             // Original reference consumers copy this source into their frozen manifests.
             swiftSettings: [.define("ROOMCAD_SHARED_WAVE_DEFAULT")]),

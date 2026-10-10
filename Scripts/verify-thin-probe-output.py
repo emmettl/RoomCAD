@@ -13,7 +13,7 @@ def bits(value):
 def verify(root):
     env=json.loads((root/'environment.json').read_text());require(env['workingTreeDirty'] is False,'dirty producer')
     report=json.loads((root/'thin-probes.json').read_text());require(report['candidate']==env['revision'] and report['device'],'producer/device scope')
-    pins=json.loads((root/'consumer-Package.resolved').read_text())['pins'];require(len(pins)==1 and pins[0]['identity']=='continuumkit' and pins[0]['state']=={'version':'0.1.0-alpha.9','revision':'0170d394e9cfa40c3034f9dd8cf29d3f8dcb92d1'},'exact dependency')
+    pins=json.loads((root/'consumer-Package.resolved').read_text())['pins'];require(len(pins)==1 and pins[0]['identity']=='continuumkit' and pins[0]['state']=={'version':'0.1.0-alpha.10','revision':'da7cb5f5ac642edc57e8433c6150dceca6b9edd9'},'exact dependency')
     scenes=report['scenes'];require(len(scenes)==9 and {(s['axis'],s['representation']) for s in scenes}=={(a,r) for a in range(3) for r in ('box','plan','mesh')},'complete scene tree')
     total=0
     for scene in scenes:
