@@ -28,6 +28,21 @@ struct SharedWaveSimulationTests {
         solver.engine = .cpu
         return solver
     }
+    @Test("Large application grids use the original slab policy and retain full microphone output")
+    func parallelApplication() throws {
+        var room = ShoeboxRoom(size: [6, 4, 3], material: .uniform(0.2, name: "Wall"))
+        room.plan = .rectangle([6, 4], material: .uniform(0.2, name: "Wall"))
+        let s = WaveSolver(room: room, sampleRate: 48_000, topFrequency: 200, atmosphere: .standard)
+        #expect(s.cells.x * s.cells.y * s.cells.z >= 4_096 && s.cells.z > 1)
+        let oldResult = s.simulate(
+            source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
+        let newResult = s.usingSharedMaskedCPU().simulate(
+            source: [0.7, 0.5, 0.8], receivers: receivers, steps: 257, stop: { false })
+        let old = try #require(oldResult)
+        let new = try #require(newResult)
+        #expect(bits(old) == bits(new))
+    }
+
     private func bits(_ signals: [[Double]]) -> [[UInt64]] { signals.map { $0.map(\.bitPattern) } }
 
     @Test(

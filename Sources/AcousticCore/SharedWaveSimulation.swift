@@ -75,7 +75,11 @@ struct SharedMaskedCPUSimulation: MaskedCPUSimulation {
         do {
             let layout = solver.gridLayout(source: source, receivers: receivers)
             let prepared = try SharedWavePreparation(solver: solver, layout: layout, receivers: receivers)
-            let stepper = try CPUWaveStepper(grid: prepared.grid, initialFields: prepared.zeroFields)
+            // Retain the original masked loop's caller-owned small-grid/slab policy.
+            let execution: CPUWaveExecution =
+                layout.count < 4_096 ? .serial : .parallel(slabs: min(solver.cells.z, 16))
+            let stepper = try CPUWaveStepper(
+                grid: prepared.grid, initialFields: prepared.zeroFields, execution: execution)
             var aligner = WaveObservationAligner()
             var output = Array(repeating: [Double](), count: receivers.count)
             for r in output.indices { output[r].reserveCapacity(steps) }
