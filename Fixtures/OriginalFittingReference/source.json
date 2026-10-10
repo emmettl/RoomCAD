@@ -1,0 +1,22 @@
+{
+  "files": {
+    "DecayAnalysis.swift": {
+      "originalBytes": 2585,
+      "originalGitBlob": "63fc6c90bb524f50b1b18adddcdd55496d6581c0",
+      "originalPath": "Sources/AcousticCore/DecayAnalysis.swift",
+      "originalSHA256": "931363a156f4b52d6c390385ba5cce3f733f9a9742281ffc2063e50f575922b1",
+      "snapshotPath": "Fixtures/OriginalFittingReference/DecayAnalysis.swift.gz",
+      "snapshotSHA256": "e0c017b97fbe4a120c9ada4cdeb91ea1b8adfdb4952618a69ac2c2b270f68e05"
+    },
+    "RoomParameters.swift": {
+      "originalBytes": 8087,
+      "originalGitBlob": "3b5c0e8761ee54b63e0a19b51596673bd702a780",
+      "originalPath": "Sources/AcousticCore/RoomParameters.swift",
+      "originalSHA256": "ad897708b1e654796786cc7745a68ed88817343df3589f66ff011bc57c6996da",
+      "snapshotPath": "Fixtures/OriginalFittingReference/RoomParameters.swift.gz",
+      "snapshotSHA256": "8bec290188c65a5e3ce85154d4ada5b685c6c83985f34ea7d931aa9f65c7e69a"
+    }
+  },
+  "revision": "bf869284f29b7604a08d98cf66cf8a2c5619e525",
+  "schemaVersion": 1
+}

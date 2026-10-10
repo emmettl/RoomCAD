@@ -8,10 +8,12 @@ exec > >(tee "$output/check.log") 2>&1
 
 git rev-parse HEAD
 swift --version
+python3 Scripts/verify-original-fitting-reference.py --require-git
 python3 Scripts/verify-original-fft-reference.py --require-git
 python3 Scripts/verify-original-wave-reference.py --require-git
 swift Scripts/check-metal.swift
 make check
+python3 Scripts/verify-affine-adoption-source.py
 bash Scripts/build-app.sh release
 codesign --verify --deep --strict dist/RoomCAD.app
 python3 Scripts/verify-original-wave-reference.py --product-binary dist/RoomCAD.app/Contents/MacOS/RoomCAD
