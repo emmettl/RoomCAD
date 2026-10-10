@@ -14,7 +14,7 @@ original_masked_source(args.root, args.require_git)
 print('PASS immutable original masked CPU snapshot, Git blob, verbatim method and canonical benchmark links')
 if args.product_binary:
     symbols = subprocess.check_output(['nm', '-a', str(args.product_binary)])
-    symbols = subprocess.check_output(['swift-demangle'], input=symbols).decode()
+    symbols = subprocess.check_output(['xcrun', 'swift-demangle'], input=symbols).decode()
     if 'AcousticCore.SharedMaskedCPUSimulation' not in symbols or 'AcousticCore.SharedMetalSimulation' not in symbols:
         raise ValueError('Packaged application lacks the accepted shared backends')
     if 'simulateMasked(' in symbols or 'OriginalMaskedCPUSimulation' in symbols:
