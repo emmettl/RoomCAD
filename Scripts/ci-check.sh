@@ -12,7 +12,7 @@ python3 Scripts/verify-original-fitting-reference.py --require-git
 python3 Scripts/verify-original-fft-reference.py --require-git
 python3 Scripts/verify-original-wave-reference.py --require-git
 swift Scripts/check-metal.swift
-ROOMCAD_CALIBRATION_EVIDENCE_DIR="$output/calibration" make check
+ROOMCAD_CALIBRATION_EVIDENCE_DIR="$output/calibration" ROOMCAD_MEASUREMENT_EVIDENCE_DIR="$output/measurement-domain" make check
 python3 Scripts/verify-affine-adoption-source.py
 bash Scripts/build-app.sh release
 codesign --verify --deep --strict dist/RoomCAD.app
