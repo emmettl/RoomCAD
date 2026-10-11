@@ -31,7 +31,7 @@ final class AbsorptionFitter {
         work = Task {
             let outcome = await Task.detached(priority: .userInitiated) {
                 Result {
-                    try AbsorptionCalibration.fit(settings, to: target) { trial in
+                    try AbsorptionCalibration.fitValidated(settings, to: target) { trial in
                         if flag.isCancelled { throw CancellationError() }
                         let channels = try RoomResponseGenerator.generate(
                             trial, cancellation: flag, quality: .preview
@@ -44,9 +44,9 @@ final class AbsorptionFitter {
             guard !flag.isCancelled else { return }
             isRunning = false
             switch outcome {
-            case .success(let (room, steps, best)):
-                status = Self.summary(best, simulations: steps.count, target: target)
-                apply(room)
+            case .success(let outcome):
+                status = Self.validatedSummary(outcome)
+                apply(outcome.room)
             case .failure(let error):
                 status = "Fitting failed: \(error.localizedDescription)"
             }
@@ -54,7 +54,9 @@ final class AbsorptionFitter {
         // Report progress while the fit runs.
         Task {
             while isRunning, !flag.isCancelled {
-                if reports.count > 0 { status = "Simulating, step \(reports.count + 1)…" }
+                if reports.count > 0 {
+                    status = "Calibrating; \(reports.count) simulations completed…"
+                }
                 try? await Task.sleep(for: .milliseconds(300))
             }
         }
@@ -69,6 +71,42 @@ final class AbsorptionFitter {
     }
 
     private var cancellation: CancellationFlag?
+
+    /// Final-room measurement coverage; historical best values are retained in the outcome.
+    static func validatedSummary(_ outcome: AbsorptionCalibration.ValidatedOutcome) -> String {
+        guard let measurement = outcome.verification else {
+            return "No calibration targets; absorption unchanged."
+        }
+        let updates = max(outcome.steps.count - 1, 0)
+        let used = outcome.targets.indices.filter { outcome.targets[$0] != nil }
+        let factors = used.map { measurement.factors[$0] }
+        let scale =
+            factors.min()!.formatted(.number.precision(.fractionLength(2)))
+            + (factors.max()! - factors.min()! > 0.005
+                ? "–" + factors.max()!.formatted(.number.precision(.fractionLength(2))) : "")
+        let prefix = "Absorption scaled ×\(scale) in \(updates) step\(updates == 1 ? "" : "s"); "
+        let measured = outcome.measuredBandCount
+        let count = outcome.targetedBandCount
+        if measured == 0 {
+            return prefix + "final preview T30 unavailable for all \(count) targeted bands."
+        }
+        let errors = outcome.measurements.compactMap { value -> Double? in
+            switch value {
+            case .matched(let error), .outsideTolerance(let error): error
+            case .notTargeted, .unavailable: nil
+            }
+        }
+        let worst = errors.max()!
+        let percent = (worst * 100).rounded()
+        let error =
+            percent.isFinite && Int(exactly: percent) != nil
+            ? "\(Int(exactly: percent)!)%" : "a relative error too large to display"
+        if measured < count {
+            return prefix + "final preview T30 within \(error) for \(measured) of \(count) targeted bands; "
+                + "unavailable for \(count - measured)."
+        }
+        return prefix + "final preview T30 within \(error) of the targets."
+    }
 
     /// "Absorption scaled ×0.82–1.31 in 3 steps; T30 within 2% of the targets."
     static func summary(_ last: AbsorptionCalibration.Step, simulations: Int, target: [Double?]) -> String {
