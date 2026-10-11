@@ -85,9 +85,16 @@ final class AbsorptionFitter {
                     ? "–\(factors.max()!.formatted(.number.precision(.fractionLength(2))))" : "")
         let worst = errors.max().map { "\(Int(($0 * 100).rounded()))%" } ?? "—"
         let steps = simulations - 1
-        return
-            "Absorption \(scale) in \(steps) step\(steps == 1 ? "" : "s"); preview T30 within \(worst) of the "
-            + "targets."
+        let prefix = "Absorption \(scale) in \(steps) step\(steps == 1 ? "" : "s"); "
+        if errors.count < used.count {
+            if errors.isEmpty {
+                return prefix + "preview T30 unavailable for all \(used.count) targeted bands."
+            }
+            return prefix
+                + "preview T30 within \(worst) for \(errors.count) of \(used.count) targeted bands; "
+                + "unavailable for \(used.count - errors.count)."
+        }
+        return prefix + "preview T30 within \(worst) of the targets."
     }
 }
 
