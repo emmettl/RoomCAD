@@ -115,6 +115,14 @@ struct MeasurementDomainAuditTests {
         #expect(abs(times[1] - target) < 0.002)
     }
 
+    @Test("Retain complete native inputs and returned parameter bit patterns when requested")
+    func nativeWitness() throws {
+        guard let directory = ProcessInfo.processInfo.environment["ROOMCAD_MEASUREMENT_EVIDENCE_DIR"] else {
+            return
+        }
+        try MeasurementDomainWitness.run(directory)
+    }
+
     /// Independent straightforward backward sum and centred OLS of the finite record.
     /// This checks the existing numerical interpretation; it adds no quality/admission policy.
     static func finiteRecordTime(energy: [Double]) -> Double? {

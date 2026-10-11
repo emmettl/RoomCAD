@@ -54,3 +54,11 @@ finite fitted T30 alone cannot certify capture adequacy. Complete source/native
 evidence, independent references and coherent input/output controls precede any
 production adoption or extraction into ContinuumKit. Noise correction, averaging,
 onset selection, filtering and fit-window policy remain explicit model choices.
+
+CI also requests a native witness export: eight complete controlled Double-energy
+arrays, sixteen raw/corrected outcomes with returned parameter bit patterns,
+default JSON-encoding availability and directly called noise-cut results. Curves
+are explicitly labelled independently reconstructed from those inputs and cuts;
+they are not claimed as instrumented internal state. The sixth test performs this
+optional export. Both-host payloads and a separate four-file numerical consumer
+must be retained/replayed before the audit acceptance checkpoint.
