@@ -20,6 +20,16 @@ undefined normalization from a meaningful extended-real clarity limit; a future
 checked result needs an explicit policy for each, rather than rejecting every
 nonfinite output identically or silently coercing them to zero.
 
+A separate arithmetic counterexample has early energy 1 and positive late energy
+1e-20, both represented in the actual Double input array. The direct early/late
+log ratio gives C50=200 dB, while adding the tiny tail to the early total rounds
+back to 1. The legacy `total - early` subtraction then loses the tail and returns
+positive infinite C50 and C80. This is not a true zero-late-energy limit. A
+standalone package built from the four verbatim original numerical files and the
+immutable alpha18 Numerics/SpectralTransforms products independently reproduces
+the same result. It does not involve application-layer code. Checked arithmetic
+must distinguish representable positive late sums from subtraction loss.
+
 At 4,800 and 9,600 samples, a constant-energy input has enough finite-integral
 range to produce positive T30 values of 0.14623330351621788 and 0.2939521277320455
 seconds. Neither input has a decreasing energy envelope. Noise compensation falls
@@ -31,7 +41,7 @@ integration and centred OLS reproduce these numerical interpretations. Direct
 sample and energy APIs can differ by rounding because coordinate scaling occurs
 at different points; their comparison uses four output ULPs, not byte parity.
 
-Run `swift test --filter MeasurementDomainAuditTests`. Four tests characterize
+Run `swift test --filter MeasurementDomainAuditTests`. Five tests characterize
 the current contracts and deliberately preserve the observations above. These
 controlled inputs are not measurements of a real room. They do not establish a
 general noise, truncation or empirical-error classifier.

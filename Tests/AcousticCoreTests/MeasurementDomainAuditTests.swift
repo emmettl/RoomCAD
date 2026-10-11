@@ -34,6 +34,26 @@ struct MeasurementDomainAuditTests {
         #expect(throws: EncodingError.self) { try JSONEncoder().encode(parameters) }
     }
 
+    @Test("A positive late tail can be lost in total-minus-early clarity arithmetic")
+    func lostLateEnergy() {
+        var energy = Array(repeating: 0.0, count: 4801)
+        energy[0] = 1
+        energy[4000] = 1e-20
+        let parameters = RoomParameters.measure(energy: energy, sampleRate: 48_000, noiseCompensated: false)
+        let early = energy[..<2400].reduce(0, +)
+        let late = energy[2400...].reduce(0, +)
+        let total = energy.reduce(0, +)
+        let reference = 10 * (log10(early) - log10(late))
+        #expect(late > 0 && late.isFinite)
+        #expect(total - early == 0)
+        #expect(reference == 200)
+        #expect(parameters.c50 == .infinity && parameters.c80 == .infinity)
+        #expect(parameters.d50 == 1 && parameters.t30 == nil)
+        print(
+            "MEASUREMENT_AUDIT positive-late: early=\(early), late=\(late), total-minus-early=\(total-early), referenceC50=\(reference), nativeC50=\(parameters.c50)"
+        )
+    }
+
     @Test("A finite constant-energy record obtains a positive decay fit from its cutoff alone")
     func cutoffOnly() throws {
         var times: [Double] = []
