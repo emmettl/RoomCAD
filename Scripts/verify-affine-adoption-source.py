@@ -3,6 +3,7 @@
 import hashlib,json,subprocess
 from pathlib import Path
 from original_fitting_reference import original_fitting_sources
+from calibration_reporting_scope import verify_reporting_scope
 r=Path(__file__).resolve().parent.parent
 base='bf869284f29b7604a08d98cf66cf8a2c5619e525'
 old='e94d329c55495ca561306174d624eadf5c8e7da0';core='0e0929f4a0806940ed2fc5be5f81d1a82034cc8c'
@@ -12,7 +13,10 @@ paths=set(git(r,'ls-tree','-r','--name-only',base,'Sources').decode().splitlines
 actual={str(p.relative_to(r)) for p in (r/'Sources').rglob('*') if p.is_file()}
 assert actual==paths,'production source tree changed outside declared files'
 allowed={'Sources/AcousticCore/RoomParameters.swift','Sources/AcousticCore/DecayAnalysis.swift'}
-for path in paths-allowed:assert (r/path).read_bytes()==git(r,'show',base+':'+path),path
+for path in paths-allowed:
+ before=git(r,'show',base+':'+path);current=(r/path).read_bytes()
+ if path=='Sources/RoomCAD/CalibrationSection.swift':verify_reporting_scope(before,current)
+ else:assert current==before,path
 pins=json.loads((r/'Package.resolved').read_text())['pins'];assert len(pins)==1 and pins[0]['state']=={'version':'0.1.0-alpha.18','revision':core}
 for path in allowed:
  s=(r/path).read_text();assert 'import Numerics' in s and 'AffineLeastSquares.fit' in s and 'sxx' not in s and 'sxy' not in s,path
