@@ -4,6 +4,7 @@ import hashlib,json,subprocess
 from pathlib import Path
 from original_fitting_reference import original_fitting_sources
 from calibration_reporting_scope import verify_reporting_scope
+from verified_calibration_scope import NEW_SOURCE, EXPECTED, verify_verified_calibration_scope
 r=Path(__file__).resolve().parent.parent
 base='bf869284f29b7604a08d98cf66cf8a2c5619e525'
 old='e94d329c55495ca561306174d624eadf5c8e7da0';core='0e0929f4a0806940ed2fc5be5f81d1a82034cc8c'
@@ -11,11 +12,14 @@ def git(root,*args):return subprocess.check_output(['git',*args],cwd=root)
 original_fitting_sources(r,True)
 paths=set(git(r,'ls-tree','-r','--name-only',base,'Sources').decode().splitlines())
 actual={str(p.relative_to(r)) for p in (r/'Sources').rglob('*') if p.is_file()}
-assert actual==paths,'production source tree changed outside declared files'
+verified=NEW_SOURCE in actual
+assert actual==paths|({NEW_SOURCE} if verified else set()),'production source tree changed outside declared files'
+if verified:verify_verified_calibration_scope({p:(r/p).read_bytes() for p in EXPECTED})
 allowed={'Sources/AcousticCore/RoomParameters.swift','Sources/AcousticCore/DecayAnalysis.swift'}
 for path in paths-allowed:
  before=git(r,'show',base+':'+path);current=(r/path).read_bytes()
- if path=='Sources/RoomCAD/CalibrationSection.swift':verify_reporting_scope(before,current)
+ if verified and path in EXPECTED:pass # Exact candidate identities checked above.
+ elif path=='Sources/RoomCAD/CalibrationSection.swift':verify_reporting_scope(before,current)
  else:assert current==before,path
 pins=json.loads((r/'Package.resolved').read_text())['pins'];assert len(pins)==1 and pins[0]['state']=={'version':'0.1.0-alpha.18','revision':core}
 for path in allowed:
