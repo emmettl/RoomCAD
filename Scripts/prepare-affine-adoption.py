@@ -9,6 +9,8 @@ if out.is_relative_to(root/'Sources'):raise ValueError('Fixture trace must never
 sys.path.insert(0,str(root/'Scripts'));from original_fitting_reference import original_fitting_sources
 originals=original_fitting_sources(root,True)
 shutil.copytree(root/'Sources/AcousticCore',out/'Sources/AcousticCore')
+from original_spatial_reference import copy_original_spatial_reference
+copy_original_spatial_reference(root,out/'Sources/AcousticCore')
 shutil.copytree(root/'Sources/RoomDocument',out/'Sources/RoomDocument')
 shutil.copytree(fixture/'Sources/AffineAdoptionBenchmark',out/'Sources/AffineAdoptionBenchmark')
 shared=a.mode=='shared';source={}

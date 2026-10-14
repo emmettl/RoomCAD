@@ -26,8 +26,8 @@ swift run -c release acousticbench --out roomcad-reference
 
 The app and its documents are described in [RoomCAD app and documents](docs/roomcad-app.md),
 and the model, its checks and its limitations in
-[Room-acoustics model](docs/room-acoustics-model.md). The package pins public ContinuumKit `0.1.0-alpha.2` for its CAD foundations and response
-interchange and depends on nothing in BombCAD. Third-party data and recordings are
+[Room-acoustics model](docs/room-acoustics-model.md). The package pins public ContinuumKit `0.1.0-alpha.23` for its CAD foundations, response
+interchange, wave execution, FFT and fitting primitives, and depends on nothing in BombCAD. Third-party data and recordings are
 credited in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 Build a Finder-launchable app with `make app`; run the full local checks with `make check`.

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "scope": "fitted-zone Double query adoption; stationary and positive-path acoustic policies preserved",
+  "verifiedProducer": "b96f542cdc8c45ae8127c25687b8526039b8972c",
+  "baseline": "7d73614f146799c11313aacc0ccc30d44906edfc",
+  "dependency": {
+    "revision": "b5a317486f1f87dd28ddeb9733587a41061d882c",
+    "version": "0.1.0-alpha.23"
+  },
+  "coreRelease": "https://github.com/emmettl/ContinuumKit/releases/tag/0.1.0-alpha.23",
+  "coreReleaseWorkflow": "https://github.com/emmettl/ContinuumKit/actions/runs/38538476731",
+  "nativeEndpointComparisons": 13500,
+  "swiftTestsPerHost": 211,
+  "currentCPUComparedSamples": 36696,
+  "currentMetalComparedSamples": 45144,
+  "thinProbeSamplesPerBackend": 45144,
+  "thinProbeScenes": 9,
+  "thinProbeRuns": 90,
+  "frozenExtrusionLayouts": 36,
+  "sourceSHA256": {
+    "Package.swift": "715a05a0da4a0ff147214f07564b9bee85ebf90a8b9e94df6c9e52dadd58a4dc",
+    "Package.resolved": "e42553dd1df54a47cb6ca6705cce3ce4feb27ab95389925625fcf1df2c1d497c",
+    "Sources/AcousticCore/FittingZone.swift": "9bd587b6428048a0706d938e388bfebccda17f67db4347a15fae7adcd2a193db",
+    "Tests/AcousticCoreTests/SharedBoxQueryTests.swift": "725c4f03628325ff303bb22c24170c6755346cf71cf4c7e872c29fb2ec881e02",
+    "Scripts/spatial_query_scope.py": "da296b7a440a6fde7082459dadffc0c0fef4b734b484f86772ad173c4952703b",
+    "Scripts/original_spatial_reference.py": "e62a6a2c697a0d2f46dd1e20b7f9ea4352b1e76688f945852f25305a5fbcdc31"
+  },
+  "local": {
+    "device": "Apple M4 Max",
+    "logSHA256": {
+      "application": "528bbe518ae7895fa8325f14ac14fa1f7d122f1a1481956ff606b852800de9e7",
+      "productionCPU": "c540789a67ebef6572611a532c6e4fc2d8870ddaededa6fb4c061a2d287ccde0",
+      "productionMetal": "945f14f7f40382843ea7351882fa8e329d6392b193c455a39a846643c3e1191a",
+      "thinProbes": "3b28c6769ef33baf39a3d882ebf4a39d6e4b9bf287553325372ef67d00b94b48",
+      "frozenExtrusion": "43602aedce59626b6e7f875aa4cfbb052eda8a63d87364bed8db5019c542a764"
+    },
+    "snapshotSHA256": "fd8a9e857454a9d0dce5afb53c2dad5f1267d1e43349296ed3b0465fe0501042",
+    "snapshotInspected": true
+  },
+  "mini": {
+    "device": "Apple M4",
+    "workflow": "https://github.com/emmettl/RoomCAD/actions/runs/38539563278",
+    "application": "success",
+    "snapshotSHA256": "a0d1fd49c3110001285d91f8a73f42ff5865a1faa676b881f58f4dbb8346b920",
+    "snapshotInspected": true,
+    "fullRun": "success",
+    "jobs": {
+      "acoustics": "success",
+      "boundaries": "success",
+      "oblique": "success",
+      "check": "success",
+      "affine-capture": "success",
+      "masked": "success",
+      "production-metal": "success",
+      "rigid-3d": "success",
+      "cylinder": "success",
+      "thin-probes": "success",
+      "production-cpu": "success",
+      "fft-adoption": "success",
+      "extruded-layout": "success",
+      "tilted-pulse": "success",
+      "admittance": "success",
+      "absorbing-cylinder": "success"
+    },
+    "logSHA256": "61e996b9b832f9a21e1fae06b840adf07f390d43e4214a372da85928c2b3f69d"
+  },
+  "historicalEvidence": "Earlier FFT/affine captures retain original pins and query source; current alpha23 adoption is separate",
+  "limitations": [
+    "bounded Double geometry; no exact predicates or overflow-safe large-coordinate promise",
+    "no end-to-end speedup or empirical acoustic accuracy claim",
+    "IFC conversion and mesh acceleration remain separate work",
+    "BombCAD Float callers are unchanged; no application release"
+  ]
+}

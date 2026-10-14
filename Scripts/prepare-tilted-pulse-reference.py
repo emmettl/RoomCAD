@@ -4,6 +4,7 @@ import argparse,shutil
 from original_wave_reference import original_masked_source, copy_original_masked_reference
 from original_fft_reference import copy_original_fft_reference
 from original_fitting_reference import copy_original_fitting_reference
+from original_spatial_reference import copy_original_spatial_reference
 from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
 # These original source-free fixtures pin Core versions before production source/receiver APIs.
@@ -14,6 +15,7 @@ copy_original_masked_reference(a.root, a.output/'Sources/AcousticCore')
 # verification FFT; current application adoption has its separate full-output gate.
 copy_original_fft_reference(a.root, a.output/'Sources/AcousticCore')
 copy_original_fitting_reference(a.root, a.output/'Sources/AcousticCore')
+copy_original_spatial_reference(a.root, a.output/'Sources/AcousticCore')
 source=original_masked_source(a.root)
 start=source.index('    func simulateMasked(')
 coeff_start=source.index('        let kx = Float(dt / spacing.x)',start)
