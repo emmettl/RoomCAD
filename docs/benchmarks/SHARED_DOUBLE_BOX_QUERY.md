@@ -34,3 +34,23 @@ candidates. The current BombCAD importer still joins these to structural selecti
 reinforcement and shell conversion. An acoustic interior/enclosure adapter and a
 concrete RoomCAD IFC workflow must precede that broader extraction. BombCAD's
 existing released Float spatial queries require no change for this Double API.
+
+## Accepted exact-version integration
+
+Both physical Macs pass 211 Swift tests, all `make check` reference/release checks,
+actual Metal, packaging/strict signatures and inspected headless snapshots at exact
+ContinuumKit alpha.23. The [mini adoption run](https://github.com/emmettl/RoomCAD/actions/runs/38539563278)
+passes all sixteen application/current-wave/frozen-reference/capture jobs.
+Current CPU comparisons retain 36,696 samples; Metal retains 45,144. Nine minimal
+box/plan/mesh scenes retain 90 full runs and 45,144 samples per backend, with the
+independent two-step observation oracle. All report corruption controls pass.
+Frozen extrusion retains all 36 layouts without fallback or weakened bounds.
+
+[Source-bound acceptance](shared-double-box-query-verification.json) records the
+verified `b96f542` producer, immutable Core pin, source identities, both inspected
+snapshots and complete job/log identities. Earlier alpha18 fitting captures retain
+that exact Core pin and the protected original query compile dependency; they are
+not relabelled as current alpha23 numerical evidence. This final record changes
+README/documentation only; production, tests, fixtures, scripts and resolved pin
+remain byte-identical to the accepted producer. No RoomCAD application release
+is published by this integration.
