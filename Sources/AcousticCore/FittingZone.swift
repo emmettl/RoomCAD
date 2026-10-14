@@ -1,4 +1,5 @@
 import Foundation
+import SceneModel
 import simd
 
 /// A box of the room filled with objects that scatter sound: chairs, pews, desks, pillars, ornament
@@ -83,21 +84,19 @@ public struct FittingZone: Codable, Equatable, Sendable {
 
     /// The part of the segment `origin + t direction`, `t` in `[0, limit]`, inside the zone, if any.
     func overlap(origin: SIMD3<Double>, direction: SIMD3<Double>, limit: Double) -> ClosedRange<Double>? {
-        var enter = 0.0
-        var leave = limit
-        for a in 0..<3 {
-            if direction[a] == 0 {
-                guard origin[a] >= low[a], origin[a] <= high[a] else { return nil }
-                continue
-            }
-            var t0 = (low[a] - origin[a]) / direction[a]
-            var t1 = (high[a] - origin[a]) / direction[a]
-            if t0 > t1 { swap(&t0, &t1) }
-            enter = max(enter, t0)
-            leave = min(leave, t1)
-            if enter >= leave { return nil }
+        guard limit >= 0 else { return nil }
+        // Preserve the stationary-point convention; Core queries require a direction.
+        if direction == .zero {
+            return (0..<3).allSatisfy { origin[$0] >= low[$0] && origin[$0] <= high[$0] }
+                ? 0...limit : nil
         }
-        return enter...leave
+        guard
+            let interval = BoxQuery.intersection(
+                min: low, max: high, origin: origin, direction: direction, parameters: 0...limit),
+            interval.lowerBound < interval.upperBound
+        else { return nil }
+        // A closed geometric touch traverses no material and adds no acoustic attenuation.
+        return interval
     }
 }
 
