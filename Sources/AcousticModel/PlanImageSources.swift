@@ -179,8 +179,9 @@ extension ImageSourceModel {
 
     /// The path in 3D of a plan path whose height, unfolded, runs from `from` to `to`: it turns at
     /// each plan reflection and wherever it meets the floor or ceiling.
-    package static func planPath(_ plan: [SIMD2<Double>], from: Double, to: Double, height: Double) -> [SIMD3<Double>]
-    {
+    package static func planPath(_ plan: [SIMD2<Double>], from: Double, to: Double, height: Double) -> [SIMD3<
+        Double
+    >] {
         var lengths = [0.0]
         for (a, b) in zip(plan, plan.dropFirst()) { lengths.append(lengths.last! + simd_distance(a, b)) }
         let total = lengths.last!

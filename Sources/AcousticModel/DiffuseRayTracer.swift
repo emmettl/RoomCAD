@@ -18,7 +18,11 @@ import simd
 /// sphere's volume inside the room, scaled so a free-field source gives `1/r²`: the same units as the
 /// square of an image source's gain.
 package struct DiffuseRayTracer {
-    package init(room: ShoeboxRoom, source: SIMD3<Double>, atmosphere: Atmosphere, airAbsorption: Bool, rayCount: Int, seed: UInt64, specularOrderLimit: Int = Int.max, openings: [Opening] = [], specularWallLimit: Int = Int.max) {
+    package init(
+        room: ShoeboxRoom, source: SIMD3<Double>, atmosphere: Atmosphere, airAbsorption: Bool, rayCount: Int,
+        seed: UInt64, specularOrderLimit: Int = Int.max, openings: [Opening] = [],
+        specularWallLimit: Int = Int.max
+    ) {
         self.room = room
         self.source = source
         self.atmosphere = atmosphere

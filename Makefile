@@ -20,6 +20,9 @@ format:
 	swift format format --in-place --recursive Package.swift Sources Tests Scripts
 
 ci-test:
+	python3 Scripts/portable_source.py
+	python3 Scripts/test-portable-source.py
+	python3 Scripts/test-homebrew.py
 	python3 Scripts/test-spatial-query-scope.py
 	python3 Scripts/test-verified-calibration-scope.py
 	python3 Scripts/test-calibration-reporting-scope.py

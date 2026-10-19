@@ -145,7 +145,9 @@ package func segmentDistance(_ p: SIMD2<Double>, _ a: SIMD2<Double>, _ b: SIMD2<
 }
 
 /// Whether two segments properly cross or touch.
-package func segmentsCross(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, _ d: SIMD2<Double>) -> Bool {
+package func segmentsCross(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, _ d: SIMD2<Double>)
+    -> Bool
+{
     func cross(_ u: SIMD2<Double>, _ v: SIMD2<Double>) -> Double { u.x * v.y - u.y * v.x }
     let d1 = cross(b - a, c - a)
     let d2 = cross(b - a, d - a)

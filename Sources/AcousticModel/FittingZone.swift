@@ -83,7 +83,9 @@ public struct FittingZone: Codable, Equatable, Sendable {
     }
 
     /// The part of the segment `origin + t direction`, `t` in `[0, limit]`, inside the zone, if any.
-    package func overlap(origin: SIMD3<Double>, direction: SIMD3<Double>, limit: Double) -> ClosedRange<Double>? {
+    package func overlap(origin: SIMD3<Double>, direction: SIMD3<Double>, limit: Double) -> ClosedRange<
+        Double
+    >? {
         guard limit >= 0 else { return nil }
         // Preserve the stationary-point convention; Core queries require a direction.
         if direction == .zero {

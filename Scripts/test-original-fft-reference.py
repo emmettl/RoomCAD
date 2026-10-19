@@ -9,7 +9,7 @@ class FFTReference(unittest.TestCase):
    dest=Path(t)/'copied';copy_original_fft_reference(ROOT,dest)
    self.assertEqual(hashlib.sha256((dest/'RealFFT.swift').read_bytes()).hexdigest(),'63da5cb9c3ead610051a2b43faf3c345d4168d7e6580abd25ea202c18877b617')
  def test_production_copy_rejects(self):
-  p=ROOT/'Sources/AcousticCore/RealFFT.swift';before=p.read_bytes()
+  p=ROOT/'Sources/AcousticModel/RealFFT.swift';before=p.read_bytes()
   with self.assertRaises(ValueError):copy_original_fft_reference(ROOT,p.parent)
   self.assertEqual(p.read_bytes(),before)
  def test_changed_identity_rejects(self):

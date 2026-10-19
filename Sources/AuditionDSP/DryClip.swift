@@ -88,4 +88,3 @@ struct SplitMix {
         Double(next() >> 11) / Double(1 << 52) - 1
     }
 }
-

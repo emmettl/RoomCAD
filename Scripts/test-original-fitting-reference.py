@@ -9,7 +9,7 @@ class FittingReference(unittest.TestCase):
    dest=Path(t)/'copied';copy_original_fitting_reference(ROOT,dest)
    for name,(sha,blob) in EXPECTED.items():self.assertEqual(hashlib.sha256((dest/name).read_bytes()).hexdigest(),sha)
  def test_production_copy_rejects(self):
-  dest=ROOT/'Sources/AcousticCore';before={n:(dest/n).read_bytes() for n in EXPECTED}
+  dest=ROOT/'Sources/AcousticModel';before={n:(dest/n).read_bytes() for n in EXPECTED}
   with self.assertRaises(ValueError):copy_original_fitting_reference(ROOT,dest)
   self.assertEqual(before,{n:(dest/n).read_bytes() for n in EXPECTED})
  def test_changed_identity_rejects(self):

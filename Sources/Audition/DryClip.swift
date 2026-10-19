@@ -1,5 +1,5 @@
-import AuditionDSP
 import AVFoundation
+import AuditionDSP
 import Foundation
 
 // MARK: - Files

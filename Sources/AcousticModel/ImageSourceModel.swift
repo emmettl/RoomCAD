@@ -132,9 +132,11 @@ public struct ImageSourceModel: Sendable {
 
     /// The path in the room from `receiver` to the source of the image at `image`: the straight line
     /// between them folded back into the box at each wall it crosses.
-    package static func boxPath(from receiver: SIMD3<Double>, to image: SIMD3<Double>, size: SIMD3<Double>) -> [SIMD3<
-        Double
-    >] {
+    package static func boxPath(from receiver: SIMD3<Double>, to image: SIMD3<Double>, size: SIMD3<Double>)
+        -> [SIMD3<
+            Double
+        >]
+    {
         var breaks: [Double] = []
         for a in 0..<3 { foldBreaks(from: receiver[a], to: image[a], length: size[a], into: &breaks) }
         breaks.sort()

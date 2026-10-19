@@ -211,7 +211,14 @@ public struct RoomResponseDiagnostics: Codable, Equatable, Sendable {
     /// In a room with a floor plan, the wall reflections and total reflections the image sources reached.
     public var planWallOrder: Int?
     public var planTotalOrder: Int?
-    package init(soundSpeed: Double, bandCentres: [Double], arrivals: [Int], directDelay: [Double], orderLimitedAfter: [Double?], sabineReverberationTime: [Double?], eyringReverberationTime: [Double?], schroederFrequency: Double?, generationSeconds: Double, scatteredFraction: [Double]?, diffuseRays: Int?, waveCrossover: Double?, waveCells: Int?, waveSeconds: Double?, waveRuns: Int?, waveGPURuns: Int?, waveBareDecay: [Double?]?, waveDispersion: Double?, waveMemory: Int?, quality: GenerationQuality?, waveNote: String?, planWallOrder: Int?, planTotalOrder: Int?) {
+    package init(
+        soundSpeed: Double, bandCentres: [Double], arrivals: [Int], directDelay: [Double],
+        orderLimitedAfter: [Double?], sabineReverberationTime: [Double?], eyringReverberationTime: [Double?],
+        schroederFrequency: Double?, generationSeconds: Double, scatteredFraction: [Double]?,
+        diffuseRays: Int?, waveCrossover: Double?, waveCells: Int?, waveSeconds: Double?, waveRuns: Int?,
+        waveGPURuns: Int?, waveBareDecay: [Double?]?, waveDispersion: Double?, waveMemory: Int?,
+        quality: GenerationQuality?, waveNote: String?, planWallOrder: Int?, planTotalOrder: Int?
+    ) {
         self.soundSpeed = soundSpeed
         self.bandCentres = bandCentres
         self.arrivals = arrivals
@@ -361,4 +368,3 @@ public final class CancellationFlag: Sendable {
 
     public var isCancelled: Bool { state.load(ordering: .relaxed) }
 }
-

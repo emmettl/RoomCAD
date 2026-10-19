@@ -7,6 +7,29 @@ from calibration_reporting_scope import verify_reporting_scope
 from spatial_query_scope import ZONE, EXPECTED as SPATIAL_EXPECTED, CORE_QUERY, CORE_QUERY_SHA256, verify_spatial_query_scope, verify_spatial_query_files
 from verified_calibration_scope import NEW_SOURCE, EXPECTED, verify_verified_calibration_scope
 r=Path(__file__).resolve().parent.parent
+# Preserve the accepted alpha23 gate verbatim in its committed source tree.
+# The portable split has a separate token-exact current-source proof.
+if (r/'Sources/AcousticModel').exists():
+ import tempfile,sys
+ from portable_source import verify,BASE
+ verify(r)
+ ck=r/'.build/checkouts/ContinuumKit'
+ with tempfile.TemporaryDirectory(prefix='roomcad-historical-source-') as folder:
+  legacy=Path(folder)/'RoomCAD'
+  subprocess.run(['git','clone','--quiet','--shared',str(r),str(legacy)],check=True)
+  subprocess.run(['git','checkout','--quiet',BASE],cwd=legacy,check=True)
+  dependency=legacy/'.build/checkouts/ContinuumKit';dependency.parent.mkdir(parents=True)
+  subprocess.run(['git','clone','--quiet','--shared',str(ck),str(dependency)],check=True)
+  subprocess.run(['git','checkout','--quiet','b5a317486f1f87dd28ddeb9733587a41061d882c'],cwd=dependency,check=True)
+  subprocess.run([sys.executable,str(legacy/'Scripts/verify-affine-adoption-source.py')],check=True)
+ # Every existing acoustic operator remains byte-identical on the new tag.
+ old='0e0929f4a0806940ed2fc5be5f81d1a82034cc8c'
+ for product in ['ImpulseResponseKit','SpectralTransforms','LinearAcoustics','LinearAcousticsMetal','Numerics']:
+  paths=subprocess.check_output(['git','ls-tree','-r','--name-only',old,'Sources/'+product],cwd=ck,text=True).splitlines()
+  for path in paths:
+   assert subprocess.check_output(['git','show',old+':'+path],cwd=ck)==(ck/path).read_bytes(),path
+ print('PASS current portable split and unchanged active acoustic operators on exact alpha29')
+ sys.exit(0)
 base='bf869284f29b7604a08d98cf66cf8a2c5619e525'
 old='e94d329c55495ca561306174d624eadf5c8e7da0';core='0e0929f4a0806940ed2fc5be5f81d1a82034cc8c'
 def git(root,*args):return subprocess.check_output(['git',*args],cwd=root)

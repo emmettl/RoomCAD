@@ -22,7 +22,7 @@ struct RoomDocumentTests {
     }
 
     private func reopened(_ project: RoomProject) throws -> RoomProject {
-        try RoomProject(archive: ProjectArchive(fileWrapper: project.makeArchive().fileWrapper()))
+        try RoomProject(archive: roundTripArchive(project.makeArchive()))
     }
 
     @Test("A new project saves its room, settings and identity and reopens unchanged")
@@ -240,7 +240,7 @@ struct RoomDocumentTests {
         var project = RoomProject(settings: Self.settings)
         project.result = try RoomResponseGenerator.generate(project.settings)
         let first = folder.appendingPathComponent("Room.roomcad")
-        try project.makeArchive().fileWrapper().write(to: first, options: .atomic, originalContentsURL: nil)
+        try writeArchive(project.makeArchive(), to: first)
         let moved = folder.appendingPathComponent("Moved.roomcad")
         try FileManager.default.moveItem(at: first, to: moved)
         let loaded = try RoomProject(archive: ProjectArchive.read(from: moved))
@@ -269,7 +269,7 @@ struct RoomDocumentScatteringTests {
         project.settings.crossoverFrequency = 120
         project.settings.receivers[0].microphone = Microphone(pattern: .cardioid, azimuth: 30, elevation: -5)
         let loaded = try RoomProject(
-            archive: ProjectArchive(fileWrapper: project.makeArchive().fileWrapper()))
+            archive: roundTripArchive(project.makeArchive()))
         #expect(loaded.settings == project.settings)
     }
 
@@ -305,7 +305,7 @@ struct RoomDocumentScatteringTests {
         ]
         try project.settings.validate()
         let loaded = try RoomProject(
-            archive: ProjectArchive(fileWrapper: project.makeArchive().fileWrapper()))
+            archive: roundTripArchive(project.makeArchive()))
         #expect(loaded.settings == project.settings)
         #expect(loaded.settings.room.plan?.corners.count == 6)
     }
@@ -316,11 +316,39 @@ struct RoomDocumentScatteringTests {
         let project = RoomProject(settings: preset.applied(to: RoomDocumentTests.settings))
         try project.settings.validate()
         let loaded = try RoomProject(
-            archive: ProjectArchive(fileWrapper: project.makeArchive().fileWrapper()))
+            archive: roundTripArchive(project.makeArchive()))
         #expect(loaded.settings == project.settings)
         let mesh = try #require(loaded.settings.room.mesh)
         #expect(mesh.labels == HallShapes.labels)
         #expect(loaded.settings.room.pieces?.count == 3)
         #expect(abs(loaded.settings.room.volume - project.settings.room.volume) < 1e-9)
     }
+}
+
+// Apple keeps testing FileWrapper; Linux exercises the same serialized package through URLs.
+private func roundTripArchive(_ archive: ProjectArchive) throws -> ProjectArchive {
+    #if canImport(Darwin)
+        return try ProjectArchive(fileWrapper: archive.fileWrapper())
+    #else
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        try writeArchive(archive, to: folder)
+        return try ProjectArchive.read(from: folder)
+    #endif
+}
+
+private func writeArchive(_ archive: ProjectArchive, to url: URL) throws {
+    #if canImport(Darwin)
+        try archive.fileWrapper().write(to: url, options: .atomic, originalContentsURL: nil)
+    #else
+        try archive.validate()
+        var files = archive.files
+        files["manifest.json"] = try ProjectArchive.encodeJSON(archive.manifest)
+        for (path, bytes) in files {
+            let file = url.appendingPathComponent(path)
+            try FileManager.default.createDirectory(
+                at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try bytes.write(to: file)
+        }
+    #endif
 }

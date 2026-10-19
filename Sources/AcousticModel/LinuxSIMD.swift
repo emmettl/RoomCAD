@@ -1,4 +1,5 @@
 // swift-format-ignore-file: AlwaysUseLowerCamelCase, TypeNamesShouldBeCapitalized
+
 // Linux-only vector compatibility adapted from BombCAD's MIT-licensed LinuxSIMD.swift.
 // See docs/PORTABILITY.md for the source revision and arithmetic limitations.
 // Apple builds always use the SDK's simd implementation.

@@ -255,7 +255,9 @@ extension [HallPiece] {
 extension HallPiece {
     /// Whether the piece has a face square to axis `k` at `c` that overlaps `bounds` across the other
     /// two axes.
-    package func hasFace(across k: Int, at c: Double, overlapping bounds: (min: SIMD3<Double>, max: SIMD3<Double>))
+    package func hasFace(
+        across k: Int, at c: Double, overlapping bounds: (min: SIMD3<Double>, max: SIMD3<Double>)
+    )
         -> Bool
     {
         let tolerance = 1e-6

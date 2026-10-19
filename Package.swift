@@ -23,7 +23,9 @@ let package = Package(
                 .product(name: "SpectralTransforms", package: "continuumkit"),
                 .product(name: "Numerics", package: "continuumkit"),
             ]),
-        .target(name: "AuditionDSP", dependencies: ["AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit")]),
+        .target(
+            name: "AuditionDSP",
+            dependencies: ["AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit")]),
         .target(
             name: "AcousticCore",
             dependencies: [
@@ -51,7 +53,8 @@ let package = Package(
         .executableTarget(
             name: "RoomCAD",
             dependencies: [
-                "AcousticCore", "AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit"), "RoomDocument",
+                "AcousticCore", "AcousticModel",
+                .product(name: "ImpulseResponseKit", package: "continuumkit"), "RoomDocument",
                 "Audition",
                 .product(name: "DocumentKit", package: "continuumkit"),
                 .product(name: "SceneModel", package: "continuumkit"),
@@ -62,26 +65,37 @@ let package = Package(
         .executableTarget(
             name: "acousticbench",
             dependencies: [
-                "AcousticCore", "AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit"), "Audition",
+                "AcousticCore", "AcousticModel",
+                .product(name: "ImpulseResponseKit", package: "continuumkit"), "Audition",
             ]),
-        .testTarget(name: "AcousticModelTests", dependencies: ["AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit")]),
+        .testTarget(
+            name: "AuditionDSPTests",
+            dependencies: [
+                "AuditionDSP", "AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit"),
+            ]),
+        .testTarget(
+            name: "AcousticModelTests",
+            dependencies: ["AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit")]),
         .testTarget(
             name: "AcousticCoreTests",
             dependencies: [
-                "AcousticCore", "AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit"),
+                "AcousticCore", "AcousticModel",
+                .product(name: "ImpulseResponseKit", package: "continuumkit"),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
                 .product(name: "LinearAcousticsMetal", package: "continuumkit"),
             ]),
         .testTarget(
             name: "RoomDocumentTests",
             dependencies: [
-                "RoomDocument", "AcousticCore", "AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit"),
+                "RoomDocument", "AcousticCore", "AcousticModel",
+                .product(name: "ImpulseResponseKit", package: "continuumkit"),
                 .product(name: "DocumentKit", package: "continuumkit"),
             ]),
         .testTarget(
             name: "AuditionTests",
             dependencies: [
-                "Audition", "AuditionDSP", "AcousticCore", "AcousticModel", .product(name: "ImpulseResponseKit", package: "continuumkit"),
+                "Audition", "AuditionDSP", "AcousticCore", "AcousticModel",
+                .product(name: "ImpulseResponseKit", package: "continuumkit"),
             ]),
         .testTarget(
             name: "RoomCADTests",
@@ -108,7 +122,10 @@ let package = Package(
         }
         if target.name == "AcousticCore" { target.exclude += ["SharedMetalSimulation.swift"] }
         if target.name == "AcousticCoreTests" {
-            target.exclude += ["OriginalMetalWaveSolver.swift", "SharedMetalSimulationTests.swift", "ThinDirectionalProbeTests.swift"]
+            target.exclude += [
+                "OriginalMetalWaveSolver.swift", "SharedMetalSimulationTests.swift",
+                "ThinDirectionalProbeTests.swift",
+            ]
         }
         if target.name == "acousticbench" { target.dependencies.append("AuditionDSP") }
     }

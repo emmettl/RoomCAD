@@ -8,12 +8,13 @@ let package = Package(
     name: "RoomCADWaveMetalProductionBenchmark", platforms: [.macOS(.v15)],
     dependencies: [
         .package(path: application.path),
-        .package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.23"),
+        .package(url: "https://github.com/emmettl/ContinuumKit.git", exact: "0.1.0-alpha.29"),
     ],
     targets: [
         .executableTarget(
             name: "WaveMetalProductionAdapter",
             dependencies: [
+                .product(name: "AcousticModel", package: application.lastPathComponent),
                 .product(name: "AcousticCore", package: application.lastPathComponent),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
                 .product(name: "LinearAcousticsMetal", package: "continuumkit"),
