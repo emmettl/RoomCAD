@@ -36,7 +36,7 @@ for selected in $suites; do
    if test "$representation" = mesh; then directory="$output/shared/$selected/mesh/$backend"; fi
    mkdir -p "$directory"
    python3 "$scratch/ContinuumKit/Scripts/benchmark-metadata.py" --root "$root" --repository https://github.com/emmettl/RoomCAD \
-    --precision Float32 --dependency "continuumkit=$revision" --output "$directory/environment.json" Sources/AcousticCore/*.swift \
+    --precision Float32 --dependency "continuumkit=$revision" --output "$directory/environment.json" Sources/AcousticCore/*.swift Sources/AcousticModel/*.swift Scripts/portable_source.py Scripts/split/*.json \
     Scripts/prepare-shared-wave-reference.py Scripts/check-shared-waves.sh Fixtures/SharedWaveBenchmark/Facades.swift
    arguments=(--backend "$backend" --output "$directory" --metadata "$directory/environment.json")
    if test "$selected" = tilted-pulse; then arguments+=(--representation "$representation"); fi

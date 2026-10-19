@@ -1,0 +1,26 @@
+name: Linux
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  portable:
+    runs-on: ubuntu-24.04
+    container: swift:6.4.1-noble@sha256:19cbe56bdaec1918f7cf5fdeba42b9bd55bdd8a6149c9990d0e0e3a89a127d63
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Install source-verification tools
+        run: apt-get update && apt-get install -y --no-install-recommends python3
+      - name: Trust the checked-out workspace inside the container
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: python3 Scripts/portable_source.py
+      - run: swift build
+      # CPU wave and fallback FFT tests perform millions of updates without Metal.
+      - run: swift test -c release
+      - run: swift run -c release acousticbench --out /tmp/roomcad-reference

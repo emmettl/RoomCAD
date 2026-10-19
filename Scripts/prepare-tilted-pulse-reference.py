@@ -9,7 +9,8 @@ from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
 # These original source-free fixtures pin Core versions before production source/receiver APIs.
 # The optional shared app backend is verified separately; original update/layout source stays verbatim.
-shutil.copytree(a.root/'Sources/AcousticCore',a.output/'Sources/AcousticCore',ignore=shutil.ignore_patterns('SharedWaveSimulation.swift', 'SharedMetalSimulation.swift'))
+from portable_source import copy_monolithic_core
+copy_monolithic_core(a.root,a.output/'Sources/AcousticCore',exclude=('SharedWaveSimulation.swift','SharedMetalSimulation.swift'))
 copy_original_masked_reference(a.root, a.output/'Sources/AcousticCore')
 # These frozen Core pins predate SpectralTransforms. Bind only the protected
 # verification FFT; current application adoption has its separate full-output gate.

@@ -324,15 +324,26 @@ def source_bindings(root,mode,env,source_root):
  for path,digest in env['sourceHashes'].items():need(hashlib.sha256(expected(path)).hexdigest()==digest,'immutable source hash '+path)
  need(hashlib.sha256((r/'compiled-Package.swift').read_bytes()).hexdigest()==binding['manifestSHA256'],'compiled manifest')
  need(binding['traceSHA256']==env['sourceHashes']['Fixtures/AffineAdoptionBenchmark/Trace.swift'] and binding['fixtureMainSHA256']==env['sourceHashes']['Fixtures/AffineAdoptionBenchmark/Sources/AffineAdoptionBenchmark/Main.swift'] and binding['preparerSHA256']==env['sourceHashes']['Scripts/prepare-affine-adoption.py'],'trace/main/preparer source bindings')
+ def compiled_expected(path):
+  if (source_root/'Sources/AcousticModel').exists():
+   from portable_source import source_before_split
+   if path.startswith('Sources/AcousticCore/'):
+    return source_before_split(source_root,path)
+   if path.startswith('Sources/RoomDocument/'):
+    return expected(path).replace(b'import AcousticModel',b'import AcousticCore')
+  return expected(path)
  for path,digest in binding['compiledSourceHashes'].items():
   p=r/'compiled-Sources'/Path(path).relative_to('Sources');need(hashlib.sha256(p.read_bytes()).hexdigest()==digest,'compiled complete source hash '+path)
   if path in ['Sources/AcousticCore/RoomParameters.swift','Sources/AcousticCore/DecayAnalysis.swift']:
    name=Path(path).name;record=binding['sources'][name];data=p.read_text();need(hashlib.sha256(data.encode()).hexdigest()==record['instrumentedSHA256'],'instrumented SHA')
    for patch in reversed(record['patches']):need(data.count(patch['traced'])==1,'unique trace restoration');data=data.replace(patch['traced'],patch['original'])
-   raw=data.encode();want=expected(path) if mode=='shared' else gzip.decompress(expected('Fixtures/OriginalFittingReference/'+name+'.gz'));need(raw==want and hashlib.sha256(raw).hexdigest()==record['originalSHA256'],'verbatim fitting source restoration')
+   raw=data.encode();want=compiled_expected(path) if mode=='shared' else gzip.decompress(expected('Fixtures/OriginalFittingReference/'+name+'.gz'));need(raw==want and hashlib.sha256(raw).hexdigest()==record['originalSHA256'],'verbatim fitting source restoration')
+  elif path=='Sources/AcousticCore/FittingZone.swift':
+   from original_spatial_reference import original_spatial_source
+   need(p.read_bytes()==original_spatial_source(source_root,True),'frozen spatial compile control')
   elif path=='Sources/AcousticCore/AffineTrace.swift':need(p.read_bytes()==expected('Fixtures/AffineAdoptionBenchmark/Trace.swift'),'fixture recorder body')
   elif path.startswith('Sources/AffineAdoptionBenchmark/'):need(p.read_bytes()==expected('Fixtures/AffineAdoptionBenchmark/'+path),'fixture executable body')
-  else:need(p.read_bytes()==expected(path),'unchanged compiled app source '+path)
+  else:need(p.read_bytes()==compiled_expected(path),'unchanged compiled app source '+path)
  need(set(binding['compiledSourceHashes'])=={'Sources/'+str(p.relative_to(r/'compiled-Sources')) for p in (r/'compiled-Sources').rglob('*') if p.is_file()},'complete compiled source tree')
 def dependency(root,mode):
  pin=json.loads((Path(root)/mode/'consumer-Package.resolved').read_text())['pins'];need(len(pin)==1 and pin[0]['identity']=='continuumkit' and pin[0]['state']==PINS[mode],'exact public dependency')

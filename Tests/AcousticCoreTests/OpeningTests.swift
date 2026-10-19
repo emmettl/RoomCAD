@@ -2,6 +2,7 @@ import Foundation
 import Testing
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Openings")
 struct OpeningTests {

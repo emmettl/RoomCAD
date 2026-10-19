@@ -1,3 +1,4 @@
+import AcousticModel
 import Foundation
 
 /// Turns the scattered energy envelope into a dense pattern of reflections.

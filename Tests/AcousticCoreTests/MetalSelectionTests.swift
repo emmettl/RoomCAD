@@ -2,6 +2,7 @@ import Foundation
 import Testing
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Selected Metal availability and fresh CPU fallback")
 struct MetalSelectionTests {

@@ -2,13 +2,14 @@
 """Exact source controls for the separately verified calibration policy and callers."""
 import unittest
 from pathlib import Path
+from portable_source import source_before_split
 from verified_calibration_scope import EXPECTED, verify_verified_calibration_scope
 
 ROOT = Path(__file__).resolve().parents[1]
 
 class ScopeTests(unittest.TestCase):
     def setUp(self):
-        self.files = {p: (ROOT/p).read_bytes() for p in EXPECTED}
+        self.files = {p: source_before_split(ROOT, p) for p in EXPECTED}
 
     def test_reviewed_sources(self):
         verify_verified_calibration_scope(self.files)

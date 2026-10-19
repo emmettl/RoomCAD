@@ -3,6 +3,7 @@ import Testing
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Wave solver")
 struct WaveSolverTests {
@@ -189,7 +190,7 @@ struct WaveSolverTests {
 
     @Test(
         "The GPU solver matches the CPU solver in a box and in a floor plan with an opening",
-        .enabled(if: SharedMetalSimulation.shared != nil))
+        .enabled(if: WaveSolver.metalAvailable))
     func gpuMatchesCPU() throws {
         var box = ShoeboxRoom(size: [3.2, 2.6, 2.4], material: .uniform(0.1, name: "Plaster"))
         box.floor = .uniform(0.4, name: "Carpet")
@@ -243,7 +244,7 @@ struct WaveSolverTests {
 
     @Test(
         "A run on a GPU kept busy by other work is redone on the CPU, with the same result",
-        .enabled(if: SharedMetalSimulation.shared != nil))
+        .enabled(if: WaveSolver.metalAvailable))
     func busyGPU() throws {
         var solver = WaveSolver(
             room: ShoeboxRoom(size: [3.2, 2.6, 2.4], material: .uniform(0.1, name: "Plaster")),
@@ -284,7 +285,7 @@ struct WaveSolverTests {
             receivers: [RoomPoint(name: "R", position: [18, 7, 1.2])],
             duration: 8, lowFrequencyModel: true)
         // A church fits on the GPU, with a crossover lowered to fit the budget.
-        if SharedMetalSimulation.shared != nil {
+        if WaveSolver.metalAvailable {
             let plan = try #require(WavePlan(settings: church, schroeder: 59, fftLength: 1 << 19))
             #expect(plan.crossover < 177)
         }
@@ -459,7 +460,7 @@ struct WaveAccuracyTests {
         "Long runs stay bounded with rigid walls and die away with absorbing ones, on either engine",
         arguments: [false, true])
     func stability(gpu: Bool) throws {
-        if gpu, SharedMetalSimulation.shared == nil { return }
+        if gpu, !WaveSolver.metalAvailable { return }
         for material in [SurfaceMaterial.rigid, .anechoic] {
             var solver = WaveSolver(
                 room: ShoeboxRoom(size: [2.2, 1.7, 1.3], material: material), sampleRate: 48_000,

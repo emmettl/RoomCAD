@@ -27,3 +27,24 @@ The historical signed 0.1.0 release and its original source/manifest remain at
 The standalone repository preserves the filtered historical source tag, with a rewritten
 commit ID recorded in the migration map. No historical binary, checksum or tag in
 BombCAD is replaced, and no new application release is claimed by the repository split.
+
+
+## Homebrew tap
+
+Install with `brew install --cask emmettl/tap/roomcad`. The initial cask in
+`Packaging/Homebrew/Casks/roomcad.rb` points to the original signed/notarized 0.1.0
+archive above; adding the tap does not publish a new application release.
+
+After a future authorized standalone release has been published as `vX.Y.Z` with
+its ZIP, `.zip.sha256` and `.json` manifest, review the proposed cask with:
+
+```sh
+python3 Scripts/update-homebrew-tap.py --version X.Y.Z
+```
+
+Then add `--publish` to commit the verified cask to `emmettl/homebrew-tap`.
+The tool downloads the published archive, checks its digest, manifest and bundle
+metadata, rejects draft/prerelease and downgrade replacements, and updates the
+tap using its current Git blob identity. It never creates an application tag or
+release. `--version 0.1.0 --historical` selects only the original BombCAD release.
+Future standalone releases switch the cask URL and livecheck to RoomCAD.

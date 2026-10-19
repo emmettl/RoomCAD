@@ -1,6 +1,7 @@
 import Foundation
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 /// Optional complete native callback evidence, written only to an explicit CI/study directory.
 enum CalibrationOutcomeWitness {

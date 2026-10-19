@@ -4,6 +4,7 @@ import Metal
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 struct Run: Encodable {
     let steps: Int

@@ -1,0 +1,29 @@
+{
+  "Sources/AcousticCore/Atmosphere.swift": "Sources/AcousticModel/Atmosphere.swift",
+  "Sources/AcousticCore/DecayAnalysis.swift": "Sources/AcousticModel/DecayAnalysis.swift",
+  "Sources/AcousticCore/DiffuseRayTracer.swift": "Sources/AcousticModel/DiffuseRayTracer.swift",
+  "Sources/AcousticCore/FittingZone.swift": "Sources/AcousticModel/FittingZone.swift",
+  "Sources/AcousticCore/FloorPlan.swift": "Sources/AcousticModel/FloorPlan.swift",
+  "Sources/AcousticCore/HallPiece.swift": "Sources/AcousticModel/HallPiece.swift",
+  "Sources/AcousticCore/HallShapes.swift": "Sources/AcousticModel/HallShapes.swift",
+  "Sources/AcousticCore/ImageSourceModel.swift": "Sources/AcousticModel/ImageSourceModel.swift",
+  "Sources/AcousticCore/MaterialPresetData.swift": "Sources/AcousticModel/MaterialPresetData.swift",
+  "Sources/AcousticCore/MaterialPresets.swift": "Sources/AcousticModel/MaterialPresets.swift",
+  "Sources/AcousticCore/MeshImageSources.swift": "Sources/AcousticModel/MeshImageSources.swift",
+  "Sources/AcousticCore/Microphone.swift": "Sources/AcousticModel/Microphone.swift",
+  "Sources/AcousticCore/OctaveBands.swift": "Sources/AcousticModel/OctaveBands.swift",
+  "Sources/AcousticCore/Opening.swift": "Sources/AcousticModel/Opening.swift",
+  "Sources/AcousticCore/PlanImageSources.swift": "Sources/AcousticModel/PlanImageSources.swift",
+  "Sources/AcousticCore/RealFFT.swift": "Sources/AcousticModel/RealFFT.swift",
+  "Sources/AcousticCore/ResponseComparison.swift": "Sources/AcousticModel/ResponseComparison.swift",
+  "Sources/AcousticCore/RoomImport.swift": "Sources/AcousticModel/RoomImport.swift",
+  "Sources/AcousticCore/RoomMesh.swift": "Sources/AcousticModel/RoomMesh.swift",
+  "Sources/AcousticCore/RoomParameters.swift": "Sources/AcousticModel/RoomParameters.swift",
+  "Sources/AcousticCore/RoomPresets.swift": "Sources/AcousticModel/RoomPresets.swift",
+  "Sources/AcousticCore/ShoeboxRoom.swift": "Sources/AcousticModel/ShoeboxRoom.swift",
+  "Sources/AcousticCore/Solid.swift": "Sources/AcousticModel/Solid.swift",
+  "Sources/AcousticCore/RoomResponse.swift": [
+    "Sources/AcousticModel/RoomResponseTypes.swift",
+    "Sources/AcousticCore/RoomResponse.swift"
+  ]
+}

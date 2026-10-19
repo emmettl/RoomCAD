@@ -3,6 +3,7 @@ import Testing
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Directed mesh wall assignment")
 struct CrossedWallTests {

@@ -6,6 +6,7 @@ import Testing
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Shared production Metal comparison binding")
 struct SharedMetalSimulationTests {
@@ -123,7 +124,10 @@ struct SharedMetalSimulationTests {
         let original = solver().usingOriginalMetal()
         #expect(original.metalBackend is MetalWaveSolver)
         var s = original.usingSharedMetal(context: c)
-        s.gpuDelay = 0.3
+        // Calibrate the artificial slowdown to this host's CPU pace. Under parallel load a
+        // fixed 0.3-second delay can legitimately remain faster than the measured CPU estimate.
+        s.gpuDelay = max(
+            0.3, 2 * s.cpuSecondsEstimate(source: [0.7, 0.5, 0.8], receivers: receivers, steps: 1024))
         let resultValue =
             s.run(source: [0.7, 0.5, 0.8], receivers: receivers, steps: 1024, stop: { false })
         let result = try #require(resultValue)

@@ -2,6 +2,7 @@
 """Protect the actual historical comparison and reject plausible policy corruptions."""
 import subprocess, unittest, tempfile, shutil, json
 from pathlib import Path
+from portable_source import source_before_split
 from original_spatial_reference import original_spatial_source, copy_original_spatial_reference
 from spatial_query_scope import ZONE, EXPECTED, verify_spatial_query_scope, verify_spatial_query_files
 ROOT = Path(__file__).resolve().parents[1]
@@ -9,12 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 class SpatialScopeTests(unittest.TestCase):
     def setUp(self):
         self.original = subprocess.check_output(['git', 'show', '7d73614:'+ZONE], cwd=ROOT)
-        self.current = (ROOT/ZONE).read_bytes()
+        self.current = source_before_split(ROOT, ZONE)
     def test_reviewed_scope_and_frozen_original_body(self):
         verify_spatial_query_scope(self.original, self.current)
-        verify_spatial_query_files({p:(ROOT/p).read_bytes() for p in EXPECTED})
+        verify_spatial_query_files({p:source_before_split(ROOT, p) for p in EXPECTED})
         source = self.original.decode()
-        comparison = (ROOT/'Tests/AcousticCoreTests/SharedBoxQueryTests.swift').read_text()
+        comparison = source_before_split(ROOT, 'Tests/AcousticCoreTests/SharedBoxQueryTests.swift').decode()
         def body(text):
             start = text.index('        var enter = 0.0')
             end = text.index('        return enter...leave', start) + len('        return enter...leave')
@@ -45,7 +46,7 @@ class SpatialScopeTests(unittest.TestCase):
     def test_original_and_comparison_corruptions_reject(self):
         with self.assertRaises(AssertionError):
             verify_spatial_query_scope(self.original+b'\n', self.current)
-        files={p:(ROOT/p).read_bytes() for p in EXPECTED}
+        files={p:source_before_split(ROOT, p) for p in EXPECTED}
         for path in EXPECTED:
             with self.subTest(path=path), self.assertRaises(AssertionError):
                 verify_spatial_query_files(dict(files, **{path:files[path]+b'\n'}))

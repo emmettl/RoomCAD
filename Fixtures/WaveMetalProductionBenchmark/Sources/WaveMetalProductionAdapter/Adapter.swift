@@ -5,6 +5,7 @@ import Metal
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 enum AuditError: Error { case failed(String) }
 struct Run: Encodable {
