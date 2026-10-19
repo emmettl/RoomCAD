@@ -1,5 +1,9 @@
 import AcousticCore
+#if canImport(Audition)
 import Audition
+#else
+import AuditionDSP
+#endif
 import Foundation
 
 /// Times every room preset as the app generates it, with the wave solver, and the convolution that
@@ -17,9 +21,13 @@ enum PresetTiming {
                 RoomPoint(name: "Left", position: [2, 2, 1]), RoomPoint(name: "Right", position: [2, 3, 1]),
             ],
             lowFrequencyModel: true)
+        #if canImport(Audition)
         let clip =
             DryClip.bundled(sampleRate: base.sampleRate).max { $0.samples.count < $1.samples.count }
             ?? DryClip.noiseBurst(sampleRate: base.sampleRate)
+        #else
+        let clip = DryClip.noiseBurst(sampleRate: base.sampleRate)
+        #endif
         print(
             "Auditioning \(clip.name), \(format(Double(clip.samples.count) / Double(base.sampleRate), 1)) s long"
         )

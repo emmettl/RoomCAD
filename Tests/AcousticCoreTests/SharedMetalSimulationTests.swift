@@ -6,6 +6,7 @@ import Testing
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Shared production Metal comparison binding")
 struct SharedMetalSimulationTests {

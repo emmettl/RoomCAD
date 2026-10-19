@@ -1,3 +1,4 @@
+import AcousticModel
 import Foundation
 
 /// Turns arrivals with per-band gains into one sampled channel.

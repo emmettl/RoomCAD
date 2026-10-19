@@ -1,4 +1,4 @@
-import AcousticCore
+import AcousticModel
 import Foundation
 
 /// What the editor shows about a generated response; computed off the main thread.

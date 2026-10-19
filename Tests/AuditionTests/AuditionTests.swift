@@ -4,6 +4,7 @@ import ImpulseResponseKit
 import Testing
 
 @testable import Audition
+@testable import AuditionDSP
 
 @Suite("Auditioning")
 struct AuditionTests {

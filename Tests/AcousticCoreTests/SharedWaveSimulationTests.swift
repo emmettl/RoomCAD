@@ -4,6 +4,7 @@ import Testing
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Shared production masked CPU binding")
 struct SharedWaveSimulationTests {

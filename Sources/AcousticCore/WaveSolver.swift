@@ -1,3 +1,4 @@
+import AcousticModel
 import Foundation
 import simd
 
@@ -55,6 +56,14 @@ struct WaveSolver {
         var maskedCPUBackend: (any MaskedCPUSimulation)?
     #endif
 
+    static var metalAvailable: Bool {
+        #if canImport(Metal)
+            SharedMetalSimulation.shared != nil
+        #else
+            false
+        #endif
+    }
+
     private var selectedMetalBackend: (any MetalSimulation)?
     #if ROOMCAD_SHARED_WAVE_DEFAULT
         private var usesSharedMetalDefault = true
@@ -66,7 +75,9 @@ struct WaveSolver {
     var metalBackend: (any MetalSimulation)? {
         get {
             #if ROOMCAD_SHARED_WAVE_DEFAULT
-                if usesSharedMetalDefault { return SharedMetalSimulation.shared }
+                #if canImport(Metal)
+                    if usesSharedMetalDefault { return SharedMetalSimulation.shared }
+                #endif
             #endif
             #if ROOMCAD_SHARED_WAVE_DEFAULT
                 return selectedMetalBackend
