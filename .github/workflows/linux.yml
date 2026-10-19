@@ -21,5 +21,6 @@ jobs:
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: python3 Scripts/portable_source.py
       - run: swift build
-      - run: swift test
-      - run: swift run acousticbench --out /tmp/roomcad-reference
+      # CPU wave and fallback FFT tests perform millions of updates without Metal.
+      - run: swift test -c release
+      - run: swift run -c release acousticbench --out /tmp/roomcad-reference

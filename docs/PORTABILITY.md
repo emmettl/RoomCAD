@@ -21,8 +21,9 @@ existing model implementation only to other targets in this package. These
 application layers remain owned by RoomCAD; shared CAD and interchange code stays
 in ContinuumKit. Document type, producer and generator identifiers are unchanged.
 
-On Linux, run `swift build`, `swift test` and
-`swift run acousticbench --out /tmp/roomcad-reference`. The pinned Ubuntu Swift
+On Linux, run `swift build`, `swift test -c release` and
+`swift run -c release acousticbench --out /tmp/roomcad-reference`. Release
+optimization is useful for the CPU wave and fallback FFT workloads. The pinned Ubuntu Swift
 container in `.github/workflows/linux.yml` runs these checks. Document round trips
 use real package directories and the URL reader there; macOS still exercises
 FileWrapper. Linux preset timing uses generated noise because AVFoundation and

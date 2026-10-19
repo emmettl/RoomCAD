@@ -47,6 +47,6 @@ both the selected runner and actual Metal verification output.
 
 The hosted `Linux` workflow runs on pull requests and main pushes in an exact
 Swift 6.4.1 Ubuntu container. It verifies the source split, builds all portable
-targets, runs CPU/model/document/DSP tests and executes the analytical CLI with
+targets in debug, runs CPU/model/document/DSP tests in release, and executes the analytical CLI with
 WAV export. Apple-only editor, recording-decoder and Metal tests remain on macOS.
 See [portable modules](PORTABILITY.md) for the module boundary and source guards.
