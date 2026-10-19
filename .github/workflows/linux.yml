@@ -17,6 +17,8 @@ jobs:
           fetch-depth: 0
       - name: Install source-verification tools
         run: apt-get update && apt-get install -y --no-install-recommends python3
+      - name: Trust the checked-out workspace inside the container
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: python3 Scripts/portable_source.py
       - run: swift build
       - run: swift test
