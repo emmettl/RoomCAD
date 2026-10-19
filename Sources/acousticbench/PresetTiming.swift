@@ -61,11 +61,17 @@ enum PresetTiming {
                     + "\(format(previewSeconds, 1)) s\(previewWave) | \(format(audition, 2)) s |")
         }
         var usage = rusage()
-        getrusage(RUSAGE_SELF, &usage)
-        // ru_maxrss is in bytes on macOS.
+        #if os(Linux)
+            getrusage(RUSAGE_SELF.rawValue, &usage)
+            // Linux reports KiB; macOS reports bytes.
+            let peakMB = Double(usage.ru_maxrss) / 1024
+        #else
+            getrusage(RUSAGE_SELF, &usage)
+            let peakMB = Double(usage.ru_maxrss) / 1_048_576
+        #endif
         print(
             "\nSlowest generation \(format(slowest, 1)) s, audition preparation \(format(slowestAudition, 2)) s; "
-                + "peak memory \(format(Double(usage.ru_maxrss) / 1_048_576, 0)) MB "
+                + "peak memory \(format(peakMB, 0)) MB "
                 + "on \(ProcessInfo.processInfo.processorCount) cores")
     }
 }
