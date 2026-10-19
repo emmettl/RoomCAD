@@ -47,7 +47,7 @@ class HomebrewTests(unittest.TestCase):
         digest = '400aeb6f47a6ad1dabaecb4694f64ee4c4d33625611ea785edd766129e4be543'
         initial=M['render_cask']('0.1.0',digest,True)
         root=Path(__file__).resolve().parents[1]
-        self.assertEqual(initial,(root/'Packaging/Homebrew/roomcad.rb').read_text())
+        self.assertEqual(initial,(root/'Packaging/Homebrew/Casks/roomcad.rb').read_text())
         self.assertIn('bombcad/releases/download/roomcad-v#{version}', initial)
         self.assertNotIn('strategy :github_latest', initial)
         future=M['render_cask']('0.1.1',digest)

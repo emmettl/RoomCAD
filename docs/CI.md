@@ -41,3 +41,12 @@ Do not log registration tokens or copy another runner's credentials. A replaceme
 runner must use the official macOS ARM64 archive, verify the published digest and
 register with a fresh repository-scoped temporary token. Dispatch Check and inspect
 both the selected runner and actual Metal verification output.
+
+
+## Linux
+
+The hosted `Linux` workflow runs on pull requests and main pushes in an exact
+Swift 6.4.1 Ubuntu container. It verifies the source split, builds all portable
+targets, runs CPU/model/document/DSP tests and executes the analytical CLI with
+WAV export. Apple-only editor, recording-decoder and Metal tests remain on macOS.
+See [portable modules](PORTABILITY.md) for the module boundary and source guards.
