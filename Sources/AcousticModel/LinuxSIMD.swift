@@ -302,5 +302,14 @@
 
     }
 
+    extension simd_quatd {
+        public var conjugate: simd_quatd { simd_quatd(vector: vector * SIMD4(-1, -1, -1, 1)) }
+
+        /// The conjugate times 1 / |q|² (BombCAD's reviewed inverse).
+        public var inverse: simd_quatd {
+            simd_quatd(vector: conjugate.vector * (1 / simd_length_squared(vector)))
+        }
+    }
+
     public func all<Storage>(_ mask: SIMDMask<Storage>) -> Bool { mask == SIMDMask(repeating: true) }
 #endif

@@ -18,5 +18,8 @@ let package = Package(
                 .product(name: "AcousticCore", package: application.lastPathComponent),
                 .product(name: "LinearAcoustics", package: "continuumkit"),
                 .product(name: "LinearAcousticsMetal", package: "continuumkit"),
-            ])
+            ],
+            // This verification-only executable uses the app's package-scoped model implementation.
+            // Keep the immutable original numerical source files byte-identical.
+            swiftSettings: [.unsafeFlags(["-package-name", "roomcad"])])
     ], swiftLanguageModes: [.v6])

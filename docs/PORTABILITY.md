@@ -32,7 +32,7 @@ that require actual Metal, while CPU generation and backend-failure tests run.
 Linux floating-point results need not be bit-identical to Apple: libm and FFT
 implementations can round differently. The existing numerical tolerances are
 retained. `AcousticModel/LinuxSIMD.swift` adapts only the vector arithmetic and
-double matrix multiplication needed from BombCAD's MIT-licensed implementation at
+double matrix multiplication and quaternion inverse needed from BombCAD's MIT-licensed implementation at
 `a1a16aafd01f893ac9f9f7d059e0890ec526961e`, preserving its operation order and
 fused cross products. The lexical split reader comes from the same revision's
 `Scripts/split/swift_source.py`. Apple's native SIMD, Accelerate and Metal remain
