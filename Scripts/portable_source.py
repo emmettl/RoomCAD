@@ -6,7 +6,7 @@ allowing only the recorded imports, package access and assignment-only construct
 No numerical token, string (including identifiers), or control flow is exempted.
 """
 from pathlib import Path
-import json, subprocess, sys
+import hashlib, json, subprocess, sys
 sys.path.insert(0, str(Path(__file__).parent/'split'))
 from swift_source import parse, tokenize
 BASE = '9d532557afd7e2853044957c28c2cb6a30d27ec0'
@@ -116,6 +116,27 @@ def verify(root=ROOT):
     for name in ['RoomProject.swift','ResponseSummary.swift']:
         old=git_source(root,'Sources/RoomDocument/'+name).decode().replace('import AcousticCore','import AcousticModel')
         assert tokens(old)==tokens((root/'Sources/RoomDocument'/name).read_text()),'document schema changed: '+name
+    # Retain the old gate's whole-production-tree constraint as well as moved bodies.
+    all_paths=subprocess.check_output(['git','ls-tree','-r','--name-only',BASE,'Sources'],cwd=root,text=True).splitlines()
+    audition_moves={
+        'Sources/Audition/AuditionPreview.swift':['Sources/AuditionDSP/AuditionPreview.swift'],
+        'Sources/Audition/WaveformOverview.swift':['Sources/AuditionDSP/WaveformOverview.swift'],
+        'Sources/Audition/DryClip.swift':['Sources/Audition/DryClip.swift','Sources/AuditionDSP/DryClip.swift'],
+    }
+    expected_tree=set()
+    reviewed={'Sources/RoomDocument/RoomProject.swift','Sources/RoomDocument/ResponseSummary.swift','Sources/acousticbench/PresetTiming.swift'}
+    for path in all_paths:
+        destinations=MOVES.get(path,audition_moves.get(path,path))
+        expected_tree.update(destinations if isinstance(destinations,list) else [destinations])
+        if path not in paths and path not in audition_moves and path not in reviewed:
+            assert (root/path).read_bytes()==git_source(root,path),'unchanged production source/resource changed: '+path
+    expected_tree.update(['Sources/AcousticModel/LinuxSIMD.swift','Sources/AcousticCore/Exports.swift','Sources/Audition/Exports.swift'])
+    assert {str(p.relative_to(root)) for p in (root/'Sources').rglob('*') if p.is_file()}==expected_tree,'production source tree changed outside split'
+    # Exact reviewed CLI platform branches: generated Linux clip, Glibc resource constant,
+    # and KiB conversion; the Mac clip selection and byte conversion remain the same.
+    cli='\0'.join(tokens((root/'Sources/acousticbench/PresetTiming.swift').read_text())).encode()
+    assert hashlib.sha256(cli).hexdigest()=='42a844bb2126cb8712c8571f52ec798c635481fa269d50fb236b42c80b99ec46','CLI changed outside reviewed platform adapter'
+    assert (root/'LICENSE').read_bytes()==git_source(root,'LICENSE'),'original MIT attribution changed'
     return paths
 
 if __name__=='__main__':
