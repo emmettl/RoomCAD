@@ -100,7 +100,7 @@ let package = Package(
         .testTarget(
             name: "RoomCADTests",
             dependencies: [
-                "RoomCAD", "RoomDocument", "AcousticCore",
+                "RoomCAD", "RoomDocument", "AcousticCore", "AcousticModel",
                 .product(name: "SceneRender", package: "continuumkit"),
                 .product(name: "SceneView", package: "continuumkit"),
             ]),

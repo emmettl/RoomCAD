@@ -2,7 +2,7 @@
 
 RoomCAD pins ContinuumKit **0.1.0-alpha.29** exactly. Its Linux SIMD, Accelerate
 and archive foundations make the application-owned CPU layers buildable without
-Apple frameworks. This tag also contains SceneView's viewport Tab-focus fix;
+Apple frameworks. This tag also contains SceneRender's viewport Tab-focus fix;
 clicking the viewport can still make it first responder.
 
 | Target | macOS | Linux | Responsibility |
