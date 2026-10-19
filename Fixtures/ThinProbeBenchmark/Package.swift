@@ -20,5 +20,6 @@ let package = Package(
             ],
             // This verification-only executable uses the app's package-scoped model implementation.
             // Keep the immutable original numerical source files byte-identical.
+            packageAccess: false,
             swiftSettings: [.unsafeFlags(["-package-name", "roomcad"])])
     ], swiftLanguageModes: [.v6])
