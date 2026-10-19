@@ -116,8 +116,8 @@ let package = Package(
     package.products.removeAll { appleTargets.contains($0.name) }
     for target in package.targets {
         target.dependencies.removeAll {
-            if case .product(let name, _, _, _) = $0 { return name == "LinearAcousticsMetal" }
-            if case .byName(let name, _) = $0 { return name == "Audition" }
+            if case .productItem(let name, _, _, _) = $0 { return name == "LinearAcousticsMetal" }
+            if case .byNameItem(let name, _) = $0 { return name == "Audition" }
             return false
         }
         if target.name == "AcousticCore" { target.exclude += ["SharedMetalSimulation.swift"] }
