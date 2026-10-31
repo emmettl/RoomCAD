@@ -48,6 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify current CPU and Metal wave updates against shared cases
         run: bash Scripts/check-acoustics.sh "${{ runner.temp }}/acoustic-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -71,6 +72,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify current CPU and Metal wave updates against shared cases
         run: bash Scripts/check-boundaries.sh "${{ runner.temp }}/boundary-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -94,6 +96,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify full 3D CPU and Metal fields
         run: bash Scripts/check-rigid-3d.sh "${{ runner.temp }}/rigid-3d-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -117,6 +120,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify damped oblique CPU and Metal fields
         run: bash Scripts/check-oblique.sh "${{ runner.temp }}/oblique-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -140,6 +144,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify masked-domain CPU and Metal fields
         run: bash Scripts/check-masked.sh "${{ runner.temp }}/masked-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -163,6 +168,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify cylinder-domain CPU and Metal fields
         run: bash Scripts/check-cylinder.sh "${{ runner.temp }}/cylinder-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -186,6 +192,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Audit actual wall admittance and isolated CPU Metal flow
         run: bash Scripts/check-admittance.sh "${{ runner.temp }}/admittance-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -209,6 +216,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify coupled absorbing-cylinder CPU and Metal fields and wall work
         run: bash Scripts/check-absorbing-cylinder.sh "${{ runner.temp }}/absorbing-cylinder-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -232,6 +240,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Verify actual plan and thin-mesh pulse fields, echo and work
         run: bash Scripts/check-tilted-pulse.sh "${{ runner.temp }}/tilted-pulse-${{ github.run_id }}-${{ github.run_attempt }}"
@@ -258,6 +267,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - name: Audit actual equivalent plan and extrusion geometry layouts
         run: bash Scripts/check-extruded-layout.sh "${{ runner.temp }}/extruded-layout-${{ github.run_id }}-${{ github.run_attempt }}"

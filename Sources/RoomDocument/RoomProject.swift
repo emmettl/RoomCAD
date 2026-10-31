@@ -1,4 +1,4 @@
-import AcousticCore
+import AcousticModel
 import DocumentKit
 import Foundation
 import ImpulseResponseKit

@@ -71,3 +71,11 @@ the Creative Commons Attribution-ShareAlike 4.0 International licence
 (https://creativecommons.org/licenses/by-sa/4.0/), like the database; the `README.md` in each folder
 says what was derived and how. The app does not bundle them.
 
+
+## BombCAD split and Linux compatibility utilities
+
+`Scripts/split/swift_source.py` and the adapted vector compatibility functions in
+`Sources/AcousticModel/LinuxSIMD.swift` come from the MIT-licensed BombCAD source,
+revision `a1a16aafd01f893ac9f9f7d059e0890ec526961e`. The original MIT attribution
+and permission notice are retained in this repository's `LICENSE`. See
+`docs/PORTABILITY.md` for the adaptation's scope and numerical limitations.

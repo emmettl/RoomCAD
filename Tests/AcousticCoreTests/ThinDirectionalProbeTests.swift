@@ -6,6 +6,7 @@ import Testing
 import simd
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Directional probes on minimal wave dimensions")
 struct ThinDirectionalProbeTests {

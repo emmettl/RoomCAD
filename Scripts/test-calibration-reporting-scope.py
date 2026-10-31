@@ -2,6 +2,7 @@
 """Reject unrelated model/orchestration changes even when coverage text is plausible."""
 import subprocess,unittest
 from pathlib import Path
+from portable_source import source_before_split
 from calibration_reporting_scope import OLD,NEW,verify_reporting_scope
 from verified_calibration_scope import NEW_SOURCE,EXPECTED,verify_verified_calibration_scope
 ROOT=Path(__file__).resolve().parents[1]
@@ -13,7 +14,7 @@ class ScopeTests(unittest.TestCase):
         verify_reporting_scope(self.original,self.original)
         verify_reporting_scope(self.original,self.updated)
         if (ROOT/NEW_SOURCE).exists():
-            verify_verified_calibration_scope({p:(ROOT/p).read_bytes() for p in EXPECTED})
+            verify_verified_calibration_scope({p:source_before_split(ROOT,p) for p in EXPECTED})
         else:self.assertEqual((ROOT/'Sources/RoomCAD/CalibrationSection.swift').read_bytes(),self.updated)
     def test_unrelated_calibration_or_simulation_changes_reject(self):
         for before,after in [('to: target)','to: target.map { $0.map { $0 * 2 } })'),('quality: .preview','quality: .full'),('reports.count += 1','reports.count += 2')]:

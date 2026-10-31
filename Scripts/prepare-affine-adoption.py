@@ -8,12 +8,17 @@ root=a.root.resolve();out=a.output.resolve();fixture=root/'Fixtures/AffineAdopti
 if out.is_relative_to(root/'Sources'):raise ValueError('Fixture trace must never be written into production')
 sys.path.insert(0,str(root/'Scripts'));from original_fitting_reference import original_fitting_sources
 originals=original_fitting_sources(root,True)
-shutil.copytree(root/'Sources/AcousticCore',out/'Sources/AcousticCore')
+from portable_source import copy_monolithic_core,source_before_split
+copy_monolithic_core(root,out/'Sources/AcousticCore')
+from original_spatial_reference import copy_original_spatial_reference
+copy_original_spatial_reference(root,out/'Sources/AcousticCore')
 shutil.copytree(root/'Sources/RoomDocument',out/'Sources/RoomDocument')
+for path in (out/'Sources/RoomDocument').glob('*.swift'):
+ path.write_text(path.read_text().replace('import AcousticModel','import AcousticCore'))
 shutil.copytree(fixture/'Sources/AffineAdoptionBenchmark',out/'Sources/AffineAdoptionBenchmark')
 shared=a.mode=='shared';source={}
 for name in ['RoomParameters.swift','DecayAnalysis.swift']:
- raw=(root/'Sources/AcousticCore'/name).read_bytes() if shared else originals[name]
+ raw=source_before_split(root,'Sources/AcousticCore/'+name) if shared else originals[name]
  text=raw.decode();patches=[]
  def patch(old,new,label):
   global text

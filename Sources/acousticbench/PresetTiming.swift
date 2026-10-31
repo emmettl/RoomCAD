@@ -1,6 +1,11 @@
 import AcousticCore
-import Audition
 import Foundation
+
+#if canImport(Audition)
+    import Audition
+#else
+    import AuditionDSP
+#endif
 
 /// Times every room preset as the app generates it, with the wave solver, and the convolution that
 /// prepares the longest bundled clip for auditioning through it, and reports the process's peak memory:
@@ -17,9 +22,13 @@ enum PresetTiming {
                 RoomPoint(name: "Left", position: [2, 2, 1]), RoomPoint(name: "Right", position: [2, 3, 1]),
             ],
             lowFrequencyModel: true)
-        let clip =
-            DryClip.bundled(sampleRate: base.sampleRate).max { $0.samples.count < $1.samples.count }
-            ?? DryClip.noiseBurst(sampleRate: base.sampleRate)
+        #if canImport(Audition)
+            let clip =
+                DryClip.bundled(sampleRate: base.sampleRate).max { $0.samples.count < $1.samples.count }
+                ?? DryClip.noiseBurst(sampleRate: base.sampleRate)
+        #else
+            let clip = DryClip.noiseBurst(sampleRate: base.sampleRate)
+        #endif
         print(
             "Auditioning \(clip.name), \(format(Double(clip.samples.count) / Double(base.sampleRate), 1)) s long"
         )
@@ -52,11 +61,17 @@ enum PresetTiming {
                     + "\(format(previewSeconds, 1)) s\(previewWave) | \(format(audition, 2)) s |")
         }
         var usage = rusage()
-        getrusage(RUSAGE_SELF, &usage)
-        // ru_maxrss is in bytes on macOS.
+        #if os(Linux)
+            getrusage(RUSAGE_SELF.rawValue, &usage)
+            // Linux reports KiB; macOS reports bytes.
+            let peakMB = Double(usage.ru_maxrss) / 1024
+        #else
+            getrusage(RUSAGE_SELF, &usage)
+            let peakMB = Double(usage.ru_maxrss) / 1_048_576
+        #endif
         print(
             "\nSlowest generation \(format(slowest, 1)) s, audition preparation \(format(slowestAudition, 2)) s; "
-                + "peak memory \(format(Double(usage.ru_maxrss) / 1_048_576, 0)) MB "
+                + "peak memory \(format(peakMB, 0)) MB "
                 + "on \(ProcessInfo.processInfo.processorCount) cores")
     }
 }

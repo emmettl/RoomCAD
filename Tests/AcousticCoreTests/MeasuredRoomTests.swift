@@ -2,6 +2,7 @@ import Foundation
 import Testing
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 /// RoomCAD against the measured seminar room CR2 of the BRAS database, in the parts that are quick to
 /// simulate; `acousticbench --bras-cr2` makes the full comparison, decay and the wave solver included.

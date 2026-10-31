@@ -2,6 +2,7 @@ import Foundation
 import Testing
 
 @testable import AcousticCore
+@testable import AcousticModel
 
 @Suite("Verified calibration outcomes")
 struct ValidatedAbsorptionCalibrationTests {

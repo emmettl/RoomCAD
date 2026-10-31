@@ -1,3 +1,4 @@
+import AcousticModel
 import Foundation
 import ImpulseResponseKit
 
