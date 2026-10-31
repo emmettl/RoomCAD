@@ -121,8 +121,11 @@ bounding box. Walls may not cross, and the source and receivers must be inside t
   about each wall's normal, and scatter in a Lambert distribution around it.
 - **Wave solver.** Cells whose centres lie inside the plan are simulated. Each face between a
   simulated cell and one that is not is a wall with the nearest wall's impedance, or air in an
-  opening: a staircase approximation of walls not aligned with the grid. The masked grid costs about
-  twice as much per cell, so plans get half the work budget.
+  opening: a staircase approximation of walls not aligned with the grid. A staircase has more face
+  area than the wall it follows, |n_x| + |n_y| + |n_z| times as much for a wall of unit normal n, so
+  each face's absorption is divided by that sum, and the staircase absorbs as much as the wall (see
+  [Curved admittance](benchmarks/CURVED_ADMITTANCE.md)). The masked grid costs about twice as much
+  per cell, so plans get half the work budget.
 - **Openings.** Openings can be in a numbered wall, located by distance along it and height, as well
   as in the floor or ceiling.
 
@@ -163,7 +166,8 @@ the ray queries. Each part of the model uses the mesh as follows:
 - **Wave solver.** A cell is simulated if its centre is inside the mesh, found by counting the
   mesh's crossings along the cell's vertical column. Each face between a simulated cell and one that
   is not takes the impedance of the nearest mesh face, or of air if that face is open. As with floor
-  plans, walls not aligned with the grid become staircases.
+  plans, walls not aligned with the grid become staircases, their absorption weighted by the nearest
+  face's tilt.
 - **Inside and clearance.** A point is inside if a ray from it crosses the mesh an odd number of
   times. The source and receivers must be inside.
 
@@ -786,8 +790,8 @@ furnished room, decays between the Eyring and Sabine estimates. About 75% of its
   A floor plan's or mesh's image sources reach only modest orders, with rays carrying the rest.
 - **Meshes in the app.** A mesh comes from a preset, a measured scene or an imported model. The app
   edits its materials and pushes and pulls its planes. A hall built from pieces also adds, edits and
-  removes boxes, but extrusions and intersections are added only in code. Openings in a mesh are
-  open faces, not rectangles.
+  removes boxes and extrusions, numerically: there is no drawing tool for an outline. Openings in a
+  mesh are open faces, not rectangles.
 - **Scattering.** Published scattering values exist only for a few surfaces (seven presets, one of
   which nine audience absorption presets take by category). Others are inputs, and the starter room's are illustrative. With little scattering, decay is too long and flutter between parallel surfaces is
   exaggerated (above).

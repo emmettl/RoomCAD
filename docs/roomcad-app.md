@@ -149,13 +149,16 @@ script before an archive is written.
   - for a hall built from pieces, **Pieces of air** lists them in order, each joined to the air,
     cut out of it or intersected with it:
     - opening a piece outlines it in magenta in the 3D view, and edits its name and, after the first,
-      whether it is joined or cut;
+      whether it is joined, cut or intersected;
     - a box also edits its corners and the material of each of its six faces, from the hall's
       surfaces;
-    - an extrusion changes shape only by pushing the hall's surfaces in the 3D view;
+    - an extrusion also edits the axis it runs along, its two ends, each point of its outline, and the
+      material of each side and end. **Add Point** splits its last side in two, and **Remove Last
+      Point** keeps at least three;
     - **Join a Box** adds an alcove reaching 3 m past the far end in x, and **Cut a Box** a 0.8 m
-      square pillar from floor to ceiling in the middle; both take the material that covers most of
-      the hall, and are placed by setting their corners;
+      square pillar from floor to ceiling in the middle. **Cut a Rake** cuts a section across the
+      whole width, so the floor rises from 30% of the length to 15% of the height at the far end, like
+      raked seating. Each takes the material that covers most of the hall, and is placed by editing it;
     - every piece after the first can be removed.
 
     Each change rebuilds the hall and moves everything with it so it starts at the origin; the source
@@ -213,7 +216,9 @@ script before an archive is written.
       octave, with the wave solver's crossover marked.
     - **Early arrivals:** the energy above 500 Hz in 0.25 ms bins, from emission to 80 ms after the
       first direct sound, in dB, so the direct sound and early reflections show one by one.
-  - It shows octave-band Sabine and Eyring estimates beside each channel's measured T30.
+  - It shows octave-band Sabine and Eyring estimates beside each channel's T30, measured in octaves
+    closed at 63 Hz and 8 kHz like the others, as acousticbench measures (see
+    [RoomCAD against measured rooms](roomcad-validation.md)).
   - It shows arrival counts and generation time. It also shows the wave solver's crossover, grid and
     its approximate memory, time and runs, with how many ran on the GPU and how many on the CPU. It also gives its phase-velocity
     error at the crossover, and the decay each of its bands had before it was matched to Eyring's
@@ -485,6 +490,7 @@ offscreen.
   unverified by ear and by eye.
 - 81 of the 90 absorption presets have no published scattering, so most room presets' scattering
   is illustrative.
-- A room of any shape comes from a preset, a model file, or boxes joined to and cut out of a hall's
-  pieces; extrusions and intersections cannot be added in the app.
+- A room of any shape comes from a preset, a model file, or a hall's pieces edited in the inspector;
+  there is no drawing tool for a new outline, so an extrusion starts as a rake and is edited point by
+  point.
 - Generation uses several cores per document, and documents generating at once share them.

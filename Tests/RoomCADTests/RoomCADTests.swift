@@ -676,8 +676,21 @@ func editPieces() throws {
     let stageOnly = try #require(hall.removingPiece(pieces[1].id))
     #expect(stageOnly.room.volume < hall.room.volume)
     try stageOnly.validate()
+    // A rake cut under the far end: the floor slopes up from 30% of the length. Between the floor and
+    // the slope, over the hall's width, it takes out about 432 m³.
+    let raked = try #require(hall.addingRake())
+    #expect(raked.room.pieces?.last?.name == "Rake 1")
+    #expect(abs(hall.room.volume - raked.room.volume - 432) < 432 * 0.03)
+    try raked.validate()
+    // Intersected with a box over the hall alone, the stage house goes.
+    var hallOnly = pillar
+    hallOnly.operation = .intersect
+    hallOnly.shape = .box(low: [8, -1, -1], high: hall.room.size + 1, materials: materials)
+    let intersected = try #require(cut.replacingPiece(hallOnly))
+    #expect(intersected.room.size.x < hall.room.size.x - 7)
     // A room without pieces has none to add.
     #expect(RoomProject.starter.addingPiece(.cut) == nil)
+    #expect(RoomProject.starter.addingRake() == nil)
 }
 
 @MainActor

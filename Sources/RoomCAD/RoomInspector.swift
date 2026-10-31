@@ -114,8 +114,9 @@ struct ZoneEditor: View {
     }
 }
 
-/// Edits a piece of air: its name, how it combines with the pieces before it, and a box's corners and
-/// face materials. An extrusion's shape changes only by pushing the room's surfaces in the 3D view.
+/// Edits a piece of air: its name, how it combines with the pieces before it, and its shape: a box's
+/// corners and face materials, or an extrusion's axis, ends, outline and the materials of its sides
+/// and ends.
 struct PieceEditor: View {
     @Binding var piece: HallPiece
     /// Whether this is the first piece, which the others are joined to or cut from.
@@ -128,12 +129,11 @@ struct PieceEditor: View {
         TextField("Name", text: $piece.name).endsEditingOnSubmit()
         if isFirst {
             LabeledContent("Combined", value: "The air the others start from")
-        } else if piece.operation == .intersect {
-            LabeledContent("Combined", value: "Intersected with the pieces before it")
         } else {
             Picker("Combined", selection: $piece.operation) {
                 Text("Joined to the air").tag(HallPiece.Operation.join)
                 Text("Cut out of the air").tag(HallPiece.Operation.cut)
+                Text("Intersected with the air").tag(HallPiece.Operation.intersect)
             }
         }
         switch piece.shape {
@@ -144,19 +144,39 @@ struct PieceEditor: View {
                 NumberField(title: "To \(name)", value: corner(low: false, axis), unit: "m")
             }
             ForEach(0..<6, id: \.self) { face in
-                Picker(Self.faceNames[face], selection: material(face)) {
-                    ForEach(surfaces.indices, id: \.self) { Text(surfaces[$0]).tag($0) }
-                }
+                materialPicker(Self.faceNames[face], index: face)
             }
-        case .extrusion(let points, let axis, let from, let to, _, _):
-            Text(
-                String(
-                    format:
-                        "A %d-sided outline extruded along %@ from %.2f to %.2f m. Command-drag its surfaces "
-                        + "in the 3D view to reshape it.", points.count, OpeningEditor.axisNames[axis], from,
-                    to)
-            )
-            .font(.caption).foregroundStyle(.secondary)
+        case .extrusion(let points, let axis, _, _, _, _):
+            let (a, b) = HallPiece.planeAxes(axis)
+            let names = (OpeningEditor.axisNames[a], OpeningEditor.axisNames[b])
+            Picker("Along", selection: extrusionAxis) {
+                ForEach(0..<3, id: \.self) { Text(OpeningEditor.axisNames[$0]).tag($0) }
+            }
+            NumberField(title: "From \(OpeningEditor.axisNames[axis])", value: end(0), unit: "m")
+            NumberField(title: "To \(OpeningEditor.axisNames[axis])", value: end(1), unit: "m")
+            ForEach(points.indices, id: \.self) { index in
+                HStack {
+                    NumberField(title: "Point \(index + 1) \(names.0)", value: point(index, 0), unit: "m")
+                    NumberField(title: names.1, value: point(index, 1), unit: "m")
+                }
+                materialPicker("Side \(index + 1)", index: index)
+            }
+            HStack {
+                Button("Add Point") { piece = piece.addingPoint() }
+                    .help("A point halfway along the last side, splitting it in two")
+                Button("Remove Last Point") { piece = piece.removingLastPoint() }
+                    .disabled(points.count <= 3)
+            }
+            materialPicker("Lower end", index: points.count)
+            materialPicker("Upper end", index: points.count + 1)
+        }
+    }
+
+    /// A picker among the room's surfaces for one of the piece's materials, numbered as
+    /// `HallPiece.materials`.
+    private func materialPicker(_ title: String, index: Int) -> some View {
+        Picker(title, selection: material(index)) {
+            ForEach(surfaces.indices, id: \.self) { Text(surfaces[$0]).tag($0) }
         }
     }
 
@@ -173,16 +193,54 @@ struct PieceEditor: View {
             })
     }
 
-    private func material(_ face: Int) -> Binding<Int> {
+    private func material(_ index: Int) -> Binding<Int> {
+        Binding(
+            get: { piece.materials[safe: index] ?? 0 },
+            set: { value in
+                var materials = piece.materials
+                guard materials.indices.contains(index) else { return }
+                materials[index] = value
+                piece.materials = materials
+            })
+    }
+
+    private var extrusionAxis: Binding<Int> {
         Binding(
             get: {
-                guard case .box(_, _, let m) = piece.shape, face < m.count else { return 0 }
-                return m[face]
+                guard case .extrusion(_, let axis, _, _, _, _) = piece.shape else { return 2 }
+                return axis
+            },
+            set: { axis in
+                guard case .extrusion(let p, _, let f, let t, let s, let e) = piece.shape else { return }
+                piece.shape = .extrusion(points: p, axis: axis, from: f, to: t, sides: s, ends: e)
+            })
+    }
+
+    /// The lower (0) or upper (1) end of an extrusion.
+    private func end(_ which: Int) -> Binding<Double> {
+        Binding(
+            get: {
+                guard case .extrusion(_, _, let from, let to, _, _) = piece.shape else { return 0 }
+                return which == 0 ? from : to
             },
             set: { value in
-                guard case .box(let l, let h, var m) = piece.shape, face < m.count else { return }
-                m[face] = value
-                piece.shape = .box(low: l, high: h, materials: m)
+                guard case .extrusion(let p, let a, var f, var t, let s, let e) = piece.shape else { return }
+                if which == 0 { f = value } else { t = value }
+                piece.shape = .extrusion(points: p, axis: a, from: f, to: t, sides: s, ends: e)
+            })
+    }
+
+    private func point(_ index: Int, _ coordinate: Int) -> Binding<Double> {
+        Binding(
+            get: {
+                guard case .extrusion(let p, _, _, _, _, _) = piece.shape, index < p.count else { return 0 }
+                return p[index][coordinate]
+            },
+            set: { value in
+                guard case .extrusion(var p, let a, let f, let t, let s, let e) = piece.shape, index < p.count
+                else { return }
+                p[index][coordinate] = value
+                piece.shape = .extrusion(points: p, axis: a, from: f, to: t, sides: s, ends: e)
             })
     }
 }
@@ -730,6 +788,10 @@ struct RoomInspector: View {
                     .help("An alcove or extension joined to the air; set its corners to place it")
                 Button("Cut a Box") { addPiece(.cut) }
                     .help("A pillar, platform or balcony cut out of the air; set its corners to place it")
+                Button("Cut a Rake") { addPiece(.cut, rake: true) }
+                    .help(
+                        "Seating rising towards the far end in x, cut out of the air as an extruded section; "
+                            + "edit its outline to reshape it")
             }
             if let pieceError {
                 Label(pieceError, systemImage: "exclamationmark.triangle").foregroundStyle(.red).font(
@@ -764,8 +826,8 @@ struct RoomInspector: View {
             set: { piece in apply(project.settings.replacingPiece(piece)) })
     }
 
-    private func addPiece(_ operation: HallPiece.Operation) {
-        apply(project.settings.addingPiece(operation))
+    private func addPiece(_ operation: HallPiece.Operation, rake: Bool = false) {
+        apply(rake ? project.settings.addingRake() : project.settings.addingPiece(operation))
         if pieceError == nil { selectedPiece = project.settings.room.pieces?.last?.id }
     }
 

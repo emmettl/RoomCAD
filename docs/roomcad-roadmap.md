@@ -447,8 +447,9 @@ code.
   [Room-acoustics model](room-acoustics-model.md#rooms-of-any-shape). OBJ and STL models can be
   imported as rooms, through ContinuumKit's GeometryImport, which BombCAD also uses. The app shows a
   mesh, edits its materials and pushes and pulls its planes (item 6). A hall built from pieces keeps
-  them in its document, and boxes can be joined to it, cut out of it, edited and removed in the
-  inspector. Adding extrusions and intersections in the app remains to do.
+  them in its document. In the inspector, boxes and extruded outlines can be joined to it, cut out of
+  it or intersected with it, edited point by point, and removed. A drawing tool for outlines remains
+  to do.
 - **Item 2.** This has started: 90 absorption and 7 scattering presets come from the annex of
   Vorländer's *Auralization*, via pyroomacoustics. Bands outside the published range are extended
   and labelled in each material's reference. The nine areas of seated audience take the theatre

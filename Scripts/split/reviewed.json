@@ -1,0 +1,24 @@
+{
+  "additions": {
+    "Sources/AcousticModel/HallPiece.swift": [
+      {
+        "reason": "Edit extruded pieces and intersections in the inspector: HallPiece.materials, addingPoint() and removingLastPoint()",
+        "sha256": "2bb6c735bc78ef61395433624f4a0a8510c170fbdc71c8fd9e18c7883ef2418b"
+      }
+    ]
+  },
+  "changes": {
+    "Sources/RoomDocument/ResponseSummary.swift": {
+      "reason": "Measure the app's reverberation times in closed octaves, as acousticbench does",
+      "sha256": "ad14c7fc0228bf26147df03faa4c30e7ceedc9ae2ecc5bbe34c072c718d5ae5d"
+    },
+    "Sources/RoomCAD/RoomEdits.swift": {
+      "reason": "Edit extruded pieces and intersections in the inspector: Cut a Rake",
+      "sha256": "3b31cf4692f01efd099ec4987d2e9a4595be9a182eae237472d9cddd0bafaf55"
+    },
+    "Sources/RoomCAD/RoomInspector.swift": {
+      "reason": "Edit extruded pieces and intersections in the inspector",
+      "sha256": "37788c3c496d1c03fba60b19d67773e0a77d2d116fa3e24a9afbb1fd50ab37a2"
+    }
+  }
+}

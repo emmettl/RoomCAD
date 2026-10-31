@@ -42,9 +42,10 @@ public struct ResponseSummary: Equatable, Sendable {
                 }
                 return max(Self.floor, 20 * log10(max(Double(largest), 1e-12) / peak))
             }
+            // In octaves as measured, closed at 63 Hz and 8 kHz like the others, as a measurement is.
             let times = (0..<OctaveBands.count).map { band in
                 DecayAnalysis.reverberationTime(
-                    DecayAnalysis.octaveBand(samples, sampleRate: rate, band: band), sampleRate: rate)
+                    DecayAnalysis.measuredOctaveBand(samples, sampleRate: rate, band: band), sampleRate: rate)
             }
             let spectrum = ResponseComparison.spectrumLevels(
                 samples, sampleRate: rate, low: Self.spectrumFrequencies[0],

@@ -138,6 +138,30 @@ struct HallPieceTests {
         #expect(higher.bounds.max.z > mesh.bounds.max.z)
     }
 
+    @Test(
+        "An extrusion's outline gains and loses points, and its materials read and write as sides then ends")
+    func editExtrusion() throws {
+        let rake = HallPiece.extrusion(
+            "Rake", .cut, [[0, 0], [4, 0], [4, 1]], along: 1, from: 0, to: 3, sides: [1, 2, 3], ends: (4, 5))
+        #expect(rake.materials == [1, 2, 3, 4, 5])
+        let split = rake.addingPoint()
+        guard case .extrusion(let points, _, _, _, let sides, let ends) = split.shape else {
+            Issue.record("not an extrusion")
+            return
+        }
+        #expect(points.last == [2, 0.5] && sides == [1, 2, 3, 3] && ends == [4, 5])
+        #expect(split.removingLastPoint() == rake)
+        #expect(rake.removingLastPoint() == rake)
+        var changed = rake
+        changed.materials = [0, 0, 0, 1, 1]
+        #expect(changed.materials == [0, 0, 0, 1, 1])
+        changed.materials = [9]
+        #expect(changed.materials == [0, 0, 0, 1, 1])
+        let box = HallPiece.box(
+            "Box", .join, [0, 0, 0], [1, 1, 1], materials: Array(repeating: 2, count: 6))
+        #expect(box.addingPoint() == box && box.materials.count == 6)
+    }
+
     @Test("Fitting a mesh to the origin moves its pieces with it")
     func fitting() throws {
         let room = try Self.hall("shoebox-concert-hall")
