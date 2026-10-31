@@ -213,7 +213,9 @@ script before an archive is written.
       octave, with the wave solver's crossover marked.
     - **Early arrivals:** the energy above 500 Hz in 0.25 ms bins, from emission to 80 ms after the
       first direct sound, in dB, so the direct sound and early reflections show one by one.
-  - It shows octave-band Sabine and Eyring estimates beside each channel's measured T30.
+  - It shows octave-band Sabine and Eyring estimates beside each channel's T30, measured in octaves
+    closed at 63 Hz and 8 kHz like the others, as acousticbench measures (see
+    [RoomCAD against measured rooms](roomcad-validation.md)).
   - It shows arrival counts and generation time. It also shows the wave solver's crossover, grid and
     its approximate memory, time and runs, with how many ran on the GPU and how many on the CPU. It also gives its phase-velocity
     error at the crossover, and the decay each of its bands had before it was matched to Eyring's

@@ -1,0 +1,9 @@
+{
+  "additions": {},
+  "changes": {
+    "Sources/RoomDocument/ResponseSummary.swift": {
+      "reason": "Measure the app's reverberation times in closed octaves, as acousticbench does",
+      "sha256": "ad14c7fc0228bf26147df03faa4c30e7ceedc9ae2ecc5bbe34c072c718d5ae5d"
+    }
+  }
+}

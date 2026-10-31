@@ -49,6 +49,17 @@ availability guards. It also verifies audition DSP and document declarations.
 Mutation tests reject changed density factors, constructor assignments, fitting
 coordinates and saved generator identifiers.
 
+The guard also keeps every other production file byte-identical to that revision, so
+a change made after the split is admitted only once reviewed, in
+`Scripts/split/reviewed.json`. Each entry pins the SHA-256 of a change's exact Swift
+tokens (comments and layout aside) and gives its reason. A moved acoustic file may gain
+whole top-level declarations after its original ones: the guard removes exactly the
+pinned ones, requires each to be present, and then checks the original declarations
+as before. An application file changed in place, outside the moved acoustic sources,
+is pinned whole. Changing a reviewed change means pinning it again; nothing else is
+exempted, and the mutation tests reject a changed addition, a missing one and a
+changed application file.
+
 Historical fixtures keep their exact tags, source snapshots and corruption
 controls. Their single-module consumers first prove the current split and then
 reconstruct equivalent pre-split macOS declarations for their frozen manifests.

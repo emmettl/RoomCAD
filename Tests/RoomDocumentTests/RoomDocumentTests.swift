@@ -177,7 +177,8 @@ struct RoomDocumentTests {
         var settings = Self.settings
         settings.duration = 0.25
         settings.maximumReflectionOrder = 60
-        let summary = ResponseSummary(try RoomResponseGenerator.generate(settings), buckets: 100)
+        let result = try RoomResponseGenerator.generate(settings)
+        let summary = ResponseSummary(result, buckets: 100)
         #expect(summary.channels.map(\.name) == ["Left", "Right"])
         #expect(summary.channels.allSatisfy { $0.envelope.count == 100 })
         // Levels are relative to the loudest channel.
@@ -185,6 +186,11 @@ struct RoomDocumentTests {
         #expect(
             summary.channels.allSatisfy { $0.envelope.allSatisfy { $0 <= 0 && $0 >= ResponseSummary.floor } })
         #expect(summary.channels.allSatisfy { $0.reverberationTime[3...].allSatisfy { $0 != nil } })
+        // Measured in closed octaves, as acousticbench and absorption fitting measure.
+        let left = result.response.channels[0]
+        let measured = DecayAnalysis.reverberationTime(
+            DecayAnalysis.measuredOctaveBand(left, sampleRate: 48_000, band: 7), sampleRate: 48_000)
+        #expect(summary.channels[0].reverberationTime[7] == measured)
     }
 
     @Test("The summary's spectrum is flat for the direct sound alone and peaks at 0 dB")

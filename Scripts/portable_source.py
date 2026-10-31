@@ -4,6 +4,9 @@ Frozen consumers still compile one AcousticCore module. Before returning histori
 bytes, prove that the current declarations have exactly the same Swift tokens,
 allowing only the recorded imports, package access and assignment-only constructors.
 No numerical token, string (including identifiers), or control flow is exempted.
+Changes reviewed after the split are pinned by the SHA-256 of their exact tokens in
+Scripts/split/reviewed.json: whole declarations added after a moved file's original ones,
+and application files changed in place. Anything else still has to match the base.
 """
 from pathlib import Path
 import hashlib, json, subprocess, sys
@@ -14,12 +17,36 @@ ROOT = Path(__file__).resolve().parents[1]
 MOVES = json.loads((ROOT/'Scripts/split/moves.json').read_text())
 MOVES['Tests/AcousticCoreTests/SharedBoxQueryTests.swift']='Tests/AcousticModelTests/SharedBoxQueryTests.swift'
 INITS = json.loads((ROOT/'Scripts/split/initializers.json').read_text())
+REVIEWED = json.loads((ROOT/'Scripts/split/reviewed.json').read_text())
 
 def git_source(root, path):
     return subprocess.check_output(['git','show',BASE+':'+path],cwd=root)
 
 def tokens(text):
     return [t.text for t in tokenize(text)]
+
+def digest(token_texts):
+    return hashlib.sha256('\0'.join(token_texts).encode()).hexdigest()
+
+def without_additions(text, path):
+    """The text without the reviewed declarations added to it since the split, each of which must be present."""
+    pinned=[a['sha256'] for a in REVIEWED['additions'].get(path,[])]
+    if not pinned: return text
+    sf=parse(text);found=[];spans=[]
+    for d in sf.decls:
+        if d.kind=='import': continue
+        if (h:=digest(tokens(text[sf.tokens[d.header].start:sf.tokens[d.end].end]))) in pinned:
+            found.append(h);spans.append((sf.tokens[d.header].start,sf.tokens[d.end].end))
+    assert sorted(found)==sorted(pinned), 'reviewed addition changed: '+path
+    for start,end in reversed(spans): text=text[:start]+text[end:]
+    return text
+
+def reviewed_change(root, path):
+    """Whether `path` is an application file changed in place since the split, and if so that it is exactly as reviewed."""
+    change=REVIEWED['changes'].get(path)
+    if change is None: return False
+    assert digest(tokens((Path(root)/path).read_text()))==change['sha256'], 'reviewed change changed: '+path
+    return True
 
 def without_package(text):
     sf=parse(text);positions=set()
@@ -58,7 +85,7 @@ def source_before_split(root, path):
     paths=moved if isinstance(moved,list) else [moved]
     parts=[]
     for p in paths:
-        text=(root/p).read_text()
+        text=without_additions((root/p).read_text(),p)
         # Validate and remove only the explicit constructors recorded at the split.
         if p in INITS:
             sf=parse(text);spec=INITS[p];owner=next(d for d in sf.decls if d.name==spec['type']);i=next(d for d in owner.members if d.kind=='init')
@@ -102,6 +129,7 @@ def verify(root=ROOT):
     pin=json.loads((root/'Package.resolved').read_text())['pins']
     assert len(pin)==1 and pin[0]['state']=={'version':'0.1.0-alpha.30','revision':'2f14a4a23341452f8e4e3a925dcf011f18516078'}, 'portable dependency pin changed'
     model=set(p for path in paths for p in (MOVES[path] if isinstance(MOVES.get(path),list) else [MOVES.get(path,path)]))
+    assert set(REVIEWED['additions'])<=model, 'reviewed addition outside the moved acoustic sources'
     actual={str(p.relative_to(root)) for directory in ['AcousticModel','AcousticCore'] for p in (root/'Sources'/directory).glob('*.swift')}
     assert actual==model|{'Sources/AcousticModel/LinuxSIMD.swift','Sources/AcousticCore/Exports.swift'}, 'unexpected acoustic source file'
     assert (root/'Sources/AcousticCore/Exports.swift').read_text()=='@_exported import AcousticModel\n'
@@ -114,10 +142,13 @@ def verify(root=ROOT):
     pieces=[(root/'Sources'/module/'DryClip.swift').read_text() for module in ['AuditionDSP','Audition']]
     assert declarations([original])==declarations(pieces),'dry clip declarations changed'
     for name in ['RoomProject.swift','ResponseSummary.swift']:
+        if reviewed_change(root,'Sources/RoomDocument/'+name): continue
         old=git_source(root,'Sources/RoomDocument/'+name).decode().replace('import AcousticCore','import AcousticModel')
         assert tokens(old)==tokens((root/'Sources/RoomDocument'/name).read_text()),'document schema changed: '+name
     # Retain the old gate's whole-production-tree constraint as well as moved bodies.
     all_paths=subprocess.check_output(['git','ls-tree','-r','--name-only',BASE,'Sources'],cwd=root,text=True).splitlines()
+    for path in REVIEWED['changes']:
+        assert path in all_paths and path not in paths and reviewed_change(root,path), 'reviewed change outside the application sources: '+path
     audition_moves={
         'Sources/Audition/AuditionPreview.swift':['Sources/AuditionDSP/AuditionPreview.swift'],
         'Sources/Audition/WaveformOverview.swift':['Sources/AuditionDSP/WaveformOverview.swift'],
@@ -128,7 +159,7 @@ def verify(root=ROOT):
     for path in all_paths:
         destinations=MOVES.get(path,audition_moves.get(path,path))
         expected_tree.update(destinations if isinstance(destinations,list) else [destinations])
-        if path not in paths and path not in audition_moves and path not in reviewed:
+        if path not in paths and path not in audition_moves and path not in reviewed and not reviewed_change(root,path):
             assert (root/path).read_bytes()==git_source(root,path),'unchanged production source/resource changed: '+path
     expected_tree.update(['Sources/AcousticModel/LinuxSIMD.swift','Sources/AcousticCore/Exports.swift','Sources/Audition/Exports.swift'])
     assert {str(p.relative_to(root)) for p in (root/'Sources').rglob('*') if p.is_file()}==expected_tree,'production source tree changed outside split'

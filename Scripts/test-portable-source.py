@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 import shutil
 import unittest
-from portable_source import ROOT, source_before_split
+from portable_source import ROOT, reviewed_change, source_before_split
 
 
 class PortableSourceTests(unittest.TestCase):
@@ -29,6 +29,21 @@ class PortableSourceTests(unittest.TestCase):
                 if name=='RoomResponseTypes.swift':
                     shutil.copyfile(ROOT/'Sources/AcousticCore/RoomResponse.swift',root/'Sources/AcousticCore/RoomResponse.swift')
                 with self.assertRaises(AssertionError): source_before_split(root,old)
+
+    def test_reviewed_changes_reject(self):
+        path='Sources/RoomDocument/ResponseSummary.swift'
+        text=(ROOT/path).read_text()
+        self.assertTrue(reviewed_change(ROOT,path))
+        self.assertFalse(reviewed_change(ROOT,'Sources/RoomCAD/RoomCADApp.swift'))
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            (root/path).parent.mkdir(parents=True)
+            # A comment is not a token; a changed number is.
+            (root/path).write_text(text.replace('// In octaves as measured','// In octaves as acousticbench measures'))
+            self.assertTrue(reviewed_change(root,path))
+            # Back to the rendering bands, open below 63 Hz and above 8 kHz.
+            (root/path).write_text(text.replace('measuredOctaveBand','octaveBand'))
+            with self.assertRaises(AssertionError): reviewed_change(root,path)
 
 
 if __name__=='__main__': unittest.main()
