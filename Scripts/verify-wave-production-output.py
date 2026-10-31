@@ -10,7 +10,7 @@ VERSION = '0.1.0-alpha.12'
 CORE = 'f464e04866903bfc7c9ce94c34d31125a776d270'
 # Keep original accepted pins; the separately guarded Double-query release
 # preserves active wave operators and requires new complete current-app evidence.
-DEPENDENCIES = {'0.1.0-alpha.29': 'eae6589985e5ab8e096d595f352d36447e4573eb', VERSION: CORE, '0.1.0-alpha.17': 'e94d329c55495ca561306174d624eadf5c8e7da0', '0.1.0-alpha.18': '0e0929f4a0806940ed2fc5be5f81d1a82034cc8c', SPATIAL_VERSION: SPATIAL_REVISION}
+DEPENDENCIES = {'0.1.0-alpha.30': '2f14a4a23341452f8e4e3a925dcf011f18516078', '0.1.0-alpha.29': 'eae6589985e5ab8e096d595f352d36447e4573eb', VERSION: CORE, '0.1.0-alpha.17': 'e94d329c55495ca561306174d624eadf5c8e7da0', '0.1.0-alpha.18': '0e0929f4a0806940ed2fc5be5f81d1a82034cc8c', SPATIAL_VERSION: SPATIAL_REVISION}
 
 def require(condition, message):
     if not condition: raise ValueError(message)

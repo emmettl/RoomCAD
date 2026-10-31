@@ -1,6 +1,6 @@
 # Portable modules
 
-RoomCAD pins ContinuumKit **0.1.0-alpha.29** exactly. Its Linux SIMD, Accelerate
+RoomCAD pins ContinuumKit **0.1.0-alpha.30** exactly. Its Linux SIMD, Accelerate
 and archive foundations make the application-owned CPU layers buildable without
 Apple frameworks. This tag also contains SceneRender's viewport Tab-focus fix;
 clicking the viewport can still make it first responder.
@@ -32,13 +32,14 @@ that require actual Metal, while CPU generation and backend-failure tests run.
 
 Linux floating-point results need not be bit-identical to Apple: libm and FFT
 implementations can round differently. The existing numerical tolerances are
-retained. `AcousticModel/LinuxSIMD.swift` adapts only the vector arithmetic and
-double matrix multiplication and quaternion inverse needed from BombCAD's MIT-licensed implementation at
-`a1a16aafd01f893ac9f9f7d059e0890ec526961e`, preserving its operation order and
-fused cross products. The lexical split reader comes from the same revision's
-`Scripts/split/swift_source.py`. Apple's native SIMD, Accelerate and Metal remain
-active on macOS. ContinuumKit's quaternion-to-matrix stand-in is used on Linux;
-its final bits can differ from Apple's implementation.
+retained. From alpha.30, ContinuumKit's Linux `simd` stand-in follows Apple's operation
+order and fused products and is checked against Apple's results by its SIMDParityTests;
+only its matrix inverse and quaternion angles may differ in the last bits. RoomCAD's
+earlier local copy of that arithmetic is retired. `AcousticModel/LinuxSIMD.swift` keeps
+only the mask reduction `all(_:)`, which the stand-in lacks, adapted from BombCAD's
+MIT-licensed implementation at `a1a16aafd01f893ac9f9f7d059e0890ec526961e`. The lexical
+split reader comes from the same revision's `Scripts/split/swift_source.py`. Apple's
+native SIMD, Accelerate and Metal remain active on macOS.
 
 `Scripts/portable_source.py` binds every original acoustic declaration to committed
 RoomCAD `9d532557afd7e2853044957c28c2cb6a30d27ec0`. It compares all Swift tokens,
@@ -53,8 +54,9 @@ controls. Their single-module consumers first prove the current split and then
 reconstruct equivalent pre-split macOS declarations for their frozen manifests.
 The accepted alpha23 source gate is replayed in its committed checkout; the
 current gate separately proves the split and byte-identical acoustic operators in
-alpha29. Current production wave/probe consumers use alpha29 and include both
-model and execution sources in their provenance. No measured fixture is rewritten.
+alpha29. Current production wave/probe consumers use alpha30, whose Apple products
+are unchanged from alpha29, and include both model and execution sources in their
+provenance; their verifiers still accept alpha29 evidence. No measured fixture is rewritten.
 
 Actual rendering, GPU wave parity, packaging and snapshots remain checks on the
 physical Metal Mac mini. Heavy BRAS empirical validation remains `make validate`.

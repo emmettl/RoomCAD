@@ -100,7 +100,7 @@ def verify(root=ROOT):
     paths=subprocess.check_output(['git','ls-tree','-r','--name-only',BASE,'Sources/AcousticCore'],cwd=root,text=True).splitlines()
     for path in paths: source_before_split(root,path)
     pin=json.loads((root/'Package.resolved').read_text())['pins']
-    assert len(pin)==1 and pin[0]['state']=={'version':'0.1.0-alpha.29','revision':'eae6589985e5ab8e096d595f352d36447e4573eb'}, 'portable dependency pin changed'
+    assert len(pin)==1 and pin[0]['state']=={'version':'0.1.0-alpha.30','revision':'2f14a4a23341452f8e4e3a925dcf011f18516078'}, 'portable dependency pin changed'
     model=set(p for path in paths for p in (MOVES[path] if isinstance(MOVES.get(path),list) else [MOVES.get(path,path)]))
     actual={str(p.relative_to(root)) for directory in ['AcousticModel','AcousticCore'] for p in (root/'Sources'/directory).glob('*.swift')}
     assert actual==model|{'Sources/AcousticModel/LinuxSIMD.swift','Sources/AcousticCore/Exports.swift'}, 'unexpected acoustic source file'
