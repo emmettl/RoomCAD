@@ -14,6 +14,10 @@ class PortableSourceTests(unittest.TestCase):
             ('DiffuseRayTracer.swift','Sources/AcousticCore/DiffuseRayTracer.swift','self.seed = seed','self.seed = 0'),
             ('RoomParameters.swift','Sources/AcousticCore/RoomParameters.swift','Double($0 + offset)','Double($0)'),
             ('RoomResponseTypes.swift','Sources/AcousticCore/RoomResponse.swift','RoomCAD hybrid model 7','RoomCAD hybrid model 8'),
+            # An original declaration beside a reviewed addition, the addition itself, and its removal.
+            ('HallPiece.swift','Sources/AcousticCore/HallPiece.swift','points.count >= 3','points.count >= 2'),
+            ('HallPiece.swift','Sources/AcousticCore/HallPiece.swift','points.count > 3','points.count > 2'),
+            ('HallPiece.swift','Sources/AcousticCore/HallPiece.swift','/// Editing a piece in the inspector.\nextension HallPiece {','private extension Unreviewed {'),
         ]
         for name, old, before, after in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:

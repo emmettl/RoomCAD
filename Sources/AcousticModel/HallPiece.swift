@@ -283,3 +283,55 @@ extension HallPiece {
         }
     }
 }
+
+/// Editing a piece in the inspector.
+extension HallPiece {
+    /// The piece's materials: a box's six faces, or an extrusion's sides followed by its lower and upper
+    /// ends. Setting it keeps the shape and replaces as many materials as it has.
+    public var materials: [Int] {
+        get {
+            switch shape {
+            case .box(_, _, let materials): materials
+            case .extrusion(_, _, _, _, let sides, let ends): sides + ends
+            }
+        }
+        set {
+            switch shape {
+            case .box(let low, let high, let old):
+                guard newValue.count == old.count else { return }
+                shape = .box(low: low, high: high, materials: newValue)
+            case .extrusion(let points, let axis, let from, let to, let sides, let ends):
+                guard newValue.count == sides.count + ends.count else { return }
+                shape = .extrusion(
+                    points: points, axis: axis, from: from, to: to,
+                    sides: Array(newValue.prefix(sides.count)),
+                    ends: Array(newValue.suffix(ends.count)))
+            }
+        }
+    }
+
+    /// An extrusion with a point added halfway along its last side, which both halves' sides take the
+    /// material of; a box as it is.
+    public func addingPoint() -> HallPiece {
+        guard case .extrusion(var points, let axis, let from, let to, var sides, let ends) = shape,
+            let last = points.last, let first = points.first, let material = sides.last
+        else { return self }
+        points.append((last + first) / 2)
+        sides.append(material)
+        var piece = self
+        piece.shape = .extrusion(points: points, axis: axis, from: from, to: to, sides: sides, ends: ends)
+        return piece
+    }
+
+    /// An extrusion without its last point, keeping at least three; a box as it is.
+    public func removingLastPoint() -> HallPiece {
+        guard case .extrusion(var points, let axis, let from, let to, var sides, let ends) = shape,
+            points.count > 3
+        else { return self }
+        points.removeLast()
+        sides.removeLast()
+        var piece = self
+        piece.shape = .extrusion(points: points, axis: axis, from: from, to: to, sides: sides, ends: ends)
+        return piece
+    }
+}

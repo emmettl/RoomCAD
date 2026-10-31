@@ -289,6 +289,26 @@ extension RoomResponseSettings {
         return replacingPieces(with: pieces + [piece])
     }
 
+    /// These settings with a rake cut out of the air: a section rising from the floor at 30% of the room's
+    /// length in x to 15% of its height at the far end, extruded across its whole width, so the floor
+    /// there slopes up like raked seating. The slope takes the material covering most of the room. Nil if
+    /// the room has no pieces or the rake would leave no valid room.
+    func addingRake() -> RoomResponseSettings? {
+        guard let pieces = room.pieces, let mesh = room.mesh else { return nil }
+        let areas = mesh.materialAreas
+        let material = areas.indices.max { areas[$0] < areas[$1] } ?? 0
+        let size = room.size
+        let number = pieces.count { $0.name.hasPrefix("Rake") } + 1
+        // Below the floor and past the far wall, so the cut leaves only the slope.
+        let section: [SIMD2<Double>] = [
+            [size.x * 0.3, 0], [size.x + 1, -1], [size.x + 1, size.z * 0.15],
+        ]
+        let rake = HallPiece.extrusion(
+            "Rake \(number)", .cut, section, along: 1, from: -1, to: size.y + 1,
+            sides: [material, material, material], ends: (material, material))
+        return replacingPieces(with: pieces + [rake])
+    }
+
     /// These settings with the piece of that ID replaced by `piece`. Nil if it would leave no valid room.
     func replacingPiece(_ piece: HallPiece) -> RoomResponseSettings? {
         guard var pieces = room.pieces, let index = pieces.firstIndex(where: { $0.id == piece.id }) else {
