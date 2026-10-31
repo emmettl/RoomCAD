@@ -383,32 +383,34 @@ each chair's surface did not shorten the decay further in a shorter probe.
 
 ### Fitted by simulating the model
 
-The fit kept, in each band, the closest of six simulations. The absorption rose by 14–53% from
-125 Hz to 8 kHz, most at 250 and 500 Hz; at 63 Hz it was unchanged.
+The fit kept, in each band, the closest of six simulations. The absorption rose by 15–65% from
+125 Hz to 8 kHz, most at 250 and 500 Hz; at 63 Hz by 2%. These figures are from a run of
+`make validate` on 31 October 2026. Every other configuration above reproduced its documented figures
+exactly in that run, but this fit's moved by up to 1.4 JND from an earlier run's.
 
 | | | 63 Hz | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
 |---|---|---|---|---|---|---|---|---|---|
 | T30 (s) | Measured | 1.81 ± 0.14 | 1.62 ± 0.07 | 1.45 ± 0.04 | 1.29 ± 0.03 | 1.33 ± 0.03 | 1.32 ± 0.01 | 1.06 ± 0.02 | 0.77 ± 0.01 |
-| | Simulated | 1.78 (−0.3) | 1.59 (−0.4) | 1.47 (+0.4) | 1.32 (+0.4) | 1.35 (+0.2) | 1.34 (+0.4) | 1.09 (+0.7) | 0.79 (+0.3) |
+| | Simulated | 1.75 (−0.7) | 1.66 (+0.5) | 1.43 (−0.3) | 1.29 (+0.0) | 1.32 (−0.2) | 1.32 (−0.0) | 1.07 (+0.2) | 0.78 (+0.3) |
 | EDT (s) | Measured | 1.54 ± 0.30 | 1.58 ± 0.20 | 1.37 ± 0.09 | 1.34 ± 0.10 | 1.31 ± 0.08 | 1.24 ± 0.04 | 1.04 ± 0.04 | 0.72 ± 0.04 |
-| | Simulated | 1.79 (+3.2) | 1.37 (−2.6) | 1.34 (−0.4) | 1.16 (−2.7) | 1.26 (−0.8) | 1.25 (+0.2) | 1.06 (+0.3) | 0.77 (+1.4) |
+| | Simulated | 1.74 (+2.6) | 1.36 (−2.8) | 1.27 (−1.5) | 1.14 (−3.0) | 1.24 (−1.1) | 1.22 (−0.3) | 1.02 (−0.5) | 0.71 (−0.0) |
 | C80 (dB) | Measured | 0.7 ± 2.7 | 0.4 ± 1.0 | 0.8 ± 2.1 | 1.6 ± 1.5 | 1.7 ± 0.7 | 1.6 ± 0.6 | 3.3 ± 0.8 | 6.4 ± 0.7 |
-| | Simulated | 0.9 (+0.2) | 1.9 (+1.5) | 1.9 (+1.1) | 3.1 (+1.6) | 2.5 (+0.7) | 2.3 (+0.8) | 3.5 (+0.2) | 5.8 (−0.6) |
+| | Simulated | 1.1 (+0.4) | 1.9 (+1.5) | 2.3 (+1.5) | 3.2 (+1.6) | 2.6 (+0.8) | 2.5 (+0.9) | 3.8 (+0.5) | 6.1 (−0.3) |
 | D50 | Measured | 0.43 ± 0.17 | 0.36 ± 0.11 | 0.42 ± 0.14 | 0.43 ± 0.12 | 0.43 ± 0.07 | 0.42 ± 0.05 | 0.52 ± 0.06 | 0.67 ± 0.04 |
-| | Simulated | 0.40 (−0.5) | 0.48 (+2.5) | 0.46 (+0.7) | 0.54 (+2.1) | 0.50 (+1.3) | 0.47 (+1.2) | 0.55 (+0.5) | 0.65 (−0.3) |
+| | Simulated | 0.41 (−0.4) | 0.48 (+2.4) | 0.48 (+1.1) | 0.54 (+2.2) | 0.50 (+1.4) | 0.48 (+1.3) | 0.56 (+0.7) | 0.66 (−0.1) |
 
 - **T30.** It now matches within 0.7 JND in every band.
 - **The shape of the decay.** From 1 to 8 kHz, EDT, clarity and definition are within about 1.4
-  JND. At 125 and 500 Hz, though, the early decay is now too fast: EDT is 2.6–2.7 JND short, and
-  clarity and definition 1.5–2.5 JND high. With Eyring-fitted materials, EDT and T30 were both too
+  JND. At 125 and 500 Hz, though, the early decay is now too fast: EDT is 2.8–3.0 JND short, and
+  clarity and definition 1.5–2.4 JND high. With Eyring-fitted materials, EDT and T30 were both too
   long. The simulated decay sags, falling quickly at first and more slowly later, where the measured
   one falls in a straight line. Matching one end of it leaves the other wrong. That is what a room
   that mixes its sound too little does: early on, sound meets the absorbing audience often; later,
   what is left travels between the walls and ceiling and meets it less. It points the same way as
   the diagnosis above: the simplified hall needs the scattering its smooth surfaces and missing
   objects lack.
-- **63 Hz.** EDT is 3.2 JND long (1.79 s against 1.54 s), with C80 and D50 within 0.5 JND.
-- **Early reflections.** These correlate at 0.48 ± 0.14.
+- **63 Hz.** EDT is 2.6 JND long (1.74 s against 1.54 s), with C80 and D50 within 0.4 JND.
+- **Early reflections.** These correlate at 0.49 ± 0.14.
 
 ## A large room: the auditorium
 
@@ -456,9 +458,9 @@ T30, mean over the ten pairs, with JNDs in brackets:
 | | 63 Hz | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
 |---|---|---|---|---|---|---|---|---|
 | Measured | 2.52 ± 0.16 | 2.40 ± 0.09 | 2.38 ± 0.06 | 2.07 ± 0.04 | 2.10 ± 0.04 | 1.85 ± 0.02 | 1.42 ± 0.01 | 0.94 ± 0.01 |
-| Initial | 3.38 (+6.9) | 3.48 (+9.1) | 2.81 (+3.7) | 2.34 (+2.6) | 2.18 (+0.8) | 1.52 (−3.5) | 1.08 (−4.8) | 0.71 (−4.8) |
+| Initial | 3.38 (+6.8) | 3.48 (+9.1) | 2.81 (+3.7) | 2.34 (+2.6) | 2.18 (+0.8) | 1.52 (−3.5) | 1.08 (−4.8) | 0.71 (−4.8) |
 | Fitted by BRAS | 3.03 (+4.0) | 3.10 (+5.8) | 2.94 (+4.8) | 2.60 (+5.2) | 2.53 (+4.1) | 2.14 (+3.2) | 1.62 (+2.8) | 1.05 (+2.5) |
-| Fitted to this model | 2.87 (+2.7) | 2.88 (+4.1) | 2.67 (+2.5) | 2.39 (+3.1) | 2.40 (+2.9) | 2.02 (+1.8) | 1.55 (+1.8) | 1.05 (+2.3) |
+| Fitted to this model | 2.86 (+2.7) | 2.88 (+4.1) | 2.67 (+2.5) | 2.39 (+3.1) | 2.40 (+2.9) | 2.02 (+1.8) | 1.55 (+1.8) | 1.05 (+2.3) |
 | Fitted to this model, no wave solver | 3.04 (+4.2) | 2.89 (+4.1) | 2.67 (+2.5) | 2.39 (+3.1) | 2.40 (+2.9) | 2.02 (+1.8) | 1.55 (+1.8) | 1.05 (+2.3) |
 
 Early decay, clarity, definition and centre time, fitted to this model:
@@ -554,6 +556,9 @@ What remains is the shape of the measured decay within the octave. Its two halve
 | Fitted to this model | 2.33 | 2.72 | 2.51 | 3.04 | 2.57 | 2.98 |
 | Fitted by simulating this model | 2.15 | 2.40 | 2.40 | 2.50 | 2.26 | 2.31 |
 
+The last row is from the materials of an earlier fit by simulation than the one
+[below](#fitted-by-simulating-the-model-2); `make validate` does not measure these half octaves.
+
 Below 63 Hz the model matches the measurement: EDT within 7% and T30 within 2%. Above it the hall
 decays much faster, with T30 2.1–2.2 s against 2.7 s below and 2.4 s in the 125 Hz octave, so something
 in the real hall absorbs most around 63–100 Hz; panels, windows and the seating's cavities are
@@ -626,30 +631,32 @@ matches the early sound better than leaving the chairs out. The model is left as
 
 ### Fitted by simulating the model
 
-The fit kept, in each band, the closest of six simulations. The absorption rose by 9–27% from 63 Hz to
-4 kHz, most at 125 Hz, and by 69% at 8 kHz.
+The fit kept, in each band, the closest of six simulations. The absorption rose by 10–30% from 63 Hz
+to 4 kHz, most at 125 Hz, and by 69% at 8 kHz. These figures are from a run of `make validate` on
+31 October 2026. Every other configuration above reproduced its documented figures in that run, to
+within 0.01 s, but this fit's moved by up to 2.4 JND from an earlier run's.
 
 | | | 63 Hz | 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 8 kHz |
 |---|---|---|---|---|---|---|---|---|---|
 | T30 (s) | Measured | 2.52 ± 0.16 | 2.40 ± 0.09 | 2.38 ± 0.06 | 2.07 ± 0.04 | 2.10 ± 0.04 | 1.85 ± 0.02 | 1.42 ± 0.01 | 0.94 ± 0.01 |
-| | Simulated | 2.45 (−0.6) | 2.27 (−1.1) | 2.33 (−0.4) | 2.07 (+0.0) | 2.10 (+0.0) | 1.85 (+0.0) | 1.43 (+0.2) | 0.96 (+0.5) |
+| | Simulated | 2.47 (−0.4) | 2.34 (−0.5) | 2.35 (−0.2) | 2.05 (−0.2) | 2.10 (+0.0) | 1.85 (+0.1) | 1.42 (−0.0) | 0.94 (+0.1) |
 | EDT (s) | Measured | 1.68 ± 0.23 | 2.21 ± 0.35 | 2.42 ± 0.14 | 2.09 ± 0.10 | 2.19 ± 0.14 | 1.86 ± 0.09 | 1.42 ± 0.10 | 0.83 ± 0.08 |
-| | Simulated | 2.27 (+7.1) | 2.22 (+0.0) | 2.38 (−0.4) | 2.08 (−0.1) | 2.09 (−0.9) | 1.79 (−0.7) | 1.36 (−0.9) | 0.77 (−1.5) |
+| | Simulated | 2.07 (+4.7) | 2.17 (−0.4) | 2.29 (−1.1) | 2.04 (−0.5) | 2.08 (−1.0) | 1.82 (−0.5) | 1.41 (−0.2) | 0.78 (−1.3) |
 | C80 (dB) | Measured | 1.2 ± 1.9 | −0.6 ± 1.6 | −1.8 ± 2.5 | 0.3 ± 1.7 | −0.6 ± 1.2 | −0.0 ± 0.8 | 2.0 ± 2.0 | 5.5 ± 1.5 |
-| | Simulated | 1.6 (+0.4) | −1.3 (−0.8) | −1.6 (+0.2) | −0.4 (−0.7) | −0.6 (+0.1) | 0.5 (+0.5) | 2.3 (+0.3) | 6.0 (+0.5) |
+| | Simulated | 1.4 (+0.2) | −0.7 (−0.2) | −1.9 (−0.1) | −0.3 (−0.6) | −0.4 (+0.2) | 0.5 (+0.6) | 2.2 (+0.2) | 6.0 (+0.5) |
 | D50 | Measured | 0.45 ± 0.11 | 0.32 ± 0.08 | 0.28 ± 0.14 | 0.40 ± 0.10 | 0.35 ± 0.08 | 0.37 ± 0.07 | 0.47 ± 0.15 | 0.63 ± 0.11 |
-| | Simulated | 0.47 (+0.4) | 0.33 (+0.1) | 0.29 (+0.3) | 0.38 (−0.3) | 0.37 (+0.4) | 0.41 (+0.8) | 0.51 (+0.8) | 0.67 (+0.9) |
+| | Simulated | 0.48 (+0.6) | 0.36 (+0.7) | 0.28 (+0.2) | 0.39 (−0.1) | 0.38 (+0.6) | 0.41 (+0.8) | 0.50 (+0.7) | 0.67 (+0.9) |
 | Ts (ms) | Measured | 120 ± 19 | 147 ± 12 | 166 ± 31 | 127 ± 21 | 142 ± 14 | 125 ± 11 | 91 ± 21 | 54 ± 13 |
-| | Simulated | 126 (+0.6) | 155 (+0.8) | 167 (+0.1) | 136 (+0.9) | 139 (−0.4) | 117 (−0.8) | 86 (−0.5) | 50 (−0.4) |
+| | Simulated | 123 (+0.3) | 148 (+0.0) | 164 (−0.2) | 133 (+0.6) | 137 (−0.5) | 117 (−0.8) | 87 (−0.4) | 50 (−0.3) |
 
-- **T30.** It now matches within 1.1 JND in every band.
+- **T30.** It now matches within 0.5 JND in every band.
 - **The shape of the decay.** From 125 Hz to 8 kHz, EDT, C80, D50 and centre time are all within about
-  1.5 JND. Here, unlike in the chamber music hall, matching T30 does not leave the early decay too
+  1.3 JND. Here, unlike in the chamber music hall, matching T30 does not leave the early decay too
   fast: the simulated decay has the measured shape. The fan-shaped plan, the splayed and stepped
   surfaces and the hung panels mix the sound better than the chamber music hall's simplified box.
-- **63 Hz.** EDT is still 7.1 JND long, for the reason [above](#the-early-decay-at-63-hz); C80, D50 and
-  centre time are within 0.6 JND.
-- **Early reflections.** These correlate at 0.39 ± 0.16, against 0.21 at other positions.
+- **63 Hz.** EDT is still 4.7 JND long (2.07 s against 1.68 s), for the reason
+  [above](#the-early-decay-at-63-hz); C80, D50 and centre time are within 0.6 JND.
+- **Early reflections.** These correlate at 0.33 ± 0.15, against 0.21 at other positions.
 
 A run of `acousticbench --bras-cr4` takes about 24 minutes on a Mac Studio (M4 Max): 100–120 s for each
 source in each configuration with the wave solver, and the six calibration simulations.
